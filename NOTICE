@@ -1,0 +1,29 @@
+pytest-executable Copyright 2020 CS Systèmes d'Information
+
+This software is distributed under the Apache Software License (ASL) v2.0, see
+LICENSE file or http://www.apache.org/licenses/LICENSE-2.0 for details.
+
+
+This software includes code from many other open source projects. See below for
+details about the license of each project.
+
+================================================================
+The MIT License
+================================================================
+
+The following components are provided under the MIT License
+(http://www.opensource.org/licenses/mit-license.php).
+
+https://pyyaml.org
+https://pytest.org
+https://python-jsonschema.readthedocs.io
+
+
+================================================================
+The CC0 License
+================================================================
+
+The following components are provided under the CC0 License
+(https://creativecommons.org/publicdomain/zero/1.0)
+
+https://github.com/warner/python-versioneer

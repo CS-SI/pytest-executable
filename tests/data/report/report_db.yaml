@@ -1,0 +1,15 @@
+dir0:
+  status: error
+  messages:
+    - error message 0
+    - failure message 0
+dir1:
+  status: failed
+  messages:
+    - failure message 1
+dir2:
+  status: passed
+  messages: []
+dir3:
+  status: skipped
+  messages: []

@@ -1,0 +1,1 @@
+foo -np {{nproc}} bar

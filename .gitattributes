@@ -1,0 +1,1 @@
+pytest_executable/_version.py export-subst

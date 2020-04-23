@@ -1,0 +1,3 @@
+tolerances:
+  field_name:
+    abs: 123.
