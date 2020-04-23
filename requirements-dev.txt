@@ -2,8 +2,6 @@ mypy==0.760
 flake8==3.7.*
 numpy
 ipython
-sphinx-autodoc-typehints
-sphinx_rtd_theme
 autopep8
 flake8-docstrings
 flake8-bugbear
