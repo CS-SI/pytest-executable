@@ -13,8 +13,8 @@ reStructuredText).
 
 ## Installation and Usage
 
-A `pytest-executable` package will soon be available in the Conda and PyPi
-repositories (just a matter of free time). In the meantime, you can get
+A `pytest-executable` package will soon be available in the Conda-Forge and
+PyPi repositories (just a matter of free time). In the meantime, you can get
 `pytest-executable` by cloning the project repository on Github:
 
 ```bash
