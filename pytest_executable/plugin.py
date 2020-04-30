@@ -85,8 +85,8 @@ def pytest_addoption(parser):
         "--default-settings",
         default=SETTINGS_PATH,
         metavar="PATH",
-        help="use the yaml file at PATH for the global default test settings "
-        "instead of the built-in one",
+        help="use PATH as the yaml file with the global default test settings instead "
+        "of the built-in ones",
     )
     group.addoption(
         "--equal-nan",
@@ -97,7 +97,7 @@ def pytest_addoption(parser):
     group.addoption(
         "--report-generator",
         metavar="PATH",
-        help="use the script at PATH to generate a test report",
+        help="use PATH as the script to generate the test report",
     )
 
     # change default traceback settings to get only the message without the
@@ -112,9 +112,31 @@ def pytest_addoption(parser):
 def pytest_sessionstart(session):
     """Check the cli arguments."""
     getoption = session.config.getoption
+
+    # check options clash
     if getoption("clean_output") and getoption("overwrite_output"):
         msg = "options --clean-output and --overwrite-output are not compatible"
         raise pytest.UsageError(msg)
+
+    # check paths are valid
+    for option_name in (
+        "runner",
+        "default_settings",
+        "regression_root",
+        "report_generator",
+    ):
+        path = getoption(option_name)
+        try:
+            Path(path).resolve(True)
+        except FileNotFoundError:
+            msg = (
+                f"argument --{option_name.replace('_', '-')}: "
+                f"no such file or directory: {path}"
+            )
+            raise pytest.UsageError(msg)
+        except TypeError:
+            # path is None, i.e. no option is defined
+            pass
 
 
 def _get_parent_path(fspath: py.path.local) -> Path:

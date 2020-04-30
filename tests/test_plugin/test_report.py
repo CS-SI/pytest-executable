@@ -31,25 +31,6 @@ def test_report_no_report_generator(testdir):
     result.stdout.no_re_match_line(".*report generation")
 
 
-def test_report_bad_generator_path(testdir):
-    """Test error when generator path is wrong."""
-    directory = testdir.copy_example("tests/data/test_report")
-    result = testdir.runpytest(
-        directory / "tests-inputs", "--report-generator", "bad/path.sh"
-    )
-    # skip runner because no --runner
-    # fail logs because no executable.std*
-    result.assert_outcomes(skipped=1, failed=1)
-    result.stdout.re_match_lines(
-        [
-            ".*starting report generation",
-            r"\[Errno 2\] No such file or directory: "
-            "'.*/test_report_bad_generator_path0/bad'",
-            ".*report generation failed",
-        ]
-    )
-
-
 def fix_execute_permission(script_path: str) -> None:
     """Pytest testdir fixture does not copy the execution bit."""
     path = Path(script_path)

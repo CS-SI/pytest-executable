@@ -80,20 +80,6 @@ def test_runner_fixture_no_runner(testdir):
     result.assert_outcomes(skipped=1, failed=1)
 
 
-def test_runner_fixture_bad_runner(testdir):
-    """Test runner fixture without runner."""
-    directory = testdir.copy_example("tests/data/test_runner_fixture")
-    result = testdir.runpytest(directory / "tests-inputs/case", "--runner", "dummy")
-    # error runner because bad runner file
-    # fail logs because no executable.std*
-    result.assert_outcomes(error=1, failed=1)
-    result.stdout.fnmatch_lines(
-        [
-            "E   FileNotFoundError: [Errno 2] No such file or directory: "
-            f"'{testdir}/dummy'"
-        ]
-    )
-
 
 def test_runner_fixture_with_test_case_nproc(testdir):
     """Test runner fixture with custom nproc from test case settings."""

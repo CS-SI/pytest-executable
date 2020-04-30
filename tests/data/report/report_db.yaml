@@ -1,4 +1,4 @@
-dir0:
+.:
   status: error
   messages:
     - error message 0

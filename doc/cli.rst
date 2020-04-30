@@ -65,7 +65,7 @@ Plugin options
 
 .. option:: --default-settings PATH
 
-   use the yaml file at PATH for the global default test settings instead of
+   use PATH as the yaml file with the global default test settings instead of
    the built-in ones
 
 .. option:: --equal-nan
@@ -74,9 +74,14 @@ Plugin options
    the built-in regression testing
 
 .. option:: --report-generator PATH
-   use the script at PATH to generate a test report
+   use PATH as the script to generate the test report
 
    See the :file:`report-conf` directory for an example of such a script.
+
+   .. note::
+
+      The report generator script may require to install additionnal
+      dependencies, such as sphinx, which are not required by the plugin.
 
 
 .. _filter:

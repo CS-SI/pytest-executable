@@ -43,7 +43,7 @@ For instance, if the test inputs tree contains::
    ├── dir-1
    │   ├── case.input
    │   └── test_case.yaml
-   └── dir-1
+   └── dir-2
        ├── case.input
        └── test_case.yaml
 
@@ -52,7 +52,7 @@ Then the output tree is::
    tests-output
    ├── dir-1
    │   ├── case.input -> path/to/tests/inputs/dir-1/case.input
-   │   ├── case.ouput
+   │   ├── case.output
    │   ├── executable.stderr
    │   ├── executable.stdout
    │   ├── run_executable.sh
@@ -60,7 +60,7 @@ Then the output tree is::
    │   └── run_executable.stdout
    ├── dir-2
        ├── case.input -> path/to/tests/inputs/dir-2/case.input
-       ├── case.ouput
+       ├── case.output
        ├── executable.stderr
        ├── executable.stdout
        ├── run_executable.sh
