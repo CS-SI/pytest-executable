@@ -80,7 +80,6 @@ def test_runner_fixture_no_runner(testdir):
     result.assert_outcomes(skipped=1, failed=1)
 
 
-
 def test_runner_fixture_with_test_case_nproc(testdir):
     """Test runner fixture with custom nproc from test case settings."""
     directory = testdir.copy_example("tests/data/test_runner_fixture")

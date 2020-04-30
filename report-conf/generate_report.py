@@ -44,7 +44,6 @@ from pathlib import Path
 from typing import List, Tuple
 
 import yaml
-
 from tabulate import tabulate
 
 # indentation used in the toc tree of the index template
