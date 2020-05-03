@@ -1,1 +1,2 @@
 include versioneer.py
+include src/pytest_executable/*.yaml
