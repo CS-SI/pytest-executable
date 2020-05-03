@@ -11,5 +11,8 @@ mypy==0.770
 pudb
 pydocstyle
 pylint
+pytest
 pytest-cov
 pytest-pudb
+twine
+wheel
