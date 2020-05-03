@@ -89,12 +89,6 @@ def pytest_addoption(parser):
         "of the built-in ones",
     )
     group.addoption(
-        "--equal-nan",
-        action="store_true",
-        help="consider nan values as equal when doing comparison with the "
-        "references for the built-in regression testing",
-    )
-    group.addoption(
         "--report-generator",
         metavar="PATH",
         help="use PATH as the script to generate the test report",
@@ -149,12 +143,6 @@ def _get_parent_path(fspath: py.path.local) -> Path:
         Resolved path to the parent directory of the given pat.
     """
     return Path(fspath).parent.resolve(True)
-
-
-@pytest.fixture(scope="module")
-def equal_nan(request):
-    """Fixture to whether consider nan as equal when comparing fields."""
-    return request.config.getoption("equal_nan")
 
 
 @pytest.fixture(scope="module")

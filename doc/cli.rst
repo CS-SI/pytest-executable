@@ -68,12 +68,8 @@ Plugin options
    use PATH as the yaml file with the global default test settings instead of
    the built-in ones
 
-.. option:: --equal-nan
-
-   consider nan values as equal when doing comparison with the references for
-   the built-in regression testing
-
 .. option:: --report-generator PATH
+
    use PATH as the script to generate the test report
 
    See the :file:`report-conf` directory for an example of such a script.
