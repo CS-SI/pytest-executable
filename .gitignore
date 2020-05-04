@@ -1,3 +1,4 @@
 .ci
 .eggs
 *.egg-info
+.tox

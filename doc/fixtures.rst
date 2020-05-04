@@ -77,11 +77,3 @@ variable that holds a `Path`_ object.
 
 You may use this fixture with the :py:data:`output_path` fixture to get the
 path to the file that shall be compared to a reference file.
-
-
-Equal Nan fixture
------------------
-
-This fixture provides the boolean :py:data:`equal_nan`, its value is set from
-the |pytest| command line option :option:`--equal-nan`. See the option
-documentation for more informations.

@@ -37,13 +37,13 @@ This module requires the packages tabulate and sphinx, these could be installed
 with the command: conda install tabluate sphinx
 """
 
+import shutil
 import subprocess
 import textwrap
 from pathlib import Path
 from typing import List, Tuple
 
 import yaml
-
 from tabulate import tabulate
 
 # indentation used in the toc tree of the index template
@@ -130,6 +130,10 @@ if __name__ == "__main__":
 
     # create the report index.rst
     create_index_rst(output_root)
+    # copy the _static directory if it exists
+    static_path = DOC_GENERATOR_DIRPATH / "_static"
+    if static_path.exists():
+        shutil.copytree(static_path, output_root / "_static")
 
     # command line to build the report
     cmd = (

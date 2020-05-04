@@ -36,7 +36,7 @@ DATA_DIR = ROOT_DATA_DIR / "shallow_dir_copy"
 @pytest.fixture(scope="module")
 def shared_tmp_path(tmp_path_factory):
     """Shared tmp_path fixture for the current module."""
-    return tmp_path_factory.mktemp("")
+    return tmp_path_factory.mktemp("dummy")
 
 
 def test_non_existing_destination(shared_tmp_path):

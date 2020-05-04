@@ -22,8 +22,8 @@ from collections import defaultdict
 from typing import Dict, List
 
 import pytest
-import yaml
 
+import yaml
 from pytest_executable.report import create, dump, merge
 
 from . import ROOT_DATA_DIR
@@ -48,17 +48,17 @@ class TerminalReporter:
 
 # report data with all cases
 REPORT_DATA = [
-    ["skipped", "dir0/path", ""],
-    ["passed", "dir0/path", ""],
-    ["failed", "dir0/path", "failure message 0"],
-    ["error", "dir0/path", "error message 0"],
-    ["skipped", "dir1/path", ""],
-    ["passed", "dir1/path", ""],
-    ["failed", "dir1/path", "failure message 1"],
-    ["skipped", "dir2/path", ""],
-    ["passed", "dir2/path", ""],
-    ["skipped", "dir3/path", ""],
-    ["skipped", "dir3/path", ""],
+    ["skipped", "root/path", ""],
+    ["passed", "root/path", ""],
+    ["failed", "root/path", "failure message 0"],
+    ["error", "root/path", "error message 0"],
+    ["skipped", "root/dir1/path", ""],
+    ["passed", "root/dir1/path", ""],
+    ["failed", "root/dir1/path", "failure message 1"],
+    ["skipped", "root/dir2/path", ""],
+    ["passed", "root/dir2/path", ""],
+    ["skipped", "root/dir3/path", ""],
+    ["skipped", "root/dir3/path", ""],
 ]
 
 
@@ -70,7 +70,7 @@ REPORT_DATA = [
             REPORT_DATA[0:4],
             # error priority
             {
-                "dir0": {
+                ".": {
                     "status": "error",
                     "messages": ["error message 0", "failure message 0"],
                 }
@@ -96,7 +96,7 @@ REPORT_DATA = [
             REPORT_DATA,
             # error priority
             {
-                "dir0": {
+                ".": {
                     "status": "error",
                     "messages": ["error message 0", "failure message 0"],
                 },
@@ -118,12 +118,12 @@ def test_create(report_data, expected):
         (
             {
                 # existing entry is overwritten
-                "dir0": None,
+                ".": None,
                 # new entry is added
                 "dir4": None,
             },
             {
-                "dir0": None,
+                ".": None,
                 "dir1": {"status": "failed", "messages": ["failure message 1"]},
                 "dir2": {"status": "passed", "messages": []},
                 "dir3": {"status": "skipped", "messages": []},

@@ -15,10 +15,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Test the report feature of the plugin."""
+"""Test the report feature."""
 
 import stat
 from pathlib import Path
+
+import pytest
+
+# deal with old pytest not having no_re_match_line
+# TODO: remove this once old pytest is no longer supported
+OLD_PYTEST = pytest.__version__ < "5.3.0"
 
 
 def test_report_no_report_generator(testdir):
@@ -28,26 +34,10 @@ def test_report_no_report_generator(testdir):
     # skip runner because no --runner
     # fail logs because no executable.std*
     result.assert_outcomes(skipped=1, failed=1)
-    result.stdout.no_re_match_line(".*report generation")
-
-
-def test_report_bad_generator_path(testdir):
-    """Test error when generator path is wrong."""
-    directory = testdir.copy_example("tests/data/test_report")
-    result = testdir.runpytest(
-        directory / "tests-inputs", "--report-generator", "bad/path.sh"
-    )
-    # skip runner because no --runner
-    # fail logs because no executable.std*
-    result.assert_outcomes(skipped=1, failed=1)
-    result.stdout.re_match_lines(
-        [
-            ".*starting report generation",
-            r"\[Errno 2\] No such file or directory: "
-            "'.*/test_report_bad_generator_path0/bad'",
-            ".*report generation failed",
-        ]
-    )
+    if OLD_PYTEST:
+        assert "report generation" not in result.stdout.str()
+    else:
+        result.stdout.no_re_match_line("report generation")
 
 
 def fix_execute_permission(script_path: str) -> None:
@@ -103,4 +93,7 @@ def test_no_test_no_report(testdir):
         directory / "tests-inputs/empty-case", "--report-generator", generator_path
     )
     result.assert_outcomes()
-    result.stdout.no_re_match_line("report generation")
+    if OLD_PYTEST:
+        assert "report generation" not in result.stdout.str()
+    else:
+        result.stdout.no_re_match_line("report generation")
