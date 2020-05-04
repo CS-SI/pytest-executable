@@ -68,7 +68,7 @@ result files required for performing the checks.
    :caption: Contents:
 
    usage
-   tutorial
+   how-to-use
    test-case
    post-processing
    fixtures

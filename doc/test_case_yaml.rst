@@ -20,6 +20,7 @@
 Builtin test module
 ===================
 
-This is the python module executed when the testing tool finds a :file:`test_case.yaml`, this module can be used as an example for writing new test modules.
+This is the python module executed when the testing tool finds a |yaml|, this
+module can be used as an example for writing new test modules.
 
 .. literalinclude:: ../src/pytest_executable/test_case_yaml.py

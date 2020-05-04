@@ -22,22 +22,20 @@ Add a test case
 
 A test case is composed of a directory with:
 
-- the |executable| input files
-- a |yaml| file with basic settings
-- optionnal |pytest| and python module for adding checks and post-processes
+- the input files of the |executable|
+- a |yaml| file with |ptx| settings
+- optionnal |pytest| and python modules for additionnal tests
 
-The |executable| input files shall use the naming convention :file:`case.labs`
-and :file:`case.pbd`. Among the optionnal modules, there shall be at least one
-that is discoverable by |pytest|, i.e. a python module which name starts with
-:file:`test_` and which contains at least one function which also starts with
-**test_**.
+Among the optionnal modules, there shall be at least one that is discoverable
+by |pytest|, i.e. a python module which name starts with :file:`test_` and
+which contains at least one function which also starts with **test_**.
 
 .. note::
 
    A test case directory shall not contain any of the files created by the
    execution of |executable| or of the processing defined in the python modules,
    otherwise they may badly interfere with the execution of the testing tool.
-   In other words, do not run anything in the input directory.
+   In other words: do not run the |executable| in the input directory.
 
 The |yaml| file is used by |ptx| for several things. When this file is
 found, |ptx| will create the test case output directory, then identify the
@@ -56,7 +54,9 @@ following sections.
 Number of parallel processes
 ----------------------------
 
-To change the number of parallel processes:
+This parameter is not used by directly by |ptx| for running the |executable|,
+but is intended to be used in |run_executable|. To change the number of
+parallel processes:
 
 .. code-block:: yaml
 
@@ -67,12 +67,11 @@ Regression reference files
 --------------------------
 
 Reference files are used to do regression checks on the files produced by
-|executable|. The regression is
-done by comparing the files with a given tolerance (explained in the next
-section). The `references` setting shall contain a list of paths to the files
-to be compared. A path shall be defined relatively to the test case directory,
-it may use any shell pattern like :file:`**`, :file:`*`, :file:`?`, for
-instance:
+|executable|. The regression is done by comparing the files with a given
+tolerance (explained in the next section). The `references` setting shall
+contain a list of paths to the files to be compared. A path shall be defined
+relatively to the test case directory, it may use any shell pattern like
+:file:`**`, :file:`*`, :file:`?`, for instance:
 
 .. code-block:: yaml
 
