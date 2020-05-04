@@ -16,9 +16,9 @@
 .. limitations under the License.
 
 Welcome to |ptx| documentation!
-================================
+===============================
 
-This is the user guide for |ptx|, a |pytest| plugin for checking and validating |executable|.
+This is the user guide for |ptx|, a |pytest| plugin for checking and validating an |executable|.
 
 
 Overview
@@ -67,9 +67,8 @@ result files required for performing the checks.
    :maxdepth: 2
    :caption: Contents:
 
-   installation
-   cli
    usage
+   tutorial
    test-case
    post-processing
    fixtures
