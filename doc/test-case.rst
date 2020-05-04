@@ -45,7 +45,7 @@ settings for running the case and finally perform the checks and
 post-porcesses. If |yaml| is empty, then the default settings are used, which
 is equivalent to using a |yaml| with the following contents:
 
- .. literalinclude:: ../pytest_executable/test_case.yaml
+ .. literalinclude:: ../src/pytest_executable/test_case.yaml
 
 This file is in yaml format, a widely used human friendly file format that
 allows to define nested sections, lists of items, key-value pairs and more. To
