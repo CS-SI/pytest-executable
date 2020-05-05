@@ -64,8 +64,8 @@ autodoc_docstring_signature = False
 
 rst_prolog = """
 .. |ptx| replace:: *pytest-executable*
-.. |executable| replace:: :program:`executable`
+.. |exe| replace:: :program:`executable`
 .. |pytest| replace:: :program:`pytest`
 .. |yaml| replace:: :file:`test_case.yaml`
-.. |run_executable| replace:: :file:`run_executable.sh`
+.. |runner| replace:: *runner shell script*
 """

@@ -36,38 +36,30 @@ class ScriptRunner:
     """Base class for creating and running scripts.
 
     Args:
-        name: Name of the script.
+        filename: Name of the script.
         script: Content of the script.
         exec_dir: Path to the execution directory.
     """
 
     # extensions for the script related files
-    SCRIPT_EXT = "sh"
     STDOUT_EXT = "stdout"
     STDERR_EXT = "stderr"
 
     # shell used for executing the shell script
     SHELL = "/usr/bin/env bash"
 
-    def __init__(self, name: str, script: str, exec_dir: Path):
-        self._name = name
+    def __init__(self, filename: str, script: str, exec_dir: Path):
+        self._filename = filename
         self._script = script
         self._exec_dir = exec_dir
-
-    def _get_filenames(self) -> Iterator[str]:
-        """Return the script, stdout and stderr filenames."""
-        return map(
-            lambda s: "{}.{}".format(self._name, s),
-            (self.SCRIPT_EXT, self.STDOUT_EXT, self.STDERR_EXT),
-        )
 
     def run(self) -> int:
         """Execute the script.
 
         The script file is created in the execution directory by dumping the
-        contents of the script string.
-        The script stdout and stderr are each redirected to files named after
-        the script file prefix and suffixed with stdout and stderr.
+        contents of the script string. The script stdout and stderr are each
+        redirected to files named after the script file prefix and suffixed
+        with stdout and stderr.
 
         Returns:
             The return code of the executed subprocess.
@@ -75,9 +67,7 @@ class ScriptRunner:
         Raises:
             ScriptExecutionError: If the process fails.
         """
-        script_filename, stdout_filename, stderr_filename = self._get_filenames()
-
-        script_path = self._exec_dir / script_filename
+        script_path = self._exec_dir / self._filename
 
         # write the script
         with script_path.open("w") as script_file:
@@ -89,11 +79,11 @@ class ScriptRunner:
         script_path.chmod(permission | stat.S_IXUSR | stat.S_IXGRP)
 
         # redirect the stdout and stderr to files
-        stdout = open(self._exec_dir / stdout_filename, "w")
-        stderr = open(self._exec_dir / stderr_filename, "w")
+        stdout = open(self._exec_dir / f"{self._filename}.{self.STDOUT_EXT}", "w")
+        stderr = open(self._exec_dir / f"{self._filename}.{self.STDERR_EXT}", "w")
 
         LOG.debug("executing the shell script %s", script_path)
-        cmd = self.SHELL.split() + [script_filename]
+        cmd = self.SHELL.split() + [self._filename]
 
         try:
             process = subprocess.run(

@@ -18,13 +18,13 @@
 Welcome to |ptx| documentation!
 ===============================
 
-This is the user guide for |ptx|, a |pytest| plugin for checking and validating an |executable|.
+This is the user guide for |ptx|, a |pytest| plugin for checking and validating an |exe|.
 
 
 Overview
 --------
 
-The |ptx| plugin allows to both automatically check |executable| results and
+The |ptx| plugin allows to both automatically check |exe| results and
 post-process them. In this guide, a `check` is a testing event that can be
 automatically verified and can provide an OK or KO outcome, like checking that
 2 numbers are equal. In contrast, a `post-process` is a testing event that
@@ -41,22 +41,22 @@ The |ptx| plugin works with several test cases directory trees for:
 
 There can be more than one regression references trees for storing different
 sets of references, for instance for comparing the results against more than
-one version of |executable|. All the directory trees have the same hierarchy,
+one version of |exe|. All the directory trees have the same hierarchy,
 this convention allows |ptx| to work out what to test and what to check.
 Except for the inputs tree, you do not have to manually create the directory
 hierarchies, as they are automatically created by |ptx| when it is executed.
 
 In the inputs tree, a test case is a directory that contains:
 
-- the |executable| input files
+- the |exe| input files
 - a |yaml| file with basic settings
 - optionnal |pytest| and python scripts for adding checks and post-processes
 
 In the outputs tree, a test case directory typically contains:
 
-- symbolic links to the |executable| input files from the inputs tree
-- a shell script to execute |executable|
-- the files produced by the execution of |executable|
+- symbolic links to the |exe| input files from the inputs tree
+- a shell script to execute |exe|
+- the files produced by the execution of |exe|
 - eventually, the files produced by the additional post-processing
 
 In a regression references tree, a test case directory shall contains all the

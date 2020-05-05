@@ -21,16 +21,15 @@ import re
 
 import pytest
 
-from pytest_executable.plugin import EXE_RUNNER_NAME
 from pytest_executable.script_runner import ScriptExecutionError, ScriptRunner
 
 
 def test_files_ok(tmp_path):
     """Test that the script execution is OK."""
     script = "echo hello"
-    runner = ScriptRunner(EXE_RUNNER_NAME, script, tmp_path)
+    runner = ScriptRunner("runner.sh", script, tmp_path)
     runner.run()
-    _assertions(tmp_path, runner, script, "hello\n", "")
+    _assertions(tmp_path, script, "hello\n", "")
 
 
 def test_execution_failure(tmp_path):
@@ -38,25 +37,23 @@ def test_execution_failure(tmp_path):
     script = "ls non-existing-file"
 
     error_msg = "execution failure, see the stdout and stderr files in /"
-    runner = ScriptRunner(EXE_RUNNER_NAME, script, tmp_path)
+    runner = ScriptRunner("runner.sh", script, tmp_path)
     with pytest.raises(ScriptExecutionError, match=error_msg):
         runner.run()
 
     _assertions(
         tmp_path,
-        runner,
         script,
         "",
         "ls: (?:cannot access )?'?non-existing-file'?: No such file or directory",
     )
 
 
-def _assertions(tmp_path, runner, script, stdout, stderr_regex):
-    script_filename, stdout_filename, stderr_filename = runner._get_filenames()
+def _assertions(tmp_path, script, stdout, stderr_regex):
     # check the content of the script, stdout and stderr files
-    with open(tmp_path / script_filename) as file_:
+    with open(tmp_path / "runner.sh") as file_:
         assert file_.read() == script
-    with open(tmp_path / stdout_filename) as file_:
+    with open(tmp_path / "runner.sh.stdout") as file_:
         assert file_.read() == stdout
-    with open(tmp_path / stderr_filename) as file_:
+    with open(tmp_path / "runner.sh.stderr") as file_:
         assert re.match(stderr_regex, file_.read())

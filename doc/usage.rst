@@ -40,18 +40,17 @@ Plugin options
 
 .. option:: --runner PATH
 
-    use the shell script at PATH to run |executable|, if omitted then |executable| is
+    use the shell script at PATH to run |exe|, if omitted then |exe| is
     not run.
 
     This shell script may contain placeholders, such as `{{nproc}}` and
     `{{output_path}}`. The placeholders will be replaced with the parameters
     determined from the context (either a pytest option or a setting defined in
     a test case via the :ref:`test_case.yaml <add-test-case-label>`), and a
-    final script is saved for each test cases to be run in their output
-    directories, under the name |run_executable|. This latter is used to
-    run |executable|.
+    final |runner| is saved for each test cases to be run in their output
+    directories. This latter is used to run |exe|.
 
-    A typical script for running |executable| with MPI could be:
+    A typical script for running |exe| with MPI could be:
 
     .. literalinclude:: ../mpi_runner.sh
       :language: bash

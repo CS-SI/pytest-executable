@@ -89,10 +89,8 @@ def test_runner_fixture_with_test_case_nproc(testdir):
     # fail runner because runner is not runnable
     # fail logs because no executable.std*
     result.assert_outcomes(failed=2)
-    run_executable_script = (
-        (directory / "tests-output/case_nproc/run_executable.sh").open().read()
-    )
-    assert " -np 100 " in run_executable_script
+    runner_script = (directory / "tests-output/case_nproc/runner.sh").open().read()
+    assert " -np 100 " in runner_script
 
 
 def test_runner_fixture_with_global_nproc(testdir):
@@ -108,10 +106,8 @@ def test_runner_fixture_with_global_nproc(testdir):
     # fail runner because runner is not runnable
     # fail logs because no executable.std*
     result.assert_outcomes(failed=2)
-    run_executable_script = (
-        (directory / "tests-output/case/run_executable.sh").open().read()
-    )
-    assert " -np 100 " in run_executable_script
+    runner_script = (directory / "tests-output/case/runner.sh").open().read()
+    assert " -np 100 " in runner_script
 
 
 def test_runner_not_script(testdir):

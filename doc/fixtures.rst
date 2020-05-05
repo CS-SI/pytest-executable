@@ -34,14 +34,13 @@ look at it for usage examples, see :ref:`builtin-test-module`.
 Runner fixture
 --------------
 
-This fixture is used to run |executable|, it will do the following:
+This fixture is used to run |exe|, it will do the following:
 
 - get the runner script passed to the |pytest| command line option
   :option:`--runner`,
 - process it to replace the placeholders `{{nproc}}` and `{{output_path}}` with their
   actual values,
-- write it to the |run_executable| shell script in the test case output
-  directory.
+- write it to the |runner| in the test case output directory.
 
 The :py:data:`runner` object provided by the fixture can be executed with the
 :py:meth:`run` method which will return the exit status of the script

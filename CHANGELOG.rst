@@ -11,6 +11,11 @@ and this project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0
 Unreleased
 ----------
 
+Changed
+~~~~~~~
+- The name of the runner shell script in the output directories is the one
+  passed to the CLI instead of the hardcoded one.
+
 Added
 ~~~~~
 - Testing on MacOS.

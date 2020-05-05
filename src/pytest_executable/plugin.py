@@ -39,8 +39,6 @@ LOGGER = logging.getLogger(__name__)
 # files to be ignored when creating the output directories symlinks
 OUTPUT_IGNORED_FILES = ("__pycache__", "conftest.py", "test_case.yaml")
 
-EXE_RUNNER_NAME = "run_executable"
-
 # file with the test default settings
 SETTINGS_PATH = Path(__file__).parent / "test_case.yaml"
 
@@ -203,12 +201,12 @@ def tolerances(request):
 def runner(request, create_output_tree, output_path):
     """Fixture to run the executable with a runner script.
 
-    This fixture will create a :file:`run_executable.sh` script in the test case
+    This fixture will create an executable runner script in the test case
     output directory from the script passed to the pytest command line with the
     option :option:`--runner`. The placeholders {nproc} and {output_path} are
     replaced with their actual values in the written script. The runner object
-    created by the fixture can be executed with the :py:meth:`run` method
-    which will return the return code of the script execution.
+    created by the fixture can be executed with the :py:meth:`run` method which
+    will return the return code of the script execution.
 
     Returns:
         ScriptRunner object.
@@ -224,7 +222,7 @@ def runner(request, create_output_tree, output_path):
 
     variables = dict(output_path=output_path, nproc=nproc)
     script = get_final_script(runner_path, variables)
-    return ScriptRunner(EXE_RUNNER_NAME, script, output_path)
+    return ScriptRunner(runner_path.name, script, output_path)
 
 
 def _get_regression_path(
