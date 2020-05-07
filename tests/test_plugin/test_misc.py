@@ -70,9 +70,9 @@ def test_logs(testdir):
     for output_path in directory.listdir(fil="*output*"):
         result = testdir.runpytest(
             directory / "tests-inputs",
-            "--output-root",
+            "--exe-output-root",
             str(output_path),
-            "--overwrite-output",
+            "--exe-overwrite-output",
         )
         if output_path.ext == ".ko":
             failed = 1
@@ -96,8 +96,8 @@ def test_output_directory_already_exists(testdir):
             "",
             "During handling of the above exception, another exception occurred:",
             'E   FileExistsError: the output directory "*" already exists: '
-            "either remove it manually or use the --clean-output option to "
-            "remove it or use the --overwrite-output to overwrite it",
+            "either remove it manually or use the --exe-clean-output option to "
+            "remove it or use the --exe-overwrite-output to overwrite it",
         ]
     )
 
@@ -120,16 +120,24 @@ def test_cli_check_clash(testdir):
     """Test cli arguments clash."""
     directory = testdir.copy_example("tests/data/test_cli_check")
     result = testdir.runpytest_subprocess(
-        directory, "--clean-output", "--overwrite-output"
+        directory, "--exe-clean-output", "--exe-overwrite-output"
     )
     result.stderr.fnmatch_lines(
-        ["ERROR: options --clean-output and --overwrite-output are not compatible"]
+        [
+            "ERROR: options --exe-clean-output and --exe-overwrite-output "
+            "are not compatible"
+        ]
     )
 
 
 @pytest.mark.parametrize(
     "option_name",
-    ("--runner", "--default-settings", "--regression-root", "--report-generator"),
+    (
+        "--exe-runner",
+        "--exe-default-settings",
+        "--exe-regression-root",
+        "--exe-report-generator",
+    ),
 )
 def test_cli_check(testdir, option_name):
     """Test cli arguments paths."""

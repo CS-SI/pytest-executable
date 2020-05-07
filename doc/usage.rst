@@ -38,7 +38,7 @@ root directory.
 Plugin options
 --------------
 
-.. option:: --runner PATH
+.. option:: --exe-runner PATH
 
     use the shell script at PATH to run |exe|, if omitted then |exe| is
     not run.
@@ -55,30 +55,30 @@ Plugin options
     .. literalinclude:: ../mpi_runner.sh
       :language: bash
 
-.. option:: --output-root PATH
+.. option:: --exe-output-root PATH
 
    use PATH as the root for the output directory tree, default: tests-output
 
-.. option:: --overwrite-output
+.. option:: --exe-overwrite-output
 
    overwrite existing files in the output directories
 
-.. option:: --clean-output
+.. option:: --exe-clean-output
 
    clean the output directories before executing the tests
 
-.. option:: --regression-root PATH
+.. option:: --exe-regression-root PATH
 
    use PATH as the root directory with the references for the regression
    testing, if omitted then the tests using the regression_path fixture will be
    skipped
 
-.. option:: --default-settings PATH
+.. option:: --exe-default-settings PATH
 
    use PATH as the yaml file with the global default test settings instead of
    the built-in ones
 
-.. option:: --report-generator PATH
+.. option:: --exe-report-generator PATH
 
    use PATH as the script to generate the test report
 
@@ -104,11 +104,11 @@ Use multiple path patterns
    Instead of providing the path to the root of the inputs tree, you may
    provide the path to one or more of its sub-directories, for instance:
 
-   :command:`pytest --runner <path/to/runner> <path/to/tests/inputs/sub-directory1> <path/to/tests/inputs/sub/sub/sub-directory2>`
+   :command:`pytest --exe-runner <path/to/runner> <path/to/tests/inputs/sub-directory1> <path/to/tests/inputs/sub/sub/sub-directory2>`
 
    You may also use shell patterns (with `*` and `?` characters) in the paths like:
 
-   :command:`pytest --runner <path/to/runner> <path/to/tests/inputs/*/sub-directory?>`
+   :command:`pytest --exe-runner <path/to/runner> <path/to/tests/inputs/*/sub-directory?>`
 
 Use marks
    A test case could be assigned one or more marks in the |yaml| file, then

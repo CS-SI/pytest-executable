@@ -25,7 +25,7 @@ explain how.
 Run |exe| only
 ---------------------
 
-:command:`pytest --runner <path/to/runner> <path/to/tests/inputs> -k runner`
+:command:`pytest --exe-runner <path/to/runner> <path/to/tests/inputs> -k runner`
 
 This command will execute the |exe| for all the test cases that are found in
 the input tree under :file:`path/to/tests/inputs`. A test case is identified by
@@ -33,7 +33,7 @@ a directory that contains a |yaml| file. For each of the test cases found,
 |ptx| will create an output directory with the same directory hierarchy and run
 the cases in that output directory. By default, the root directory of the
 output tree is :file:`tests-output`, this can be changed with the option
-:option:`--output-root`. Finally, the :option:`-k runner` option instructs
+:option:`--exe-output-root`. Finally, the :option:`-k runner` option instructs
 |pytest| to only execute the |runner| and nothing more, see :ref:`filter` for
 more informations on doing only some of the processing.
 
@@ -105,18 +105,18 @@ purposes for instance, just go to its output directory, for instance
 Do default regression checking without running executable
 ---------------------------------------------------------
 
-:command:`pytest --regression-root <path/to/tests/references> <path/to/tests/inputs> --overwrite-output`
+:command:`pytest --exe-regression-root <path/to/tests/references> <path/to/tests/inputs> --exe-overwrite-output`
 
 We assume that the |exe| results have already been produced for the test cases
 considered. This is not enough though because the output directory already
 exists and |ptx| will by default prevent the user from silently modifying any
 existing test output directories. In that case, the option
-:option:`--overwrite-output` shall be used. The above command line will compare
+:option:`--exe-overwrite-output` shall be used. The above command line will compare
 the results in the default output tree with the references, if the existing
 |exe| results are in a different directory then you need to add the path to it
-with :command:`--output-root`.
+with :command:`--exe-output-root`.
 
-The option :option:`--regression-root` points to the root directory with the
+The option :option:`--exe-regression-root` points to the root directory with the
 regression references tree . This tree shall have the same hierarchy as the
 output tree but it only contains the results files that are used for doing the
 regression checks.
@@ -125,7 +125,7 @@ regression checks.
 Run |exe| and do default regression checks
 -------------------------------------------------
 
-:command:`pytest --runner <path/to/runner> --regression-root <path/to/tests/references> <path/to/tests/inputs>`
+:command:`pytest --exe-runner <path/to/runner> --exe-regression-root <path/to/tests/references> <path/to/tests/inputs>`
 
 .. note::
 

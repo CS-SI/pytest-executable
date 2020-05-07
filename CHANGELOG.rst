@@ -15,6 +15,8 @@ Changed
 ~~~~~~~
 - The name of the runner shell script in the output directories is the one
   passed to the CLI instead of the hardcoded one.
+- All the names of the CLI options have been prefixed with *exe* to prevent
+  from clashing with other plugins CLI names.
 
 Added
 ~~~~~

@@ -50,44 +50,50 @@ _marks_cache: Dict[str, List[str]] = {}
 def pytest_addoption(parser):
     """CLI options for the plugin."""
     group = parser.getgroup("executable", "executable testing")
+
     group.addoption(
-        "--runner",
+        "--exe-runner",
         metavar="PATH",
         help="use the shell script at PATH to run an executable, if omitted then "
         "the executable is not run but the other test processing will be",
     )
+
     group.addoption(
-        "--output-root",
+        "--exe-output-root",
         default="tests-output",
         metavar="PATH",
         help="use PATH as the root directory of the tests output, default: %(default)s",
     )
+
     group.addoption(
-        "--overwrite-output",
+        "--exe-overwrite-output",
         action="store_true",
         help="overwrite existing files in the tests output directories",
     )
+
     group.addoption(
-        "--clean-output",
+        "--exe-clean-output",
         action="store_true",
         help="clean the tests output directories before executing the tests",
     )
+
     group.addoption(
-        "--regression-root",
+        "--exe-regression-root",
         metavar="PATH",
         help="use PATH as the root directory with the references for the "
         "regression testing, if omitted then the tests using the regression_path "
         "fixture will be skipped",
     )
+
     group.addoption(
-        "--default-settings",
+        "--exe-default-settings",
         default=SETTINGS_PATH,
         metavar="PATH",
         help="use PATH as the yaml file with the global default test settings instead "
         "of the built-in ones",
     )
     group.addoption(
-        "--report-generator",
+        "--exe-report-generator",
         metavar="PATH",
         help="use PATH as the script to generate the test report",
     )
@@ -106,16 +112,16 @@ def pytest_sessionstart(session):
     getoption = session.config.getoption
 
     # check options clash
-    if getoption("clean_output") and getoption("overwrite_output"):
-        msg = "options --clean-output and --overwrite-output are not compatible"
+    if getoption("exe_clean_output") and getoption("exe_overwrite_output"):
+        msg = "options --exe-clean-output and --exe-overwrite-output are not compatible"
         raise pytest.UsageError(msg)
 
     # check paths are valid
     for option_name in (
-        "runner",
-        "default_settings",
-        "regression_root",
-        "report_generator",
+        "exe_runner",
+        "exe_default_settings",
+        "exe_regression_root",
+        "exe_report_generator",
     ):
         path = getoption(option_name)
         try:
@@ -147,7 +153,7 @@ def _get_parent_path(fspath: py.path.local) -> Path:
 def create_output_tree(request):
     """Fixture to create and return the path to the output directory tree."""
     getoption = request.config.getoption
-    output_root = Path(getoption("output_root"))
+    output_root = Path(getoption("exe_output_root"))
     parent_path = _get_parent_path(request.node.fspath)
     output_path = get_mirror_path(parent_path, output_root.resolve())
 
@@ -155,15 +161,15 @@ def create_output_tree(request):
         create_output_directory(
             parent_path,
             output_path,
-            not getoption("overwrite_output"),
-            getoption("clean_output"),
+            not getoption("exe_overwrite_output"),
+            getoption("exe_clean_output"),
             OUTPUT_IGNORED_FILES,
         )
     except FileExistsError:
         msg = (
             f'the output directory "{output_path}" already exists: either '
-            "remove it manually or use the --clean-output option to remove "
-            "it or use the --overwrite-output to overwrite it"
+            "remove it manually or use the --exe-clean-output option to remove "
+            "it or use the --exe-overwrite-output to overwrite it"
         )
         raise FileExistsError(msg)
 
@@ -171,7 +177,7 @@ def create_output_tree(request):
 @pytest.fixture(scope="module")
 def output_path(request):
     """Fixture to return the path to the output directory."""
-    output_root = Path(request.config.getoption("output_root")).resolve(True)
+    output_root = Path(request.config.getoption("exe_output_root")).resolve(True)
     return get_mirror_path(_get_parent_path(request.node.fspath), output_root)
 
 
@@ -186,7 +192,7 @@ def _get_settings(config: _pytest.config.Config, path: Path) -> Settings:
         The settings from the test case yaml.
     """
     return Settings.from_local_file(
-        Path(config.getoption("default_settings")),
+        Path(config.getoption("exe_default_settings")),
         _get_parent_path(path) / SETTINGS_PATH.name,
     )
 
@@ -203,7 +209,7 @@ def runner(request, create_output_tree, output_path):
 
     This fixture will create an executable runner script in the test case
     output directory from the script passed to the pytest command line with the
-    option :option:`--runner`. The placeholders {nproc} and {output_path} are
+    option :option:`--exe-runner`. The placeholders {nproc} and {output_path} are
     replaced with their actual values in the written script. The runner object
     created by the fixture can be executed with the :py:meth:`run` method which
     will return the return code of the script execution.
@@ -211,9 +217,9 @@ def runner(request, create_output_tree, output_path):
     Returns:
         ScriptRunner object.
     """
-    runner_path = request.config.getoption("runner")
+    runner_path = request.config.getoption("exe_runner")
     if runner_path is None:
-        pytest.skip("no runner provided to --runner")
+        pytest.skip("no runner provided to --exe-runner")
 
     # check path
     runner_path = Path(runner_path).resolve(True)
@@ -230,7 +236,7 @@ def _get_regression_path(
 ) -> Optional[Path]:
     """Return the path to the reference directory of a test case.
 
-    None is returned if --regression-root is not passed to the CLI.
+    None is returned if --exe-regression-root is not passed to the CLI.
 
     Args:
         config: Config from pytest.
@@ -239,7 +245,7 @@ def _get_regression_path(
     Returns:
         The path to the reference directory of the test case or None.
     """
-    regression_path = config.getoption("regression_root")
+    regression_path = config.getoption("exe_regression_root")
     if regression_path is None:
         return None
     return get_mirror_path(
@@ -252,7 +258,9 @@ def regression_path(request):
     """Fixture to return the path of a test case under the references tree."""
     regression_path = _get_regression_path(request.config, request.node.fspath)
     if regression_path is None:
-        pytest.skip("no tests references root directory provided to --regression-root")
+        pytest.skip(
+            "no tests references root directory provided to --exe-regression-root"
+        )
     return regression_path
 
 
@@ -261,7 +269,7 @@ def pytest_generate_tests(metafunc):
 
     Used for accessing the references files.
 
-    If --regression-root is not set then no reference files will be provided.
+    If --exe-regression-root is not set then no reference files will be provided.
     """
     if "regression_file_path" not in metafunc.fixturenames:
         return
@@ -412,7 +420,7 @@ def pytest_terminal_summary(
     created and the report generator is called.
     """
     # path to the report generator
-    reporter_path = config.getoption("report_generator")
+    reporter_path = config.getoption("exe_report_generator")
     if reporter_path is None:
         return
 
@@ -420,7 +428,7 @@ def pytest_terminal_summary(
         # no test have been run thus no report to create or update
         return
 
-    output_root = Path(config.getoption("output_root"))
+    output_root = Path(config.getoption("exe_output_root"))
 
     terminalreporter.write_sep("=", "starting report generation")
 

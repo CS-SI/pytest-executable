@@ -31,7 +31,7 @@ def test_report_no_report_generator(testdir):
     """Test no report title in the output when no report option is used."""
     directory = testdir.copy_example("tests/data/test_report")
     result = testdir.runpytest(directory / "tests-inputs")
-    # skip runner because no --runner
+    # skip runner because no --exe-runner
     # fail logs because no executable.std*
     result.assert_outcomes(skipped=1, failed=1)
     if OLD_PYTEST:
@@ -53,9 +53,9 @@ def test_report_generator_internal_error(testdir):
     generator_path = directory / "report/generator-ko.sh"
     fix_execute_permission(generator_path)
     result = testdir.runpytest(
-        directory / "tests-inputs", "--report-generator", generator_path,
+        directory / "tests-inputs", "--exe-report-generator", generator_path,
     )
-    # skip runner because no --runner
+    # skip runner because no --exe-runner
     # fail logs because no executable.std*
     result.assert_outcomes(skipped=1, failed=1)
     result.stdout.re_match_lines(
@@ -74,9 +74,9 @@ def test_report_generator_ok(testdir):
     generator_path = directory / "report/generator.sh"
     fix_execute_permission(generator_path)
     result = testdir.runpytest(
-        directory / "tests-inputs", "--report-generator", generator_path
+        directory / "tests-inputs", "--exe-report-generator", generator_path
     )
-    # skip runner because no --runner
+    # skip runner because no --exe-runner
     # fail logs because no executable.std*
     result.assert_outcomes(skipped=1, failed=1)
     result.stdout.re_match_lines(
@@ -90,7 +90,7 @@ def test_no_test_no_report(testdir):
     generator_path = directory / "report/generator.sh"
     fix_execute_permission(generator_path)
     result = testdir.runpytest(
-        directory / "tests-inputs/empty-case", "--report-generator", generator_path
+        directory / "tests-inputs/empty-case", "--exe-report-generator", generator_path
     )
     result.assert_outcomes()
     if OLD_PYTEST:

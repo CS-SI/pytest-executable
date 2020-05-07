@@ -21,7 +21,7 @@ import logging
 import stat
 import subprocess
 from pathlib import Path
-from typing import Any, Dict, Iterator
+from typing import Any, Dict
 
 import jinja2
 

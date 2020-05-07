@@ -22,7 +22,7 @@ def test_tolerances_fixture(testdir):
     """Test tolerances fixture from test_case.yaml."""
     directory = testdir.copy_example("tests/data/test_tolerances_fixture")
     result = testdir.runpytest(directory / "tests-inputs")
-    # skip runner because no --runner
+    # skip runner because no --exe-runner
     # fail logs because no executable.std*
     # pass fixture
     result.assert_outcomes(passed=1, skipped=1, failed=1)
@@ -32,28 +32,28 @@ def test_regression_path_fixture(testdir):
     """Test regression_path fixture."""
     directory = testdir.copy_example("tests/data/test_regression_path_fixture")
     result = testdir.runpytest(
-        directory / "tests-inputs", "--regression-root", directory / "references"
+        directory / "tests-inputs", "--exe-regression-root", directory / "references"
     )
-    # skip runner because no --runner
+    # skip runner because no --exe-runner
     # fail logs because no executable.std*
     # pass fixture test
     result.assert_outcomes(skipped=1, failed=1, passed=1)
 
 
 def test_regression_path_fixture_no_regression_root(testdir):
-    """Test skipping regression_path fixture without --regression-root option."""
+    """Test skipping regression_path fixture without --exe-regression-root option."""
     directory = testdir.copy_example("tests/data/test_regression_path_fixture")
     result = testdir.runpytest(directory / "tests-inputs")
-    # skip runner because no --runner
+    # skip runner because no --exe-runner
     # fail logs because no executable.std*
     result.assert_outcomes(skipped=2, failed=1)
 
 
 def test_regression_file_path_fixture_no_regression_root(testdir):
-    """Test skipping regression_file_path fixture without --regression-root option."""
+    """Test skipping regression_file_path fixture without --exe-regression-root."""
     directory = testdir.copy_example("tests/data/test_regression_file_path_fixture")
     result = testdir.runpytest(directory / "tests-inputs/case-no-references")
-    # skip runner because no --runner
+    # skip runner because no --exe-runner
     # fail logs because no executable.std*
     result.assert_outcomes(skipped=1, failed=1)
 
@@ -63,10 +63,10 @@ def test_regression_file_path_fixture_no_references(testdir):
     directory = testdir.copy_example("tests/data/test_regression_file_path_fixture")
     result = testdir.runpytest(
         directory / "tests-inputs/case-no-references",
-        "--regression-root",
+        "--exe-regression-root",
         directory / "references",
     )
-    # skip runner because no --runner
+    # skip runner because no --exe-runner
     # fail logs because no executable.std*
     result.assert_outcomes(skipped=1, failed=1)
 
@@ -75,7 +75,7 @@ def test_runner_fixture_no_runner(testdir):
     """Test runner fixture without runner."""
     directory = testdir.copy_example("tests/data/test_runner_fixture")
     result = testdir.runpytest(directory / "tests-inputs/case")
-    # skip runner because no --runner
+    # skip runner because no --exe-runner
     # fail logs because no executable.std*
     result.assert_outcomes(skipped=1, failed=1)
 
@@ -84,7 +84,7 @@ def test_runner_fixture_with_test_case_nproc(testdir):
     """Test runner fixture with custom nproc from test case settings."""
     directory = testdir.copy_example("tests/data/test_runner_fixture")
     result = testdir.runpytest(
-        directory / "tests-inputs/case_nproc", "--runner", directory / "runner.sh"
+        directory / "tests-inputs/case_nproc", "--exe-runner", directory / "runner.sh"
     )
     # fail runner because runner is not runnable
     # fail logs because no executable.std*
@@ -98,9 +98,9 @@ def test_runner_fixture_with_global_nproc(testdir):
     directory = testdir.copy_example("tests/data/test_runner_fixture")
     result = testdir.runpytest(
         directory / "tests-inputs/case",
-        "--runner",
+        "--exe-runner",
         directory / "runner.sh",
-        "--default-settings",
+        "--exe-default-settings",
         directory / "settings.yaml",
     )
     # fail runner because runner is not runnable
@@ -114,7 +114,7 @@ def test_runner_not_script(testdir):
     """Test error when the runner is not a script."""
     directory = testdir.copy_example("tests/data/test_runner_fixture")
     result = testdir.runpytest(
-        directory / "tests-inputs/case", "--runner", "/bin/bash",
+        directory / "tests-inputs/case", "--exe-runner", "/bin/bash",
     )
     # fail runner because runner is not runnable
     # fail logs because no executable.std*

@@ -37,7 +37,7 @@ Runner fixture
 This fixture is used to run |exe|, it will do the following:
 
 - get the runner script passed to the |pytest| command line option
-  :option:`--runner`,
+  :option:`--exe-runner`,
 - process it to replace the placeholders `{{nproc}}` and `{{output_path}}` with their
   actual values,
 - write it to the |runner| in the test case output directory.
@@ -71,7 +71,7 @@ Regression path fixture
 
 This fixture is used to get the absolute path to the directory that contains
 the regression reference of a test case when the command line option
-:option:`--regression-root` is used. It provides the :py:data:`regression_path`
+:option:`--exe-regression-root` is used. It provides the :py:data:`regression_path`
 variable that holds a `Path`_ object.
 
 You may use this fixture with the :py:data:`output_path` fixture to get the
