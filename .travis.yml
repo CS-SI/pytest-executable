@@ -20,7 +20,7 @@ jobs:
       addons:
         homebrew:
           packages:
-            - python3.6
+            - python@3.6
     - <<: *macos
       name: Python 3.7 on MacOS
       env:
@@ -28,7 +28,7 @@ jobs:
       addons:
         homebrew:
           packages:
-            - python3.7
+            - python@3.7
     - <<: *macos
       name: Python 3.8 on MacOS
       env:
@@ -36,7 +36,7 @@ jobs:
       addons:
         homebrew:
           packages:
-            - python3.8
+            - python@3.8
   allow_failures:
     - python: 3.9-dev
 install:
