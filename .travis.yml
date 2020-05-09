@@ -8,36 +8,14 @@ jobs:
   include:
     # there seem to be no reliable way to know the pick a python version for
     # MacOS, the following settings may no longer work in the futur
-    - &macos
-      os: osx
+    - os: osx
       osx_image: xcode11.4
       language: shell
       before_install:
-        - brew link --overwrite python3
         - python3 --version
-      name: Python 3.6 on MacOS
-      env:
-        - TRAVIS_PYTHON_VERSION=3.6
-      addons:
-        homebrew:
-          packages:
-            - python@3.6
-    - <<: *macos
       name: Python 3.7 on MacOS
       env:
         - TRAVIS_PYTHON_VERSION=3.7
-      addons:
-        homebrew:
-          packages:
-            - python@3.7
-    - <<: *macos
-      name: Python 3.8 on MacOS
-      env:
-        - TRAVIS_PYTHON_VERSION=3.8
-      addons:
-        homebrew:
-          packages:
-            - python@3.8
   allow_failures:
     - python: 3.9-dev
 install:
