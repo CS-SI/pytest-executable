@@ -1,51 +1,51 @@
 language: python
 python:
-  - "3.6"
-  - "3.7"
-  - "3.8"
-  - "3.9-dev"
+  - 3.6
+  - 3.7
+  - 3.8
+  - 3.9-dev
 jobs:
   include:
     # there seem to be no reliable way to know the pick a python version for
     # MacOS, the following settings may no longer work in the futur
-    - name: "Python 3.6 on MacOS"
+    - name: Python 3.6 on MacOS
       os: osx
       osx_image: xcode11.4
       language: shell
       before_install:
         - python3 --version
       env:
-        - TRAVIS_PYTHON_VERSION="3.6"
+        - TRAVIS_PYTHON_VERSION=3.6
       addons:
         homebrew:
           packages:
             - python3.6
-    - name: "Python 3.7 on MacOS"
+    - name: Python 3.7 on MacOS
       os: osx
       osx_image: xcode11.4
       language: shell
       before_install:
         - python3 --version
       env:
-        - TRAVIS_PYTHON_VERSION="3.7"
+        - TRAVIS_PYTHON_VERSION=3.7
       addons:
         homebrew:
           packages:
             - python3.7
-    - name: "Python 3.8 on MacOS"
+    - name: Python 3.8 on MacOS
       os: osx
       osx_image: xcode11.4
       language: shell
       before_install:
         - python3 --version
-      addons:
       env:
-        - TRAVIS_PYTHON_VERSION="3.8"
+        - TRAVIS_PYTHON_VERSION=3.8
+      addons:
         homebrew:
           packages:
             - python3.8
   allow_failures:
-    - python: "3.9-dev"
+    - python: 3.9-dev
 install:
   - python3 -m pip install -U pip
   - python3 -m pip install tox-travis
