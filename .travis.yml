@@ -13,6 +13,7 @@ jobs:
       osx_image: xcode11.4
       language: shell
       before_install:
+        - brew link --overwrite python3
         - python3 --version
       name: Python 3.6 on MacOS
       env:
