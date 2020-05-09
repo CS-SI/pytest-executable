@@ -4,5 +4,15 @@ python:
   - "3.7"
   - "3.8"
   - "3.9-dev"
-install: pip install tox-travis
+jobs:
+  include:
+    - name: "Python 3.7.4 on MacOS"
+      os: osx
+      osx_image: xcode11.2
+      language: shell
+  allow_failures:
+    - python: '3.9-dev'
+install:
+  - pip3 install --upgrade pip
+  - pip3 install tox-travis
 script: tox
