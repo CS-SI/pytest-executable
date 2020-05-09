@@ -6,28 +6,14 @@ python:
   - "3.9-dev"
 jobs:
   include:
-    - name: "Python 3.6 on MacOS"
-      os: osx
-      osx_image: xcode9.4
-      language: shell
-      env:
-        - TRAVIS_PYTHON_VERSION="3.6"
-      before_install:
-        - python3 --version
+    # there seem to be no reliable way to know the pick a python version for
+    # MacOS, the following settings may no longer work in the futur
     - name: "Python 3.7 on MacOS"
-      os: osx
-      osx_image: xcode11.2
-      language: shell
-      env:
-        - TRAVIS_PYTHON_VERSION="3.7"
-      before_install:
-        - python3 --version
-    - name: "Python 3.8 on MacOS"
       os: osx
       osx_image: xcode11.4
       language: shell
       env:
-        - TRAVIS_PYTHON_VERSION="3.8"
+        - TRAVIS_PYTHON_VERSION="3.7"
       before_install:
         - python3 --version
   allow_failures:
