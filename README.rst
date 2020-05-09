@@ -11,9 +11,9 @@ Pytest-executable
     :target: https://pytest-executable.readthedocs.io/en/stable/?badge=stable
     :alt: Documentation Status
 
-.. image:: https://travis-ci.org/AntoineD/pytest-executable.svg?branch=travis
+.. image:: https://travis-ci.org/CS-SI/pytest-executable.svg?branch=travis
     :alt: Travis-CI Build Status
-    :target: https://travis-ci.org/AntoineD/pytest-executable
+    :target: https://travis-ci.org/CS-SI/pytest-executable
 
 ``pytest-executable`` is a `pytest`_ plugin for simplifying the black-box
 testing of an executable, be it written in python or not. It helps to avoid
