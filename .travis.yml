@@ -6,25 +6,33 @@ python:
   - "3.9-dev"
 jobs:
   include:
-    - name: "Python 3.7.4 on MacOS"
+    - name: "Python 3.6 on MacOS"
+      os: osx
+      osx_image: xcode9.4
+      language: shell
+      env:
+        - TRAVIS_PYTHON_VERSION="3.6"
+      before_install:
+        - python3 --version
+    - name: "Python 3.7 on MacOS"
       os: osx
       osx_image: xcode11.2
       language: shell
       env:
         - TRAVIS_PYTHON_VERSION="3.7"
       before_install:
-        - python --version
-    - name: "Python 3.8.0 on MacOS"
+        - python3 --version
+    - name: "Python 3.8 on MacOS"
       os: osx
-      osx_image: xcode11.3
+      osx_image: xcode11.4
       language: shell
       env:
         - TRAVIS_PYTHON_VERSION="3.8"
       before_install:
-        - python --version
+        - python3 --version
   allow_failures:
     - python: "3.9-dev"
 install:
-  - pip install --upgrade pip
-  - pip install tox-travis
+  - python3 -m pip install -U pip
+  - python3 -m pip install tox-travis
 script: tox
