@@ -10,9 +10,21 @@ jobs:
       os: osx
       osx_image: xcode11.2
       language: shell
+      env:
+        - TRAVIS_PYTHON_VERSION="3.7"
+      before_install:
+        - python --version
+    - name: "Python 3.8.0 on MacOS"
+      os: osx
+      osx_image: xcode11.3
+      language: shell
+      env:
+        - TRAVIS_PYTHON_VERSION="3.8"
+      before_install:
+        - python --version
   allow_failures:
-    - python: '3.9-dev'
+    - python: "3.9-dev"
 install:
-  - pip3 install --upgrade pip
-  - pip3 install tox-travis
+  - pip install --upgrade pip
+  - pip install tox-travis
 script: tox
