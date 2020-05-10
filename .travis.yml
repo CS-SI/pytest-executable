@@ -8,7 +8,7 @@ addons:
   apt:
     packages:
       # for sphinx spell checking via pyenchant
-      - libenchant
+      - enchant
 jobs:
   include:
     # there seem to be no reliable way to know the pick a python version for
