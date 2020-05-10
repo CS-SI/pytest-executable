@@ -18,6 +18,9 @@ Pytest-executable
 .. image:: https://requires.io/github/CS-SI/pytest-executable/requirements.svg?branch=develop
     :target: https://requires.io/github/CS-SI/pytest-executable/requirements/?branch=develop
     :alt: Requirements Status
+    
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :target: https://github.com/psf/black
 
 ``pytest-executable`` is a `pytest`_ plugin for simplifying the black-box
 testing of an executable, be it written in python or not. It helps to avoid
