@@ -47,7 +47,7 @@ def test_execution_failure(tmp_path):
         runner,
         script,
         "",
-        "ls: cannot access '?non-existing-file'?: No such file or directory",
+        "ls: (?:cannot access )?'?non-existing-file'?: No such file or directory",
     )
 
 
