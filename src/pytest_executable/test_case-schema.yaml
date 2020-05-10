@@ -34,7 +34,6 @@ definitions:
         minimum: 0.
 
 type: object
-additionalProperties: false
 properties:
     nproc:
         type: integer

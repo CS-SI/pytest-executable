@@ -21,17 +21,15 @@ We use a class because a dictionary does not offer easy checking and
 code completion.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
 from pathlib import Path
-from typing import Dict, List, Set, Union
+from typing import Dict, Set
 
 from .yaml_helper import YamlHelper
 
 # the yaml file with the default settings is in the same directory as the
 # current module, the yaml schema too
 SETTINGS_SCHEMA_FILE = Path(__file__).parent / "test_case-schema.yaml"
-
-SettingsDataType = Dict[str, Union[int, List[str], Dict[str, float]]]
 
 
 @dataclass
@@ -77,7 +75,8 @@ class Settings:
         """Create a :class:Settings object from 2 yaml files.
 
         The contents of the local file overrides or extends the contents of the
-        global one.
+        global one. The items that have no corresponding attributes in the
+        current class are ignored.
 
         Args:
             path_global: Path to a yaml file with global settings.
@@ -87,4 +86,11 @@ class Settings:
             Settings object.
         """
         loader = YamlHelper(SETTINGS_SCHEMA_FILE)
-        return cls(**loader.load_merge(path_global, path_local))
+        # contains the settings and eventually additional items
+        loaded_settings = loader.load_merge(path_global, path_local)
+        # keep the used settings
+        settings = {}
+        for field in fields(cls):
+            name = field.name
+            settings[name] = loaded_settings[name]
+        return cls(**settings)

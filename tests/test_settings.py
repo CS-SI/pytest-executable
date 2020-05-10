@@ -103,10 +103,6 @@ references:
     - x
     - x
         """,
-        # alien key
-        """
-X: x
-        """,
         # nproc shall be strictly positive
         """
 nproc: 0
@@ -137,3 +133,12 @@ def test_yaml_validation(tmp_path, yaml_str):
     settings_file.write_text(yaml_str)
     with pytest.raises(ValidationError):
         Settings.from_local_file(DEFAULT_SETTINGS_FILE, settings_file)
+
+
+def test_alien_item(tmp_path, default_settings):
+    """Test that an alien item in the yaml is ignored."""
+    yaml_str = "dummy: ''"
+    settings_file = tmp_path / "settings.yaml"
+    settings_file.write_text(yaml_str)
+    settings = Settings.from_local_file(DEFAULT_SETTINGS_FILE, settings_file)
+    assert settings == default_settings
