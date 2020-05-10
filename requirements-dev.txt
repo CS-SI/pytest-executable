@@ -4,7 +4,7 @@ flake8-bugbear
 flake8-colors
 flake8-commas
 flake8-docstrings
-flake8==3.*
+flake8==3.7.9
 ipython
 isort
 mypy==0.770
