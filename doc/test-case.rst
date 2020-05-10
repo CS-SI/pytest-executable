@@ -33,7 +33,7 @@ which contains at least one function which also starts with **test_**.
 .. note::
 
    A test case directory shall not contain any of the files created by the
-   execution of |exe| or of the processing defined in the python modules,
+   execution of the |exe| or of the processing defined in the python modules,
    otherwise they may badly interfere with the execution of the testing tool.
    In other words: do not run the |exe| in the input directory.
 
@@ -50,6 +50,10 @@ allows to define nested sections, lists of items, key-value pairs and more. To
 change a default settings, just define it in the |yaml| as explaned in the
 following sections.
 
+.. note::
+
+   If other settings exist in |yaml|, they will be ignored by |ptx|. This means
+   that you can use |yaml| to store settings for other tools than |ptx|.
 
 Number of parallel processes
 ----------------------------
@@ -67,7 +71,7 @@ Regression reference files
 --------------------------
 
 Reference files are used to do regression checks on the files produced by
-|exe|. The regression is done by comparing the files with a given
+the |exe|. The regression is done by comparing the files with a given
 tolerance (explained in the next section). The `references` setting shall
 contain a list of paths to the files to be compared. A path shall be defined
 relatively to the test case directory, it may use any shell pattern like
@@ -82,15 +86,15 @@ relatively to the test case directory, it may use any shell pattern like
 Tolerances
 ----------
 
-To change the tolerance for comparing the Velocity variable and allow to
+To change the tolerance for comparing a quantity in the |exe| outputs to a reference and allow to
 compare a new NewVariable variable:
 
 .. code-block:: yaml
 
    tolerances:
-       Velocity:
+       quantity1:
            abs: 1.
-       NewVariable:
+       quantity2:
            rel: 0.
            abs: 0.
 
@@ -103,13 +107,13 @@ Marks
 
 A mark is a |pytest| feature that allows to select some of the tests to be
 executed. A mark is a kind of tag or label assigned to a test. This is how to
-add marks to a test case, for instance the **slow** and **isotropy** marks:
+add marks to a test case, for instance the **slow** and **big** marks:
 
 .. code-block:: yaml
 
    marks:
       - slow
-      - isotropy
+      - big
 
 You can also use the marks that already existing. In particular, the `skip` and
 `xfail` marks provided by |pytest| can be used. The `skip` mark tells pytest to

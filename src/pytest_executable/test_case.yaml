@@ -15,8 +15,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Number of MPI processes.
-nproc: 1
+# Settings for the runner script
+runner: {}
 
 # List of keywords used to mark a test case
 marks: []

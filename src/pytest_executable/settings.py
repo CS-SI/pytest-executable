@@ -17,8 +17,8 @@
 
 """Provides the container for the settings of a test case.
 
-We use a class because a dictionary does not offer easy checking and
-code completion.
+We use a dataclass because a dictionary does not offer easy checking and code
+completion.
 """
 
 from dataclasses import dataclass, fields
@@ -52,13 +52,13 @@ class Settings:
     This dataclass contains the test settings read from a yaml file.
 
     Attributes:
-        nproc: The number of MPI processes.
+        runner: The settings used in the runner script.
         marks: The pytest marks.
         references: The reference files path patterns.
         tolerances: The fields comparison tolerances.
     """
 
-    nproc: int
+    runner: Dict[str, str]
     marks: Set[str]
     references: Set[str]
     tolerances: Dict[str, Tolerances]

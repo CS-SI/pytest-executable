@@ -35,9 +35,8 @@ definitions:
 
 type: object
 properties:
-    nproc:
-        type: integer
-        minimum: 1
+    runner:
+        type: object
     marks:
         $ref: "#/definitions/stringArray"
     references:

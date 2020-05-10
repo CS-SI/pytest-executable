@@ -27,7 +27,7 @@ from pytest_executable.settings import Settings, Tolerances
 @pytest.fixture
 def default_settings():
     """Fixture that returns a hand made default Settings object."""
-    return Settings(nproc=1, marks=set(), references=set(), tolerances={})
+    return Settings(runner={}, marks=set(), references=set(), tolerances={})
 
 
 def _test_merge(tmp_path, yaml_str, ref_settings):
@@ -103,26 +103,29 @@ references:
     - x
     - x
         """,
-        # nproc shall be strictly positive
+        # runner shall be an object
         """
-nproc: 0
+runner: 0
+        """,
+        """
+runner: []
         """,
         # tolerances shall be rel or abs
         """
 tolerances:
-    Velocity:
+    quantity:
         X: 1.
         """,
         # rel shall be number
         """
 tolerances:
-    Velocity:
+    quantity:
         rel: x
         """,
         # rel shall be positive
         """
 tolerances:
-    Velocity:
+    quantity:
         rel: -1.
         """,
     ),

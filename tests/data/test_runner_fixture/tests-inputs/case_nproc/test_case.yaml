@@ -1,1 +1,2 @@
-nproc: 100
+runner:
+   nproc: 100

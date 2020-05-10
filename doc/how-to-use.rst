@@ -85,11 +85,13 @@ executable.stdout
     contains the log messages from the |exe| execution
 
 runner.sh
-    executing this script directly from a console shall produce the same
-    results as when it is executed by |ptx|. This script is intended to be as
-    much as possible independent of the execution context such that it can be
-    executed independently of |ptx| in a reproductible way, i.e. it is self
-    contained and does not depend on the shell context.
+    a copy of the |runner| defined with :option:`--exe-runner`, eventually
+    modified by |ptx| for replacing the placeholders. Executing this script
+    directly from a console shall produce the same results as when it is
+    executed by |ptx|. This script is intended to be as much as possible
+    independent of the execution context such that it can be executed
+    independently of |ptx| in a reproductible way, i.e. it is self contained
+    and does not depend on the shell context.
 
 runner.sh.stderr
     contains the error messages from the |runner| execution

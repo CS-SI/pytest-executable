@@ -207,9 +207,9 @@ def tolerances(request):
 def runner(request, create_output_tree, output_path):
     """Fixture to run the executable with a runner script.
 
-    This fixture will create an executable runner script in the test case
-    output directory from the script passed to the pytest command line with the
-    option :option:`--exe-runner`. The placeholders {nproc} and {output_path} are
+    This fixture will create the runner script in the test case output
+    directory from the script passed to the pytest command line with the option
+    :option:`--exe-runner`. The placeholders {nproc} and {output_path} are
     replaced with their actual values in the written script. The runner object
     created by the fixture can be executed with the :py:meth:`run` method which
     will return the return code of the script execution.
@@ -224,10 +224,10 @@ def runner(request, create_output_tree, output_path):
     # check path
     runner_path = Path(runner_path).resolve(True)
 
-    nproc = _get_settings(request.config, request.node.fspath).nproc
+    settings = _get_settings(request.config, request.node.fspath).runner
+    settings["output_path"] = output_path
 
-    variables = dict(output_path=output_path, nproc=nproc)
-    script = get_final_script(runner_path, variables)
+    script = get_final_script(runner_path, settings)
     return ScriptRunner(runner_path.name, script, output_path)
 
 

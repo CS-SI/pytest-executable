@@ -17,6 +17,8 @@ Changed
   passed to the CLI instead of the hardcoded one.
 - All the names of the CLI options have been prefixed with *exe* to prevent
   from clashing with other plugins CLI names.
+- The settings that can be replaced in the runner script are now defined in a
+  dedicated section in test_case.yaml.
 
 Added
 ~~~~~
