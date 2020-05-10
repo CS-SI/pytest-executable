@@ -4,6 +4,11 @@ python:
   - 3.7
   - 3.8
   - 3.9-dev
+addons:
+  apt:
+    packages:
+      # for sphinx spell checking via pyenchant
+      - libenchant
 jobs:
   include:
     # there seem to be no reliable way to know the pick a python version for
@@ -11,6 +16,11 @@ jobs:
     - os: osx
       osx_image: xcode11.4
       language: shell
+      addons:
+        homebrew:
+          packages:
+            # for sphinx spell checking via pyenchant
+            - enchant
       before_install:
         - python3 --version
       name: Python 3.7 on MacOS
