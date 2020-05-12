@@ -63,9 +63,10 @@ mathjax_path = 'mathjax-v3.0.0_tex-svg-full.js'
 autodoc_docstring_signature = False
 
 rst_prolog = """
+.. _pytest: https://docs.pytest.org
 .. |ptx| replace:: *pytest-executable*
 .. |exe| replace:: :program:`executable`
-.. |pytest| replace:: :program:`pytest`
+.. |pytest| replace:: `pytest`_
 .. |yaml| replace:: :file:`test_case.yaml`
 .. |runner| replace:: *runner shell script*
 """

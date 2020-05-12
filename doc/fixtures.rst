@@ -27,25 +27,16 @@ The purpose of test fixtures is to ease the writing of test functions by
 providing informations and data automatically. You may find more documentation
 on |pytest| fixture in its `official documentation
 <https://docs.pytest.org/en/latest/fixture.html>`_. We describe here the
-fixtures defined in |ptx|. They are used in the default test module, give a
-look at it for usage examples, see :ref:`builtin-test-module`.
-
+fixtures defined in |ptx|. Some of them are used in the default test module,
+see :ref:`builtin-test-module`.
 
 Runner fixture
 --------------
 
-This fixture is used to run |exe|, it will do the following:
-
-- get the runner script passed to the |pytest| command line option
-  :option:`--exe-runner`,
-- process it to replace the placeholders `{{nproc}}` and `{{output_path}}` with their
-  actual values,
-- write it to the |runner| in the test case output directory.
-
-The :py:data:`runner` object provided by the fixture can be executed with the
-:py:meth:`run` method which will return the exit status of the script
-execution. The value **0** of the exit status means a successful execution.
-
+This fixture is used to execute |runner|. The :py:data:`runner` object provided
+by the fixture can be executed with the :py:meth:`run` method which will return
+the exit status of the script execution. The value **0** of the exit status
+means a successful execution.
 
 Output path fixture
 -------------------
@@ -54,25 +45,34 @@ This fixture is used to get the absolute path to the output directory of a test
 case. It provides the :py:data:`output_path` variable that holds a `Path`_
 object.
 
-
-Tolerances fixture
-------------------
-
-This fixture is used to get the values of the tolerances defined in the |yaml|.
-It provides the :py:data:`tolerances` dictionary that binds the name of a
-quantity to an object that has 2 attributes:
-
-- :py:attr:`rel`: the relative tolerance,
-- :py:attr:`abs`: the absolute tolerance.
-
+.. _regression-path-fixtures:
 
 Regression path fixture
 -----------------------
 
-This fixture is used to get the absolute path to the directory that contains
-the regression reference of a test case when the command line option
-:option:`--exe-regression-root` is used. It provides the :py:data:`regression_path`
-variable that holds a `Path`_ object.
+This fixture is used to get the paths to the reference data of a test case, see
+:ref:`yaml-ref`. If :option:`--exe-regression-root` is not used then the test
+functions that use the fixture are skipped. Otherwise, the test functions that
+use this fixture are called once per reference item (file or directory)
+declared in the references section of |yaml|. The fixture name is
+:py:data:`regression_file_path`, it's an object with the attributes:
+
+- :py:attr:`relative`: a `Path`_ object that contains the path to a reference
+  item relatively to the test case output directory.
+- :py:attr:`absolute`: a `Path`_ object that contains the absolute path to a
+  reference item.
 
 You may use this fixture with the :py:data:`output_path` fixture to get the
 path to the file that shall be compared to a reference file.
+
+.. _tolerances-fixtures:
+
+Tolerances fixture
+------------------
+
+This fixture is used to get the values of the tolerances defined in the |yaml|,
+see :ref:`yaml-tol`. It provides the :py:data:`tolerances` dictionary that
+binds a data name to an object that has 2 attributes:
+
+- :py:attr:`rel`: the relative tolerance,
+- :py:attr:`abs`: the absolute tolerance.

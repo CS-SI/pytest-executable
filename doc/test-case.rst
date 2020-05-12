@@ -20,100 +20,141 @@
 Add a test case
 ===============
 
-A test case is composed of a directory with:
+A test case is composed of an input directory with:
 
-- the input files of the |exe|
-- a |yaml| file with |ptx| settings
-- optionnal |pytest| and python modules for additionnal tests
+- the input files required by the |runner|,
+- a |yaml| file with the |ptx| settings,
+- any optionnal |pytest| python modules for performing additionnal tests.
 
-Among the optionnal modules, there shall be at least one that is discoverable
-by |pytest|, i.e. a python module which name starts with :file:`test_` and
-which contains at least one function which also starts with **test_**.
+.. warning::
 
-.. note::
-
-   A test case directory shall not contain any of the files created by the
-   execution of the |exe| or of the processing defined in the python modules,
-   otherwise they may badly interfere with the execution of the testing tool.
-   In other words: do not run the |exe| in the input directory.
+   An test case input directory shall not contain any of the files created by
+   the execution of the |exe| or of the additional python modules, otherwise
+   they may badly interfere with the executions done by |ptx|. In other words:
+   do not run anything in the input directory of a test case, this directory
+   shall only contain input data.
 
 The |yaml| file is used by |ptx| for several things. When this file is
-found, |ptx| will create the test case output directory, then identify the
-settings for running the case and finally perform the checks and
-post-porcesses. If |yaml| is empty, then the default settings are used, which
-is equivalent to using a |yaml| with the following contents:
+found, |ptx| will:
+   
+   1. create the test case output directory and, if needed, its parents,
+   2. read the settings for running the test case,
+   3. go to the test case output directory and execute the tests defined
+   4. in the default test module,
+   5. then in the additional test modules.
+
+The parents of the output directory are created such that the path from the
+directory where |pytest| is executed to the test case input directory is the
+same but for the first parent. This way, the directories hierarchy below the
+first parent of both the inputs and the outputs trees are the same.
+
+If |yaml| is empty, then the default settings are used. If
+:option:`--exe-default-settings` is not set, the default settings are the
+builtin ones:
 
  .. literalinclude:: ../src/pytest_executable/test_case.yaml
 
-This file is in yaml format, a widely used human friendly file format that
-allows to define nested sections, lists of items, key-value pairs and more. To
-change a default settings, just define it in the |yaml| as explaned in the
-following sections.
+The following give a description of the contents of |yaml|.
 
 .. note::
 
-   If other settings exist in |yaml|, they will be ignored by |ptx|. This means
-   that you can use |yaml| to store settings for other tools than |ptx|.
+   If other settings not described below exist in |yaml|, they will be ignored
+   by |ptx|. This means that you can use |yaml| to store settings for other
+   purposes than |ptx|.
 
-Number of parallel processes
-----------------------------
+Runner section
+--------------
 
-This parameter is not used by directly by |ptx| for running the |exe|,
-but is intended to be used in the |runner|. To change the number of
-parallel processes:
+The purpose of this section is to be able to precisely define how to run the
+|exe| for each test case. The *runner* section contains key-value pairs of
+settings to be used for replacing placeholders in the |runner| passed to
+:option:`--exe-runner`. For a key to be replaced, the |runner| shall contain
+the key between double curly braces.
+
+For instance, if |yaml| of a test case contains:
 
 .. code-block:: yaml
 
-   nproc: 10
+   runner:
+      nproc: 10
 
+and the |runner| passed to :option:`--exe-runner` contains:
 
-Regression reference files
---------------------------
+.. code-block:: console
 
-Reference files are used to do regression checks on the files produced by
-the |exe|. The regression is done by comparing the files with a given
-tolerance (explained in the next section). The `references` setting shall
-contain a list of paths to the files to be compared. A path shall be defined
-relatively to the test case directory, it may use any shell pattern like
-:file:`**`, :file:`*`, :file:`?`, for instance:
+   mpirun -np {{nproc}} executable
+
+then this line in the actual |runner| used to run the test case will be:
+
+.. code-block:: console
+
+   mpirun -np 10 executable
+
+.. _yaml-ref:
+
+Reference files
+---------------
+
+The reference files are used to check for regressions on the files created by
+the |exe|. Those checks can be done by comparing the files with a tolerance
+, see :ref:`yaml-tol`. The *references* section shall contain a list of paths
+to the files to be compared. A path shall be defined relatively to the test
+case outpput directory, it may use any shell pattern like :file:`**`,
+:file:`*`, :file:`?`, for instance:
 
 .. code-block:: yaml
 
    references:
-      - path/to/file/relative/to/test/case
+      - output/file
+      - '**/*.txt'
 
+Note that |ptx| does not know how to check for regression on files, you have to
+implement the |pytest| tests by yourself. To get the path to the references
+files in a test function, use the fixture :ref:`regression-path-fixtures`.
+
+.. _yaml-tol:
 
 Tolerances
 ----------
 
-To change the tolerance for comparing a quantity in the |exe| outputs to a reference and allow to
-compare a new NewVariable variable:
+A tolerance is used to define how close shall be 2 data to be considered as
+equal. It can be used when checking for regression by comparing files, see
+:ref:`yaml-ref`. To set the tolerances for the data named *data-name1* and
+*data-name2*:
 
 .. code-block:: yaml
 
    tolerances:
-       quantity1:
+       data-name1:
            abs: 1.
-       quantity2:
+       data-name2:
            rel: 0.
            abs: 0.
 
-If one of the tolerance value is not defined, like the **abs** one for the
-**Velocity**, then its value will be set to **0.**.
+For a given name, if one of the tolerance value is not defined, like the
+**rel** one for the **data-name1**, then its value will be set to **0.**.
 
+Note that |ptx| does not know how to use a tolerance, you have to implement it
+by yourself in a |pytest| tests. To get the tolerance in a test function, use
+the :ref:`tolerances-fixtures`.
+
+.. _yaml-marks:
 
 Marks
 -----
 
 A mark is a |pytest| feature that allows to select some of the tests to be
-executed. A mark is a kind of tag or label assigned to a test. This is how to
-add marks to a test case, for instance the **slow** and **big** marks:
+executed, see :ref:`mark_usage`. This is how to add marks to a test case, for
+instance the **slow** and **big** marks:
 
 .. code-block:: yaml
 
    marks:
       - slow
       - big
+
+Such a declared mark will be set to all the test functions under a test case,
+either from the default test module or from an additional |pytest| module.
 
 You can also use the marks that already existing. In particular, the `skip` and
 `xfail` marks provided by |pytest| can be used. The `skip` mark tells pytest to
@@ -134,5 +175,5 @@ is executed. This file shall have the format:
 
    [pytest]
    markers =
-       slow: one line explanation of slow
-       isotropy: one line explanation of isotropy
+       slow: one line explanation of what slow means
+       big: one line explanation of what big means

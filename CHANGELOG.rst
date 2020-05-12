@@ -15,18 +15,14 @@ Changed
 ~~~~~~~
 - The name of the runner shell script in the output directories is the one
   passed to the CLI instead of the hardcoded one.
-- All the names of the CLI options have been prefixed with *exe* to prevent
-  from clashing with other plugins CLI names.
-- The settings that can be replaced in the runner script are now defined in a
-  dedicated section in test_case.yaml.
+- All the names of the CLI options have been prefixed with :option:`--exe-` to
+  prevent name clashes with other plugins options.
+- It is easier to define the settings to execute the runner shell script for a
+  test case thanks to a dedicated section in test_case.yaml.
 
 Added
 ~~~~~
 - Testing on MacOS.
-
-Fixed
-~~~~~
-- One test on MacOS.
 
 0.4.0 - 2020-05-03
 ------------------

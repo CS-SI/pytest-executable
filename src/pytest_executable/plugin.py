@@ -402,7 +402,7 @@ def _sort_parent_last(item_1: _pytest.nodes.Item, item_2: _pytest.nodes.Item) ->
 
 
 def _set_marks(items: List[_pytest.nodes.Item]) -> None:
-    """Set the marks to the test functions under a test case."""
+    """Set the marks to all the test functions of a test case."""
     for dirname, marks in _marks_cache.items():
         for item in items:
             if item.fspath.dirname != dirname:

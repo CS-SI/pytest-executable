@@ -78,10 +78,8 @@ Apache License 2.0. See the `LICENSE.txt`_ file for more information, or the
 `quick summary`_ of this license on `tl;drLegal`_ website.
 
 
-.. _pytest: https://docs.pytest.org/en/latest
+.. _pytest: https://docs.pytest.org
 .. _online: https://pytest-executable.readthedocs.io
-.. _`doc`: doc
-.. _documentation: https://pytest-executable.readthedocs.io/en/stable/installation.html
 .. _Github issue tracker: https://github.com/CS-SI/pytest-executable/issues
 .. _Antoine Dechaume: https://github.com/AntoineD
 .. _CS GROUP: http://www.csgroup.eu

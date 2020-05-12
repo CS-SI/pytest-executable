@@ -102,40 +102,54 @@ inputs tree, or to execute only some of the test functions, you may use one of
 the following ways:
 
 Use multiple path patterns
-   Instead of providing the path to the root of the inputs tree, you may
-   provide the path to one or more of its sub-directories, for instance:
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   :command:`pytest --exe-runner <path/to/runner> <path/to/tests/inputs/sub-directory1> <path/to/tests/inputs/sub/sub/sub-directory2>`
+Instead of providing the path to the root of the inputs tree, you may
+provide the path to one or more of its sub-directories, for instance:
 
-   You may also use shell patterns (with `*` and `?` characters) in the paths like:
+:command:`pytest --exe-runner <path/to/runner> <path/to/tests/inputs/sub-directory1> <path/to/tests/inputs/sub/sub/sub-directory2>`
 
-   :command:`pytest --exe-runner <path/to/runner> <path/to/tests/inputs/*/sub-directory?>`
+You may also use shell patterns (with `*` and `?` characters) in the paths like:
+
+:command:`pytest --exe-runner <path/to/runner> <path/to/tests/inputs/*/sub-directory?>`
+
+.. _mark_usage:
 
 Use marks
-   A test case could be assigned one or more marks in the |yaml| file, then
-   with :option:`-m` only the test cases that match a given mark expression
-   will be run. A mark expression is a logical expression that combines marks
-   and yields a truth value. For example, to run only the tests that have the
-   mark1 mark but not the mark2 mark, use :option:`-m "mark1 and not mark2"`.
-   The logical operator `or` could be used as well.
+~~~~~~~~~
+
+A test case could be assigned one or more marks in the |yaml| file, see
+:ref:`yaml-marks`. Use the :option:`-m` to execute only the test cases that
+match a given mark expression. A mark expression is a logical expression that
+combines marks and yields a truth value. For example, to run only the tests
+that have the mark1 mark but not the mark2 mark, use :option:`-m "mark1 and not
+mark2"`. The logical operator `or` could be used as well.
 
 Use substring expression
-   Like the marks, any part (substring) of the name of a test case or of a test
-   function can be used to filter what will be executed. For instance to only
-   execute the tests that have the string `transition` anywhere in their name,
-   use :option:`-k "transition"`. Or, to execute only the functions that have
-   `runner` in their names, use :option:`-k "runner"`. Logical expressions
-   could be used to combine more susbtrings as well.
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Like the marks, any part (substring) of the name of a test case or of a test
+function can be used to filter what will be executed. For instance to only
+execute the tests that have the string `transition` anywhere in their name,
+use :option:`-k "transition"`. Or, to execute only the functions that have
+`runner` in their names, use :option:`-k "runner"`. Logical expressions
+could be used to combine more susbtrings as well.
 
 Process last failed tests only
-   To only execute the tests that previously failed, use
-   :option:`--last-failed`.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To only execute the tests that previously failed, use
+:option:`--last-failed`.
 
 Show the markers
-   Use :option:`--markers` to show the available markers without executing the
-   tests.
+~~~~~~~~~~~~~~~~
+
+Use :option:`--markers` to show the available markers without executing the
+tests.
 
 Show the tests to be executed
-   Use :option:`--collect-only` to show the test cases and the test events
-   (functions) selected without executing them. You may combine this option
-   with other options, like the one above to filter the test cases.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Use :option:`--collect-only` to show the test cases and the test events
+(functions) selected without executing them. You may combine this option
+with other options, like the one above to filter the test cases.

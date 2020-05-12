@@ -58,7 +58,7 @@ Then the tests output tree is::
    │   ├── runner.sh
    │   ├── runner.sh.stderr
    │   └── runner.sh.stdout
-   ├── dir-2
+   └── dir-2
        ├── input -> path/to/tests/inputs/dir-2/input
        ├── output
        ├── executable.stderr
