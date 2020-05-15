@@ -22,7 +22,7 @@ Pytest-executable
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/psf/black
 
-``pytest-executable`` is a `pytest`_ plugin for simplifying the black-box
+*pytest-executable* is a `pytest`_ plugin for simplifying the black-box
 testing of an executable, be it written in python or not. It helps to avoid
 writing the boilerplate test code to spawn subprocesses, to handle the output
 and references directory trees and to define the execution context. It
@@ -42,14 +42,17 @@ The project documentation is available `online`_.
 Installation
 ------------
 
-Install using `pip <http://pip-installer.org/>`_:
+Install using `pip`_:
 
 .. code-block:: console
 
     pip install pytest-executable
 
-A ``pytest-executable`` package will soon be available in Conda-Forge (just a
-matter of free time).
+Install using `conda`_:
+
+.. code-block:: console
+
+    conda install pytest-executable -c conda-forge
 
 
 Contributing
@@ -73,11 +76,13 @@ Copyright and License
 
 Copyright 2020, `CS GROUP`_
 
-``pytest-executable`` is a free and open source software, distributed under the
+*pytest-executable* is a free and open source software, distributed under the
 Apache License 2.0. See the `LICENSE.txt`_ file for more information, or the
 `quick summary`_ of this license on `tl;drLegal`_ website.
 
 
+.. _conda: https://docs.conda.io
+.. _pip: https://pip-installer.org
 .. _pytest: https://docs.pytest.org
 .. _online: https://pytest-executable.readthedocs.io
 .. _Github issue tracker: https://github.com/CS-SI/pytest-executable/issues

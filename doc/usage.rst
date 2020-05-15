@@ -15,17 +15,24 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 
-.. _Sphinx: https://www.sphinx-doc.org
+.. _conda: https://docs.conda.io
+.. _pip: https://pip-installer.org
 
 
 Installation
 ============
 
-Install using `pip <http://pip-installer.org/>`_:
+Install using `pip`_:
 
 .. code-block:: console
 
     pip install pytest-executable
+
+Install using `conda`_:
+
+.. code-block:: console
+
+    conda install pytest-executable -c conda-forge
 
 
 Command line interface
