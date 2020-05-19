@@ -18,22 +18,15 @@
 Welcome to |ptx| documentation!
 ===============================
 
-This is the user guide for |ptx|, a |pytest| plugin for checking and validating an |exe|.
-
+This is the user guide for |ptx|, a |pytest| plugin for black-box testing an |exe|.
 
 Overview
 --------
 
 The |ptx| plugin allows to both automatically check |exe| results and
-post-process them. In this guide, a `check` is a testing event that can be
-automatically verified and can provide an OK or KO outcome, like checking that
-2 numbers are equal. In contrast, a `post-process` is a testing event that
-solely produces additional data, like numerical or graphical data, which has to
-be analyzed manually in order to be qualified as OK or KO. The |ptx| plugin
-may also generate test reports and users may add custom check and
-post-processing events.
+post-process them.
 
-The |ptx| plugin works with several test cases directory trees for:
+The |ptx| plugin deals with multiple directory trees:
 
 - the inputs
 - the outputs
@@ -44,13 +37,9 @@ sets of references, for instance for comparing the results against more than
 one version of |exe|. All the directory trees have the same hierarchy,
 this convention allows |ptx| to work out what to test and what to check.
 Except for the inputs tree, you do not have to manually create the directory
-hierarchies, as they are automatically created by |ptx| when it is executed.
+hierarchies, as they are automatically created by |ptx|.
 
-In the inputs tree, a test case is a directory that contains:
-
-- the |exe| input files
-- a |yaml| file with basic settings
-- optionnal |pytest| and python scripts for adding checks and post-processes
+To create a test case, see :ref:`add-test-case-label`.
 
 In the outputs tree, a test case directory typically contains:
 
@@ -59,7 +48,7 @@ In the outputs tree, a test case directory typically contains:
 - the files produced by the execution of |exe|
 - eventually, the files produced by the additional post-processing
 
-In a regression references tree, a test case directory shall contains all the
+In a regression references tree, a test case directory shall contain all the
 result files required for performing the checks.
 
 

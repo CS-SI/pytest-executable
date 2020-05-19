@@ -28,7 +28,7 @@ A test case is composed of an input directory with:
 
 .. warning::
 
-   An test case input directory shall not contain any of the files created by
+   The input directory of a test case shall not contain any of the files created by
    the execution of the |exe| or of the additional python modules, otherwise
    they may badly interfere with the executions done by |ptx|. In other words:
    do not run anything in the input directory of a test case, this directory
@@ -37,16 +37,15 @@ A test case is composed of an input directory with:
 The |yaml| file is used by |ptx| for several things. When this file is
 found, |ptx| will:
    
-   1. create the test case output directory and, if needed, its parents,
-   2. read the settings for running the test case,
-   3. go to the test case output directory and execute the tests defined
-   4. in the default test module,
-   5. then in the additional test modules.
+   1. create the output directory of the test case and, if needed, its parents,
+   4. execute the tests defined in the default test module,
+   5. execute the tests defined in the additional test modules.
+   5. execute the tests defined in the parent directories.
 
-The parents of the output directory are created such that the path from the
-directory where |pytest| is executed to the test case input directory is the
-same but for the first parent. This way, the directories hierarchy below the
-first parent of both the inputs and the outputs trees are the same.
+The parents of an output directory are created such that the path from the
+directory where |pytest| is executed to the input directory of the test case is
+the same but for the first parent. This way, the directories hierarchy below
+the first parent of both the inputs and the outputs trees are the same.
 
 If |yaml| is empty, then the default settings are used. If
 :option:`--exe-default-settings` is not set, the default settings are the
@@ -54,7 +53,7 @@ builtin ones:
 
  .. literalinclude:: ../src/pytest_executable/test_case.yaml
 
-The following give a description of the contents of |yaml|.
+The following gives a description of the contents of |yaml|.
 
 .. note::
 
@@ -161,7 +160,6 @@ You can also use the marks that already existing. In particular, the `skip` and
 record but not execute the built-in test events of a test case. The `xfail`
 mark tells pytest to expect that at least one of the built-in test events will
 fail.
-
 
 Marks declaration
 -----------------

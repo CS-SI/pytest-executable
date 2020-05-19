@@ -17,6 +17,7 @@
 
 .. _conda: https://docs.conda.io
 .. _pip: https://pip-installer.org
+.. _report-conf: https://github.com/CS-SI/pytest-executable/tree/master/report-conf
 
 
 Installation
@@ -94,12 +95,13 @@ Plugin options
 
    use PATH as the script to generate the test report
 
-   See the :file:`report-conf` directory for an example of such a script.
+   See :file:`generate_report.py` in the `report-conf`_ directory for an
+   example of such a script.
 
    .. note::
 
       The report generator script may require to install additionnal
-      dependencies, such as sphinx, which are not required by the plugin.
+      dependencies, such as sphinx, which are not install by the |ptx| plugin.
 
 
 .. _filter:

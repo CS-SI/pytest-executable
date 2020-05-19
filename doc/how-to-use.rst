@@ -22,8 +22,8 @@ The |ptx| plugin can be used in a wide variety of ways, the following sections
 explain how.
 
 
-Run |exe| only
----------------------
+Run the |exe| only
+------------------
 
 :command:`pytest --exe-runner <path/to/runner> <path/to/tests/inputs> -k runner`
 
@@ -40,26 +40,26 @@ more informations on doing only some of the processing.
 For instance, if the tests input tree contains::
 
    path/to/tests/inputs
-   ├── dir-1
+   ├── case-1
    │   ├── input
    │   └── test_case.yaml
-   └── dir-2
+   └── case-2
        ├── input
        └── test_case.yaml
 
 Then the tests output tree is::
 
    tests-output
-   ├── dir-1
-   │   ├── input -> path/to/tests/inputs/dir-1/input
+   ├── case-1
+   │   ├── input -> path/to/tests/inputs/case-1/input
    │   ├── output
    │   ├── executable.stderr
    │   ├── executable.stdout
    │   ├── runner.sh
    │   ├── runner.sh.stderr
    │   └── runner.sh.stdout
-   └── dir-2
-       ├── input -> path/to/tests/inputs/dir-2/input
+   └── case-2
+       ├── input -> path/to/tests/inputs/case-2/input
        ├── output
        ├── executable.stderr
        ├── executable.stdout
@@ -67,7 +67,7 @@ Then the tests output tree is::
        ├── runner.sh.stderr
        └── runner.sh.stdout
 
-For a given test case, for instance :file:`tests-output/dir-1`,
+For a given test case, for instance :file:`tests-output/case-1`,
 the output directory contains:
 
 output
@@ -101,11 +101,11 @@ runner.sh.stdout
 
 If you need to manually run the |exe| for a test case, for debugging
 purposes for instance, just go to its output directory, for instance
-:command:`cd tests-output/dir-1`, and execute the |runner|.
+:command:`cd tests-output/case-1`, and execute the |runner|.
 
 
-Do default regression checking without running executable
----------------------------------------------------------
+Check regressions without running the |exe|
+-------------------------------------------
 
 :command:`pytest --exe-regression-root <path/to/tests/references> <path/to/tests/inputs> --exe-overwrite-output`
 
@@ -113,27 +113,27 @@ We assume that the |exe| results have already been produced for the test cases
 considered. This is not enough though because the output directory already
 exists and |ptx| will by default prevent the user from silently modifying any
 existing test output directories. In that case, the option
-:option:`--exe-overwrite-output` shall be used. The above command line will compare
-the results in the default output tree with the references, if the existing
-|exe| results are in a different directory then you need to add the path to it
-with :command:`--exe-output-root`.
+:option:`--exe-overwrite-output` shall be used. The above command line will
+compare the results in the default output tree with the references, if the
+existing |exe| results are in a different directory then you need to add the
+path to it with :command:`--exe-output-root`.
 
-The option :option:`--exe-regression-root` points to the root directory with the
-regression references tree . This tree shall have the same hierarchy as the
+The option :option:`--exe-regression-root` points to the root directory with
+the regression references tree . This tree shall have the same hierarchy as the
 output tree but it only contains the results files that are used for doing the
 regression checks.
 
 
-Run |exe| and do default regression checks
--------------------------------------------------
+Run the |exe| and do default regression checks
+----------------------------------------------
 
 :command:`pytest --exe-runner <path/to/runner> --exe-regression-root <path/to/tests/references> <path/to/tests/inputs>`
 
 .. note::
 
-   Currently this can only be used when |exe| execution is done on the same
+   Currently this can only be used when the |exe| execution is done on the same
    machine as the one that execute the regression checks, i.e. this will not
-   work when |exe| is submitted through a job scheduler.
+   work when the |exe| is submitted through a job scheduler.
 
 Finally, checks are done on the |exe| log files to verify that the file
 :file:`executable.stdout` exists and is not empty, and that the file
