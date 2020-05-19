@@ -17,7 +17,7 @@
 
 """Builtin test module.
 
-This is the module automatically executed when a test_case.yaml file is found.
+This module is automatically executed when a test_case.yaml file is found.
 """
 
 
@@ -27,7 +27,7 @@ def test_runner(runner):
     An OK process execution shall return the code 0.
 
     Args:
-        runner: Fixture to run the runner script.
+        runner: Runner object to be run.
     """
     assert runner.run() == 0
 

@@ -1,1 +1,1 @@
-foo -np {{nproc}} bar
+echo {{nproc}}

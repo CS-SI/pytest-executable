@@ -31,7 +31,7 @@ from _pytest.terminal import TerminalReporter
 
 from . import report, test_case_yaml
 from .file_tools import create_output_directory, find_references, get_mirror_path
-from .script_runner import ScriptRunner, get_final_script
+from .script_runner import ScriptRunner
 from .settings import Settings
 
 LOGGER = logging.getLogger(__name__)
@@ -205,30 +205,30 @@ def tolerances(request):
 
 @pytest.fixture(scope="module")
 def runner(request, create_output_tree, output_path):
-    """Fixture to run the executable with a runner script.
+    """Fixture to execute the runner script or skip a test.
 
-    This fixture will create the runner script in the test case output
-    directory from the script passed to the pytest command line with the option
-    :option:`--exe-runner`. The placeholders {nproc} and {output_path} are
-    replaced with their actual values in the written script. The runner object
-    created by the fixture can be executed with the :py:meth:`run` method which
-    will return the return code of the script execution.
+    This fixture will create the runner script in the output directory of a
+    test case from the script passed to the pytest command line with the option
+    :option:`--exe-runner`. The placeholders in the script are replaced with
+    their actual values determined from the settings in the yaml file and the
+    output path. The runner object created by the fixture can be executed with
+    the :py:meth:`run` method which will return the exit code of the script
+    execution.
+
+    When the runner script is not passed to :option:`--exe-runner`, a function
+    that uses this fixture will be skipped.
 
     Returns:
         ScriptRunner object.
     """
     runner_path = request.config.getoption("exe_runner")
     if runner_path is None:
-        pytest.skip("no runner provided to --exe-runner")
-
-    # check path
-    runner_path = Path(runner_path).resolve(True)
+        pytest.skip("no runner provided with --exe-runner")
 
     settings = _get_settings(request.config, request.node.fspath).runner
     settings["output_path"] = output_path
 
-    script = get_final_script(runner_path, settings)
-    return ScriptRunner(runner_path.name, script, output_path)
+    return ScriptRunner(runner_path, settings, output_path)
 
 
 def _get_regression_path(

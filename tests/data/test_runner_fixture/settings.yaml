@@ -1,18 +1,5 @@
-# This file contains the default settings for a test case.
-
 runner:
    nproc: 100
-
-# List of keywords used to mark the test case, empty by default.
-# A new mark is created by adding a new indented line starting with -, for instance
-# marks:
-#     - slow
-# The marks are used by pytest to filter the tests to be processed.
 marks: []
-
-# File path patterns relative to a test case to identify the reference files used for the assertions.
-references:
-   - '**/*.output'
-
-# Tolerances used for the assertions when comparing the fields, all default tolerances are 0.
+references: []
 tolerances: {}

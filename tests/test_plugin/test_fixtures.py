@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for the plugin itself."""
+"""Tests for the plugin fixtures."""
 
 
 def test_tolerances_fixture(testdir):
@@ -71,52 +71,81 @@ def test_regression_file_path_fixture_no_references(testdir):
     result.assert_outcomes(skipped=1, failed=1)
 
 
+RUNNER_DATA_DIR = "tests/data/test_runner_fixture"
+
+
 def test_runner_fixture_no_runner(testdir):
-    """Test runner fixture without runner."""
-    directory = testdir.copy_example("tests/data/test_runner_fixture")
-    result = testdir.runpytest(directory / "tests-inputs/case")
+    """Test skipping runner fixture without runner."""
+    directory = testdir.copy_example(RUNNER_DATA_DIR)
+    result = testdir.runpytest(directory / "tests-inputs/case-local-settings")
     # skip runner because no --exe-runner
     # fail logs because no executable.std*
     result.assert_outcomes(skipped=1, failed=1)
 
 
-def test_runner_fixture_with_test_case_nproc(testdir):
-    """Test runner fixture with custom nproc from test case settings."""
-    directory = testdir.copy_example("tests/data/test_runner_fixture")
+def test_runner_fixture_with_local_settings(testdir):
+    """Test runner fixture with placeholder from local test settings."""
+    directory = testdir.copy_example(RUNNER_DATA_DIR)
     result = testdir.runpytest(
-        directory / "tests-inputs/case_nproc", "--exe-runner", directory / "runner.sh"
+        directory / "tests-inputs/case-local-settings",
+        "--exe-runner",
+        directory / "runner.sh",
     )
-    # fail runner because runner is not runnable
     # fail logs because no executable.std*
-    result.assert_outcomes(failed=2)
-    runner_script = (directory / "tests-output/case_nproc/runner.sh").open().read()
-    assert " -np 100 " in runner_script
+    result.assert_outcomes(passed=1, failed=1)
+    stdout = (
+        (directory / "tests-output/case-local-settings/runner.sh.stdout")
+        .open()
+        .read()
+        .strip()
+    )
+    assert stdout == "100"
 
 
-def test_runner_fixture_with_global_nproc(testdir):
-    """Test runner fixture with custom nproc from default settings."""
-    directory = testdir.copy_example("tests/data/test_runner_fixture")
+def test_runner_not_script(testdir):
+    """Test error when the runner is not a text script."""
+    directory = testdir.copy_example(RUNNER_DATA_DIR)
     result = testdir.runpytest(
-        directory / "tests-inputs/case",
+        directory / "tests-inputs/case-local-settings", "--exe-runner", "/bin/bash",
+    )
+    # error for runner because runner is not readable
+    # fail logs because no executable.std*
+    result.assert_outcomes(error=1, failed=1)
+    result.stdout.fnmatch_lines(["E   TypeError: cannot read the script */bin/bash"])
+
+
+def test_runner_fixture_with_global_settings(testdir):
+    """Test runner fixture with nproc from default settings."""
+    directory = testdir.copy_example(RUNNER_DATA_DIR)
+    result = testdir.runpytest(
+        directory / "tests-inputs/case-global-settings",
         "--exe-runner",
         directory / "runner.sh",
         "--exe-default-settings",
         directory / "settings.yaml",
     )
-    # fail runner because runner is not runnable
     # fail logs because no executable.std*
-    result.assert_outcomes(failed=2)
-    runner_script = (directory / "tests-output/case/runner.sh").open().read()
-    assert " -np 100 " in runner_script
-
-
-def test_runner_not_script(testdir):
-    """Test error when the runner is not a script."""
-    directory = testdir.copy_example("tests/data/test_runner_fixture")
-    result = testdir.runpytest(
-        directory / "tests-inputs/case", "--exe-runner", "/bin/bash",
+    result.assert_outcomes(passed=1, failed=1)
+    stdout = (
+        (directory / "tests-output/case-global-settings/runner.sh.stdout")
+        .open()
+        .read()
+        .strip()
     )
-    # fail runner because runner is not runnable
+    assert stdout == "100"
+
+
+def test_runner_error_with_undefined_placeholder(testdir):
+    """Test runner fixture when a placeholder is not replaced."""
+    directory = testdir.copy_example(RUNNER_DATA_DIR)
+    result = testdir.runpytest(
+        directory / "tests-inputs/case-global-settings",
+        "--exe-runner",
+        directory / "runner.sh",
+    )
+    # error for runner because a placeholder is undefined
     # fail logs because no executable.std*
     result.assert_outcomes(error=1, failed=1)
-    result.stdout.fnmatch_lines(["E   TypeError: can't read the script */bin/bash"])
+    result.stdout.fnmatch_lines(
+        ["E   ValueError: in */runner.sh: 'nproc' is undefined"]
+    )
