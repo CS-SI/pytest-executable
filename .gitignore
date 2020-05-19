@@ -1,3 +1,4 @@
+dist
 .ci
 .eggs
 *.egg-info
