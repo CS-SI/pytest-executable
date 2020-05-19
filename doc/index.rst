@@ -72,7 +72,7 @@ result files required for performing the checks.
    test-case
    post-processing
    fixtures
-   test_case_yaml
+   test_executable
    changelog
 
 

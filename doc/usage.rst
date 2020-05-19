@@ -83,8 +83,12 @@ Plugin options
 
 .. option:: --exe-default-settings PATH
 
-   use PATH as the yaml file with the global default test settings instead of
-   the built-in ones
+   use PATH as the yaml file with the default test settings instead of the
+   built-in ones
+
+.. option:: --exe-test-module PATH
+
+   use PATH as the default test module instead of the built-in one
 
 .. option:: --exe-report-generator PATH
 

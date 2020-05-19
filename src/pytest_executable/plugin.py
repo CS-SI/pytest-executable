@@ -29,7 +29,7 @@ import pytest
 from _pytest.config import Config
 from _pytest.terminal import TerminalReporter
 
-from . import report, test_case_yaml
+from . import report
 from .file_tools import create_output_directory, find_references, get_mirror_path
 from .script_runner import ScriptRunner
 from .settings import Settings
@@ -41,6 +41,7 @@ OUTPUT_IGNORED_FILES = ("__pycache__", "conftest.py", "test_case.yaml")
 
 # file with the test default settings
 SETTINGS_PATH = Path(__file__).parent / "test_case.yaml"
+TEST_MODULE_PATH = Path(__file__).parent / "test_executable.py"
 
 # caches the test case directory path to marks to propagate them to all the
 # test modules of a test case
@@ -92,6 +93,14 @@ def pytest_addoption(parser):
         help="use PATH as the yaml file with the global default test settings instead "
         "of the built-in ones",
     )
+
+    group.addoption(
+        "--exe-test-module",
+        default=TEST_MODULE_PATH,
+        metavar="PATH",
+        help="use PATH as the default test module",
+    )
+
     group.addoption(
         "--exe-report-generator",
         metavar="PATH",
@@ -119,6 +128,7 @@ def pytest_sessionstart(session):
     # check paths are valid
     for option_name in (
         "exe_runner",
+        "exe_test_module",
         "exe_default_settings",
         "exe_regression_root",
         "exe_report_generator",
@@ -298,7 +308,7 @@ def pytest_generate_tests(metafunc):
 def pytest_collect_file(parent, path):
     """Collect test cases defined with a yaml file."""
     if path.basename == SETTINGS_PATH.name:
-        return TestCaseYamlModule(path, parent)
+        return TestExecutableModule(path, parent)
 
 
 def pytest_configure(config):
@@ -316,28 +326,38 @@ def pytest_configure(config):
         config.option.tbstyle = "line"
 
 
-class TestCaseYamlModule(pytest.Module):
+class TestExecutableModule(pytest.Module):
     """Collector for tests defined with a yaml file."""
 
     def _getobj(self):
         """Override the base class method.
 
-        To swap the yaml file with the test_case_yaml.py module.
+        To swap the yaml file with the test module.
         """
+        test_module_path = Path(self.config.option.exe_test_module)
+
         # prevent python from using the module cache, otherwise the module
         # object will be the same for all the tests
-        del sys.modules[test_case_yaml.__name__]
-        # backup the attribute before temporary override of it
+        try:
+            del sys.modules[test_module_path.stem]
+        except KeyError:
+            pass
+
+        # backup the attribute before a temporary override of it
         fspath = self.fspath
-        self.fspath = py.path.local(test_case_yaml.__file__)
+        self.fspath = py.path.local(test_module_path)
         module = self._importtestmodule()
+
         # restore the backuped up attribute
         self.fspath = fspath
-        # set the test case marks from settings.yaml
+
+        # set the test case marks from test_case.yaml
         settings = _get_settings(self.config, fspath)
-        # store the marks for settings them later
+
+        # store the marks for applying them later
         if settings.marks:
             _marks_cache[fspath.dirname] = settings.marks
+
         return module
 
 

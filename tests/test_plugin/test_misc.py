@@ -21,16 +21,20 @@ import pytest
 
 
 def test_collect_order(testdir):
-    """Check tests collection order."""
+    """Check the tests order.
+
+    The default test module functions shall be first. Then the additional test
+    modules, and finally the test modules from the parent directories.
+    """
     directory = testdir.copy_example("tests/data/collect_order")
     result = testdir.runpytest(directory, "--collect-only")
     result.stdout.re_match_lines(
         [
             "collected 6 items",
-            "<TestCaseYamlModule .*b/test_case.yaml>",
+            "<TestExecutableModule .*b/test_case.yaml>",
             "  <Function test_runner>",
             "  <Function test_logs>",
-            "<TestCaseYamlModule .*z/test_case.yaml>",
+            "<TestExecutableModule .*z/test_case.yaml>",
             "  <Function test_runner>",
             "  <Function test_logs>",
             "<Module .*z/test_aa.py>",
@@ -50,7 +54,7 @@ def test_marks_from_yaml(testdir):
     result.stdout.fnmatch_lines(
         [
             "collected 3 items",
-            "<TestCaseYamlModule *test_case.yaml>",
+            "<TestExecutableModule *test_case.yaml>",
             "  <Function test_runner>",
             "  <Function test_logs>",
             "<Module *test_dummy.py>",
@@ -137,6 +141,7 @@ def test_cli_check_clash(testdir):
         "--exe-default-settings",
         "--exe-regression-root",
         "--exe-report-generator",
+        "--exe-test-module",
     ),
 )
 def test_cli_check(testdir, option_name):
