@@ -18,39 +18,8 @@
 Welcome to |ptx| documentation!
 ===============================
 
-This is the user guide for |ptx|, a |pytest| plugin for black-box testing an |exe|.
-
-Overview
---------
-
-The |ptx| plugin allows to both automatically check |exe| results and
-post-process them.
-
-The |ptx| plugin deals with multiple directory trees:
-
-- the inputs
-- the outputs
-- the regression references
-
-There can be more than one regression references trees for storing different
-sets of references, for instance for comparing the results against more than
-one version of |exe|. All the directory trees have the same hierarchy,
-this convention allows |ptx| to work out what to test and what to check.
-Except for the inputs tree, you do not have to manually create the directory
-hierarchies, as they are automatically created by |ptx|.
-
-To create a test case, see :ref:`add-test-case-label`.
-
-In the outputs tree, a test case directory typically contains:
-
-- symbolic links to the |exe| input files from the inputs tree
-- a shell script to execute |exe|
-- the files produced by the execution of |exe|
-- eventually, the files produced by the additional post-processing
-
-In a regression references tree, a test case directory shall contain all the
-result files required for performing the checks.
-
+.. include:: ../README.rst
+   :start-after: inclusion-marker-do-not-remove
 
 .. toctree::
    :maxdepth: 2

@@ -37,10 +37,10 @@ A test case is composed of an input directory with:
 The |yaml| file is used by |ptx| for several things. When this file is
 found, |ptx| will:
    
-   1. create the output directory of the test case and, if needed, its parents,
-   4. execute the tests defined in the default test module,
-   5. execute the tests defined in the additional test modules.
-   5. execute the tests defined in the parent directories.
+1. create the output directory of the test case and, if needed, its parents,
+2. execute the tests defined in the default test module,
+3. execute the tests defined in the additional test modules.
+4. execute the tests defined in the parent directories.
 
 The parents of an output directory are created such that the path from the
 directory where |pytest| is executed to the input directory of the test case is

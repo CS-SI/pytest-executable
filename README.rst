@@ -1,65 +1,54 @@
 Pytest-executable
 =================
 
+.. inclusion-marker-do-not-remove
+
 .. image:: https://img.shields.io/pypi/v/pytest-executable.svg
     :target: https://pypi.org/project/pytest-executable
 
 .. image:: https://img.shields.io/pypi/pyversions/pytest-executable.svg
     :target: https://pypi.org/project/pytest-executable
 
-.. image:: https://readthedocs.org/projects/pytest-executable/badge/?version=stable
+.. image:: https://img.shields.io/badge/platform-linux%20%7C%20macos-lightgrey
+
+.. image:: https://img.shields.io/readthedocs/pytest-executable/stable
     :target: https://pytest-executable.readthedocs.io/en/stable/?badge=stable
     :alt: Read The Docs Status
 
-.. image:: https://travis-ci.org/CS-SI/pytest-executable.svg?branch=develop
+.. image:: https://img.shields.io/travis/CS-SI/pytest-executable
     :target: https://travis-ci.org/CS-SI/pytest-executable
     :alt: Travis-CI Build Status
-   
-.. image:: https://requires.io/github/CS-SI/pytest-executable/requirements.svg?branch=develop
-    :target: https://requires.io/github/CS-SI/pytest-executable/requirements/?branch=develop
-    :alt: Requirements Status
-    
+ 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/psf/black
 
 *pytest-executable* is a `pytest`_ plugin for simplifying the black-box
 testing of an executable, be it written in python or not. It helps to avoid
-writing the boilerplate test code to spawn subprocesses, to handle the output
-and references directory trees and to define the execution context. It
-integrates naturally with standard test scripts written for pytest. This plugin
-is originally intended for testing executables that create scientific data but
-it may hopefully be helpful for other kinds of executables.
+writing the boilerplate test code to:
+    
+- define the settings of a test case in a yaml file,
+- spawn a subprocess for running an executable,
+- reorder the tests properly either for a single test case or across several test cases,
+- handle the outputs and references directory trees,
+- provide convenient fixtures to customize the checking of the outcome of an executable.
 
+It integrates naturally with standard test scripts written for pytest.
+
+This plugin is originally intended for testing executables that create
+scientific data but it may hopefully be helpful for other kinds of executables.
 This project is still young, but already used in a professional environment.
 
 
 Documentation
 -------------
 
-The project documentation is available `online`_.
-
-
-Installation
-------------
-
-Install using `pip`_:
-
-.. code-block:: console
-
-    pip install pytest-executable
-
-Install using `conda`_:
-
-.. code-block:: console
-
-    conda install pytest-executable -c conda-forge
+The project documentation and installation instructions are available `online`_.
 
 
 Contributing
 ------------
 
-A contributing guide will be soon available (once again, just a matter of free
-time).
+A contributing guide will be soon available (just a matter of free time).
 
 Please fill an issue on the `Github issue tracker`_ for any bug report, feature
 request or question.
