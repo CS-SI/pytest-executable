@@ -118,10 +118,10 @@ def pytest_addoption(parser):
 
 def pytest_sessionstart(session):
     """Check the cli arguments."""
-    getoption = session.config.getoption
+    option = session.config.option
 
     # check options clash
-    if getoption("exe_clean_output") and getoption("exe_overwrite_output"):
+    if option.exe_clean_output and option.exe_overwrite_output:
         msg = "options --exe-clean-output and --exe-overwrite-output are not compatible"
         raise pytest.UsageError(msg)
 
@@ -133,9 +133,9 @@ def pytest_sessionstart(session):
         "exe_regression_root",
         "exe_report_generator",
     ):
-        path = getoption(option_name)
+        path = getattr(option, option_name)
         try:
-            Path(path).resolve(True)
+            path = Path(path).resolve(True)
         except FileNotFoundError:
             msg = (
                 f"argument --{option_name.replace('_', '-')}: "
@@ -145,6 +145,12 @@ def pytest_sessionstart(session):
         except TypeError:
             # path is None, i.e. no option is defined
             pass
+        else:
+            # overwrite the option with the resolved path
+            setattr(option, option_name, path)
+
+    # convert remaining option with pat
+    option.exe_output_root = Path(option.exe_output_root).resolve()
 
 
 def _get_parent_path(fspath: py.path.local) -> Path:
@@ -162,17 +168,16 @@ def _get_parent_path(fspath: py.path.local) -> Path:
 @pytest.fixture(scope="module")
 def create_output_tree(request):
     """Fixture to create and return the path to the output directory tree."""
-    getoption = request.config.getoption
-    output_root = Path(getoption("exe_output_root"))
+    option = request.config.option
     parent_path = _get_parent_path(request.node.fspath)
-    output_path = get_mirror_path(parent_path, output_root.resolve())
+    output_path = get_mirror_path(parent_path, option.exe_output_root)
 
     try:
         create_output_directory(
             parent_path,
             output_path,
-            not getoption("exe_overwrite_output"),
-            getoption("exe_clean_output"),
+            not option.exe_overwrite_output,
+            option.exe_clean_output,
             OUTPUT_IGNORED_FILES,
         )
     except FileExistsError:
@@ -187,8 +192,9 @@ def create_output_tree(request):
 @pytest.fixture(scope="module")
 def output_path(request):
     """Fixture to return the path to the output directory."""
-    output_root = Path(request.config.getoption("exe_output_root")).resolve(True)
-    return get_mirror_path(_get_parent_path(request.node.fspath), output_root)
+    return get_mirror_path(
+        _get_parent_path(request.node.fspath), request.config.option.exe_output_root
+    )
 
 
 def _get_settings(config: _pytest.config.Config, path: Path) -> Settings:
@@ -202,7 +208,7 @@ def _get_settings(config: _pytest.config.Config, path: Path) -> Settings:
         The settings from the test case yaml.
     """
     return Settings.from_local_file(
-        Path(config.getoption("exe_default_settings")),
+        Path(config.option.exe_default_settings),
         _get_parent_path(path) / SETTINGS_PATH.name,
     )
 
@@ -231,7 +237,7 @@ def runner(request, create_output_tree, output_path):
     Returns:
         ScriptRunner object.
     """
-    runner_path = request.config.getoption("exe_runner")
+    runner_path = request.config.option.exe_runner
     if runner_path is None:
         pytest.skip("no runner provided with --exe-runner")
 
@@ -255,7 +261,7 @@ def _get_regression_path(
     Returns:
         The path to the reference directory of the test case or None.
     """
-    regression_path = config.getoption("exe_regression_root")
+    regression_path = config.option.exe_regression_root
     if regression_path is None:
         return None
     return get_mirror_path(
@@ -322,7 +328,7 @@ def pytest_configure(config):
 
     # show only the last line with the error message when displaying a
     # traceback
-    if config.getoption("tbstyle") == "auto":
+    if config.option.tbstyle == "auto":
         config.option.tbstyle = "line"
 
 
@@ -440,7 +446,7 @@ def pytest_terminal_summary(
     created and the report generator is called.
     """
     # path to the report generator
-    reporter_path = config.getoption("exe_report_generator")
+    reporter_path = config.option.exe_report_generator
     if reporter_path is None:
         return
 
@@ -448,12 +454,10 @@ def pytest_terminal_summary(
         # no test have been run thus no report to create or update
         return
 
-    output_root = Path(config.getoption("exe_output_root"))
-
     terminalreporter.write_sep("=", "starting report generation")
 
     try:
-        report.generate(reporter_path, output_root, terminalreporter)
+        report.generate(reporter_path, config.option.exe_output_root, terminalreporter)
     except Exception as e:
         terminalreporter.write_line(str(e), red=True)
         terminalreporter.write_sep("=", "report generation failed", red=True)

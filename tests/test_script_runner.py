@@ -18,6 +18,7 @@
 """Tests for ScriptRunner."""
 
 import re
+from pathlib import Path
 
 import pytest
 
@@ -46,7 +47,7 @@ def test_error_with_unreadable_script(tmp_path):
     """Test error when the script is not readable."""
     error_msg = "cannot read the script .*/bin/bash"
     with pytest.raises(TypeError, match=error_msg):
-        ScriptRunner("/bin/bash", {}, tmp_path)
+        ScriptRunner(Path("/bin/bash"), {}, tmp_path)
 
 
 def test_execution_error(tmp_path):
