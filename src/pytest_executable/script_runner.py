@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Provides the shell script creation and execution."""
+"""Provides the shell script creation and execution routines."""
 
 import logging
 import stat
@@ -33,66 +33,75 @@ class ScriptExecutionError(Exception):
 
 
 class ScriptRunner:
-    """Class for creating and running scripts.
+    """Class for creating and running a runner script.
 
-    Args:
+    It can create and execute a shell script from the path to a script with
+    placeholders and the settings.
+
+    Attributes:
         path: Path to the script.
-        settings: Variables to replace the placeholders.
-        exec_path: Path to the execution directory.
+        settings: Runner settings from the yaml file.
+        workdir: Path to the script working directory.
+        STDOUT_EXT: Suffix for the file with the script standard output (class
+                    attribute).
+        STDERR_EXT: Suffix for the file with the script standard error (class
+                    attribute).
+        SHELL: Shell used to execute the script (class attribute).
     """
 
-    # extensions for the script related files
     STDOUT_EXT = "stdout"
     STDERR_EXT = "stderr"
-
-    # shell used for executing the shell script
     SHELL = "/usr/bin/env bash"
 
-    def __init__(self, path: Path, settings: Dict[str, str], exec_path: Path):
-        self._path = Path(path).resolve(True)
-        self._content = self._substitute(settings)
-        self._exec_path = exec_path
-
-    def _substitute(self, variables: Dict[str, str]) -> str:
-        """Return the script contents with replaced placeholders.
+    def __init__(self, path: Path, settings: Dict[str, str], workdir: Path):
+        """Docstring just to prevent the arguments to appear in the autodoc.
 
         Args:
-            variables: Variables to replace the placeholders.
+            path: Path to the script.
+            settings: Runner settings from the yaml file.
+            workdir: Path to the script working directory.
+        """
+        self.path = path
+        self.workdir = workdir
+        self.settings = settings
+        self._content = self._substitute()
+
+    def _substitute(self) -> str:
+        """Return the script contents with replaced placeholders.
 
         Returns:
             The final script contents.
 
         Raises:
-            TypeError if the script cannot be processed.
-            ValueError is a placeholder is undefined.
+            TypeError: if the script cannot be processed.
+            ValueError: if a placeholder is undefined.
         """
         try:
             template = jinja2.Template(
-                self._path.read_text(), undefined=jinja2.StrictUndefined
+                self.path.read_text(), undefined=jinja2.StrictUndefined
             )
         except UnicodeDecodeError:
-            raise TypeError(f"cannot read the script {self._path}") from None
+            raise TypeError(f"cannot read the script {self.path}") from None
         try:
-            return template.render(**variables)
+            return template.render(**self.settings)
         except jinja2.exceptions.UndefinedError as error:
-            raise ValueError(f"in {self._path}: {error}") from None
+            raise ValueError(f"in {self.path}: {error}") from None
 
     def run(self) -> int:
         """Execute the script.
 
-        The script file is created in the execution directory by dumping the
-        contents of the script. The script stdout and stderr are each
-        redirected to files named after the script file prefix and suffixed
-        with stdout and stderr.
+        The script is created and executed in the working directory. The stdout
+        and stderr of the script are each redirected to files named after the
+        script and suffixed with :py:data:`STDOUT_EXT` and :py:data:`STDERR_EXT`.
 
         Returns:
             The return code of the executed subprocess.
 
         Raises:
-            ScriptExecutionError: If the process fails.
+            ScriptExecutionError: If the execution fails.
         """
-        filename = self._path.name
-        script_path = self._exec_path / filename
+        filename = self.path.name
+        script_path = self.workdir / filename
 
         # write the script
         with script_path.open("w") as script_file:
@@ -104,21 +113,21 @@ class ScriptRunner:
         script_path.chmod(permission | stat.S_IXUSR | stat.S_IXGRP)
 
         # redirect the stdout and stderr to files
-        stdout = open(self._exec_path / f"{filename}.{self.STDOUT_EXT}", "w")
-        stderr = open(self._exec_path / f"{filename}.{self.STDERR_EXT}", "w")
+        stdout = open(self.workdir / f"{filename}.{self.STDOUT_EXT}", "w")
+        stderr = open(self.workdir / f"{filename}.{self.STDERR_EXT}", "w")
 
         LOG.debug("executing the shell script %s", script_path)
         cmd = self.SHELL.split() + [filename]
 
         try:
             process = subprocess.run(
-                cmd, cwd=self._exec_path, stdout=stdout, stderr=stderr, check=True
+                cmd, cwd=self.workdir, stdout=stdout, stderr=stderr, check=True
             )
         except subprocess.CalledProcessError:
             # inform about the log files
             raise ScriptExecutionError(
                 "execution failure, see the stdout and stderr files in "
-                f"{self._exec_path}"
+                f"{self.workdir}"
             )
         finally:
             stdout.close()

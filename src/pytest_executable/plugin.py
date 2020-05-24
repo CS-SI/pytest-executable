@@ -264,9 +264,7 @@ def _get_regression_path(
     regression_path = config.option.exe_regression_root
     if regression_path is None:
         return None
-    return get_mirror_path(
-        _get_parent_path(fspath), Path(regression_path).resolve(True)
-    )
+    return get_mirror_path(_get_parent_path(fspath), regression_path)
 
 
 @pytest.fixture(scope="module")
