@@ -31,6 +31,7 @@ Welcome to |ptx| documentation!
    post-processing
    fixtures
    test_executable
+   api
    changelog
 
 

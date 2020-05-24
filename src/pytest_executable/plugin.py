@@ -117,7 +117,7 @@ def pytest_addoption(parser):
 
 
 def pytest_sessionstart(session):
-    """Check the cli arguments."""
+    """Check the cli arguments and resolve their paths."""
     option = session.config.option
 
     # check options clash
@@ -215,28 +215,13 @@ def _get_settings(config: _pytest.config.Config, path: Path) -> Settings:
 
 @pytest.fixture(scope="module")
 def tolerances(request):
-    """Fixture that provides the settings from global and local test_case.yaml."""
+    """Fixture that provides the tolerances from the settings."""
     return _get_settings(request.config, request.node.fspath).tolerances
 
 
 @pytest.fixture(scope="module")
 def runner(request, create_output_tree, output_path):
-    """Fixture to execute the runner script or skip a test.
-
-    This fixture will create the runner script in the output directory of a
-    test case from the script passed to the pytest command line with the option
-    :option:`--exe-runner`. The placeholders in the script are replaced with
-    their actual values determined from the settings in the yaml file and the
-    output path. The runner object created by the fixture can be executed with
-    the :py:meth:`run` method which will return the exit code of the script
-    execution.
-
-    When the runner script is not passed to :option:`--exe-runner`, a function
-    that uses this fixture will be skipped.
-
-    Returns:
-        ScriptRunner object.
-    """
+    """Fixture to execute the runner script."""
     runner_path = request.config.option.exe_runner
     if runner_path is None:
         pytest.skip("no runner provided with --exe-runner")

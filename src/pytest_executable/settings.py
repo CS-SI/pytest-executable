@@ -34,7 +34,7 @@ SETTINGS_SCHEMA_FILE = Path(__file__).parent / "test_case-schema.yaml"
 
 @dataclass
 class Tolerances:
-    """Fields comparison tolerances.
+    """Comparison tolerances.
 
     Attributes:
         rel: The relative tolerance.
@@ -47,15 +47,15 @@ class Tolerances:
 
 @dataclass
 class Settings:
-    """Test settings.
+    """Test settings container.
 
-    This dataclass contains the test settings read from a yaml file.
+    This contains the test settings read from a yaml file.
 
     Attributes:
-        runner: The settings used in the runner script.
+        runner: The settings for the script runner.
         marks: The pytest marks.
         references: The reference files path patterns.
-        tolerances: The fields comparison tolerances.
+        tolerances: The comparison tolerances.
     """
 
     runner: Dict[str, str]
