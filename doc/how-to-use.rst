@@ -50,7 +50,7 @@ result files required for performing the checks.
 Run the |exe| only
 ------------------
 
-:command:`pytest --exe-runner <path/to/runner> <path/to/tests/inputs> -k runner`
+:command:`pytest <path/to/tests/inputs> --exe-runner <path/to/runner> -k runner`
 
 This command will execute the |exe| for all the test cases that are found in
 the input tree under :file:`path/to/tests/inputs`. A test case is identified by
@@ -132,7 +132,7 @@ purposes for instance, just go to its output directory, for instance
 Check regressions without running the |exe|
 -------------------------------------------
 
-:command:`pytest --exe-regression-root <path/to/tests/references> <path/to/tests/inputs> --exe-overwrite-output`
+:command:`pytest <path/to/tests/inputs> --exe-regression-root <path/to/tests/references> --exe-overwrite-output`
 
 We assume that the |exe| results have already been produced for the test cases
 considered. This is not enough though because the output directory already
@@ -141,7 +141,7 @@ existing test output directories. In that case, the option
 :option:`--exe-overwrite-output` shall be used. The above command line will
 compare the results in the default output tree with the references, if the
 existing |exe| results are in a different directory then you need to add the
-path to it with :command:`--exe-output-root`.
+path to it with :option:`--exe-output-root`.
 
 The option :option:`--exe-regression-root` points to the root directory with
 the regression references tree . This tree shall have the same hierarchy as the
@@ -152,13 +152,13 @@ regression checks.
 Run the |exe| and do default regression checks
 ----------------------------------------------
 
-:command:`pytest --exe-runner <path/to/runner> --exe-regression-root <path/to/tests/references> <path/to/tests/inputs>`
+:command:`pytest <path/to/tests/inputs> --exe-runner <path/to/runner> --exe-regression-root <path/to/tests/references>`
 
 .. note::
 
    Currently this can only be used when the |exe| execution is done on the same
    machine as the one that execute the regression checks, i.e. this will not
-   work when the |exe| is submitted through a job scheduler.
+   work when the |exe| is executed on another machine.
 
 Finally, checks are done on the |exe| log files to verify that the file
 :file:`executable.stdout` exists and is not empty, and that the file

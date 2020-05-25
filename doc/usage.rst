@@ -48,18 +48,19 @@ Plugin options
 
 .. option:: --exe-runner PATH
 
-    use the shell script at PATH to run the |exe|, if omitted then the |exe| is
-    not run.
+    use the shell script at PATH to run the |exe|.
 
-    This shell script may contain placeholders, such as `{{nproc}}` and
-    `{{output_path}}`. The placeholders will be replaced with the parameters
-    determined from the context (either a pytest cli option or a setting
-    defined in a test case via the :ref:`test_case.yaml
-    <add-test-case-label>`), and a final |runner| is saved for each test cases
-    to be run in their output directories. This latter is used to run the
-    |exe|.
+    This shell script may contain placeholders, such as *{{output_path}}* or
+    others defined in the :ref:`yaml-runner` of a |yaml|. A final |runner|,
+    with replaced placeholders, is written in the output directory of a test
+    case (*{{output_path}}* is set to this path). This final script is then
+    executed before any other test functions of a test case. See
+    :ref:`fixture-runner` for further informations.
 
-    A typical script for running the |exe| with MPI could be:
+    If this option is not defined then the |runner| will not be executed, but
+    all the other test functions will.
+    
+    A typical |runner| for running the |exe| with MPI could be:
 
     .. literalinclude:: ../mpi_runner.sh
       :language: bash

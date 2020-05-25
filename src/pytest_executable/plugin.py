@@ -55,8 +55,7 @@ def pytest_addoption(parser):
     group.addoption(
         "--exe-runner",
         metavar="PATH",
-        help="use the shell script at PATH to run an executable, if omitted then "
-        "the executable is not run but the other test processing will be",
+        help="use the shell script at PATH to run an executable",
     )
 
     group.addoption(
@@ -82,8 +81,7 @@ def pytest_addoption(parser):
         "--exe-regression-root",
         metavar="PATH",
         help="use PATH as the root directory with the references for the "
-        "regression testing, if omitted then the tests using the regression_path "
-        "fixture will be skipped",
+        "regression testing",
     )
 
     group.addoption(

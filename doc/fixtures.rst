@@ -30,20 +30,22 @@ on |pytest| fixture in its `official documentation
 fixtures defined in |ptx|. Some of them are used in the default test module,
 see :ref:`builtin-test-module`.
 
+.. _fixture-runner:
+
 Runner fixture
 --------------
 
-The :py:data:`runner` fixture is used to execute the |runner|. It will create
-the runner script in the output directory of a test case from the script passed
-to the pytest command line with the option :option:`--exe-runner`. The
-placeholders in the script are replaced with their actual values determined
-from the settings in the yaml file and the output path. The runner object
-passed by the fixture can be executed with the :py:meth:`run` method which will
-return the exit status of the script execution. The value of the exit status
-shall be **0** when the execution is successful.
+The :py:data:`runner` fixture is used to execute the |runner| passed with
+:option:`--exe-runner`. This fixture is an :py:class:`object
+<pytest_executable.script_runner.ScriptRunner>` which can execute the script
+with the :py:meth:`run` method. This method returns the exit status of the
+script execution. The value of the exit status shall be **0** when the
+execution is successful.
 
-When the runner script is not passed to :option:`--exe-runner`, a function that
-uses this fixture will be skipped.
+When :option:`--exe-runner` is not set, a function that uses this fixture will
+be skipped.
+
+.. _fixture-output_path:
 
 Output path fixture
 -------------------
@@ -57,11 +59,10 @@ Regression path fixture
 -----------------------
 
 The :py:data:`regression_file_path` fixture provides the paths to the reference
-data of a test case, see :ref:`yaml-ref`. If :option:`--exe-regression-root` is
-not set then a test function that uses the fixture is skipped. Otherwise, a
-test function that use this fixture is called once per reference item (file or
-directory) declared in the references section of |yaml| (thanks to the
-`parametrize <https://docs.pytest.org/en/latest/parametrize.html>`_). The
+data of a test case. A test function that use this fixture is called once per
+reference item (file or directory) declared in the :ref:`yaml-ref` of a |yaml|
+(thanks to the `parametrize
+<https://docs.pytest.org/en/latest/parametrize.html>`_ feature). The
 :py:data:`regression_file_path` object has the attributes:
 
 - :py:attr:`relative`: a `Path`_ object that contains the path to a reference
@@ -69,17 +70,71 @@ directory) declared in the references section of |yaml| (thanks to the
 - :py:attr:`absolute`: a `Path`_ object that contains the absolute path to a
   reference item.
 
-You may use this fixture with the :py:data:`output_path` fixture to get the
-path to the file that shall be compared to a reference file.
+If :option:`--exe-regression-root` is not set then a test function that uses
+the fixture is skipped.
+
+You may use this fixture with the :ref:`fixture-output_path` to get the path to
+an output file that shall be compared to a reference file.
+
+For instance, if a |yaml| under :file:`inputs/case` contains:
+
+.. code-block:: yaml
+
+   references:
+      - output/file
+      - '**/*.txt'
+
+and if :option:`--exe-regression-root` is set to a directory :file:`references`
+that contains:
+
+.. code-block:: text
+
+   references
+   └── case
+       ├── 0.txt
+       └── output
+           ├── a.txt
+           └── file
+
+then a test function that uses the fixture will be called once per item of the
+following list:
+
+.. code-block:: py
+
+   [
+     "references/case/output/file",
+     "references/case/0.txt",
+     "references/case/output/a.txt",
+   ]
+
+and for each these items, the :py:data:`regression_file_path` is set as
+described above with the relative and absolute paths.
 
 .. _tolerances-fixtures:
 
 Tolerances fixture
 ------------------
 
-The :py:data:`tolerances` fixture provides the tolerances defined in the
-|yaml|, see :ref:`yaml-tol`. The :py:data:`tolerances` object is a dictionary
-that binds a data name to an object that has 2 attributes:
+The :py:data:`tolerances` fixture provides the contents of the :ref:`yaml-tol`
+of a |yaml| as a dictionnary that maps names to :py:class:`Tolerances
+<pytest_executable.settings.Tolerances>` objects.
 
-- :py:attr:`rel`: the relative tolerance,
-- :py:attr:`abs`: the absolute tolerance.
+For instance, if a |yaml| contains:
+
+.. code-block:: yaml
+
+   tolerances:
+       data-name1:
+           abs: 1.
+       data-name2:
+           rel: 0.
+           abs: 0.
+
+then the fixture object is such that:
+
+.. code-block:: py
+
+   tolerances["data-name1"].abs = 1.
+   tolerances["data-name1"].rel = 0.
+   tolerances["data-name2"].abs = 0.
+   tolerances["data-name2"].rel = 0.

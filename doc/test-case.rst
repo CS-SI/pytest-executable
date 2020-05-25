@@ -61,6 +61,8 @@ The following gives a description of the contents of |yaml|.
    by |ptx|. This means that you can use |yaml| to store settings for other
    purposes than |ptx|.
 
+.. _yaml-runner:
+
 Runner section
 --------------
 
@@ -91,8 +93,8 @@ then this line in the actual |runner| used to run the test case will be:
 
 .. _yaml-ref:
 
-Reference files
----------------
+Reference section
+-----------------
 
 The reference files are used to check for regressions on the files created by
 the |exe|. Those checks can be done by comparing the files with a tolerance
@@ -113,8 +115,8 @@ files in a test function, use the fixture :ref:`regression-path-fixtures`.
 
 .. _yaml-tol:
 
-Tolerances
-----------
+Tolerances section
+------------------
 
 A tolerance is used to define how close shall be 2 data to be considered as
 equal. It can be used when checking for regression by comparing files, see
@@ -139,8 +141,8 @@ the :ref:`tolerances-fixtures`.
 
 .. _yaml-marks:
 
-Marks
------
+Marks section
+-------------
 
 A mark is a |pytest| feature that allows to select some of the tests to be
 executed, see :ref:`mark_usage`. This is how to add marks to a test case, for
