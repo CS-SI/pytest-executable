@@ -59,11 +59,26 @@ Plugin options
 
     If this option is not defined then the |runner| will not be executed, but
     all the other test functions will.
-    
+
     A typical |runner| for running the |exe| with MPI could be:
 
     .. literalinclude:: ../mpi_runner.sh
       :language: bash
+
+.. option:: --exe-runner-first
+
+   execute first all the runners of all the test cases
+
+   This option is typically intended for running the |exe| on an HPC system
+   through a job scheduler. In this case, one may need to submit all the |exe|
+   runs for all the test cases and then wait for their outcomes availibility
+   before executing the other test functions.
+
+   .. note::
+
+      |ptx| does not implement the trigger for determining when a runner
+      outcome is available, this shall be implemented in a test module passed
+      to :option:`--exe-test-module`.
 
 .. option:: --exe-output-root PATH
 

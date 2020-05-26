@@ -45,6 +45,34 @@ def test_collect_order(testdir):
     )
 
 
+def test_collect_order_runner_first(testdir):
+    """Check the tests order with --exe-runner-first.
+
+    The functions with the runner fixture shall be first. Then the default test
+    module functions shall be first. Then the additional test modules, and
+    finally the test modules from the parent directories.
+    """
+    directory = testdir.copy_example("tests/data/collect_order")
+    result = testdir.runpytest(directory, "--collect-only", "--exe-runner-first")
+    result.stdout.re_match_lines(
+        [
+            "collected 6 items",
+            "<TestExecutableModule .*b/test_case.yaml>",
+            "  <Function test_runner>",
+            "<TestExecutableModule .*z/test_case.yaml>",
+            "  <Function test_runner>",
+            "<TestExecutableModule .*b/test_case.yaml>",
+            "  <Function test_logs>",
+            "<TestExecutableModule .*z/test_case.yaml>",
+            "  <Function test_logs>",
+            "<Module .*z/test_aa.py>",
+            "  <Function test_dummy>",
+            "<Module .*test_a.py>",
+            "  <Function test_dummy>",
+        ]
+    )
+
+
 def test_marks_from_yaml(testdir):
     """Test marks from test_case.yaml."""
     directory = testdir.copy_example("tests/data/test_marks_from_yaml")

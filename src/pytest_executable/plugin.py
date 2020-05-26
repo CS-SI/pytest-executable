@@ -100,6 +100,12 @@ def pytest_addoption(parser):
     )
 
     group.addoption(
+        "--exe-runner-first",
+        action="store_true",
+        help="execute first all the runners of all the test cases",
+    )
+
+    group.addoption(
         "--exe-report-generator",
         metavar="PATH",
         help="use PATH as the script to generate the test report",
@@ -382,9 +388,22 @@ def pytest_collection_modifyitems(
     - in a test case directory, the yaml defined tests are executed before the
       others (to handle the output directory creation).
     """
+    if config.option.exe_runner_first:
+        items.sort(key=cmp_to_key(_sort_runner_fixture_first))
     items.sort(key=cmp_to_key(_sort_yaml_first))
     items.sort(key=cmp_to_key(_sort_parent_last))
     _set_marks(items)
+
+
+def _sort_runner_fixture_first(
+    item_1: _pytest.nodes.Item, item_2: _pytest.nodes.Item
+) -> int:
+    """Sort item with runner fixture first."""
+    has_runner_1 = 'runner' in item_1.fixturenames
+    has_runner_2 = 'runner' in item_2.fixturenames
+    if has_runner_1 and not has_runner_2:
+        return -1
+    return 1
 
 
 def _sort_yaml_first(item_1: _pytest.nodes.Item, item_2: _pytest.nodes.Item) -> int:
