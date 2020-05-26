@@ -3,11 +3,15 @@ Pytest-executable
 
 .. inclusion-marker-do-not-remove
 
+.. image:: https://img.shields.io/pypi/l/pytest-executable.svg
+
 .. image:: https://img.shields.io/pypi/v/pytest-executable.svg
     :target: https://pypi.org/project/pytest-executable
 
+.. image:: https://img.shields.io/conda/vn/conda-forge/pytest-executable
+    :target: https://anaconda.org/conda-forge/pytest-executable
+
 .. image:: https://img.shields.io/pypi/pyversions/pytest-executable.svg
-    :target: https://pypi.org/project/pytest-executable
 
 .. image:: https://img.shields.io/badge/platform-linux%20%7C%20macos-lightgrey
 
