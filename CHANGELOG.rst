@@ -26,8 +26,6 @@ Added
 ~~~~~
 - Testing on MacOS.
 - :option:`--exe-test-module` cli option for setting the default test module
-- :option:`--exe-runner-first` cli option for executing first all the runners
-  of all the test cases.
 
 0.4.0 - 2020-05-03
 ------------------

@@ -65,21 +65,6 @@ Plugin options
     .. literalinclude:: ../mpi_runner.sh
       :language: bash
 
-.. option:: --exe-runner-first
-
-   execute first all the runners of all the test cases
-
-   This option is typically intended for running the |exe| on an HPC system
-   through a job scheduler. In this case, one may need to submit all the |exe|
-   runs for all the test cases and then wait for their outcomes availibility
-   before executing the other test functions.
-
-   .. note::
-
-      |ptx| does not implement the trigger for determining when a runner
-      outcome is available, this shall be implemented in a test module passed
-      to :option:`--exe-test-module`.
-
 .. option:: --exe-output-root PATH
 
    use PATH as the root for the output directory tree, default: tests-output
