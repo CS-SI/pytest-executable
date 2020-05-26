@@ -67,10 +67,10 @@ For instance, if the tests input tree contains::
    path/to/tests/inputs
    ├── case-1
    │   ├── input
-   │   └── test_case.yaml
+   │   └── test-settings.yaml
    └── case-2
        ├── input
-       └── test_case.yaml
+       └── test-settings.yaml
 
 Then the tests output tree is::
 

@@ -19,7 +19,8 @@ Changed
 - All the names of the CLI options have been prefixed with :option:`--exe-` to
   prevent name clashes with other plugins options.
 - It is easier to define the settings to execute the runner shell script for a
-  test case thanks to a dedicated section in test_case.yaml.
+  test case thanks to a dedicated section in test-settings.yaml.
+- Rename *test_case.yaml* to *test-settings.yaml*.
 
 Added
 ~~~~~

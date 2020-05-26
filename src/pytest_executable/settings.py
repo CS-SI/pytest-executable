@@ -29,7 +29,7 @@ from .yaml_helper import YamlHelper
 
 # the yaml file with the default settings is in the same directory as the
 # current module, the yaml schema too
-SETTINGS_SCHEMA_FILE = Path(__file__).parent / "test_case-schema.yaml"
+SETTINGS_SCHEMA_FILE = Path(__file__).parent / "test-settings-schema.yaml"
 
 
 @dataclass

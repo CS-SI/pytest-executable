@@ -17,7 +17,7 @@
 
 """Builtin test module.
 
-This module is automatically executed when a test_case.yaml file is found.
+This module is automatically executed when a test-settings.yaml file is found.
 """
 
 

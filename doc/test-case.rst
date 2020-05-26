@@ -51,7 +51,7 @@ If |yaml| is empty, then the default settings are used. If
 :option:`--exe-default-settings` is not set, the default settings are the
 builtin ones:
 
- .. literalinclude:: ../src/pytest_executable/test_case.yaml
+ .. literalinclude:: ../src/pytest_executable/test-settings.yaml
 
 The following gives a description of the contents of |yaml|.
 

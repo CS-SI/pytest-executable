@@ -60,7 +60,7 @@ rst_prolog = """
 .. |ptx| replace:: *pytest-executable*
 .. |exe| replace:: :program:`executable`
 .. |pytest| replace:: `pytest`_
-.. |yaml| replace:: :file:`test_case.yaml`
+.. |yaml| replace:: :file:`test-settings.yaml`
 .. |runner| replace:: *runner shell script*
 """
 

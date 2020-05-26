@@ -19,7 +19,7 @@
 
 
 def test_tolerances_fixture(testdir):
-    """Test tolerances fixture from test_case.yaml."""
+    """Test tolerances fixture from test-settings.yaml."""
     directory = testdir.copy_example("tests/data/test_tolerances_fixture")
     result = testdir.runpytest(directory / "tests-inputs")
     # skip runner because no --exe-runner

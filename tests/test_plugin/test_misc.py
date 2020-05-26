@@ -31,10 +31,10 @@ def test_collect_order(testdir):
     result.stdout.re_match_lines(
         [
             "collected 6 items",
-            "<TestExecutableModule .*b/test_case.yaml>",
+            "<TestExecutableModule .*b/test-settings.yaml>",
             "  <Function test_runner>",
             "  <Function test_logs>",
-            "<TestExecutableModule .*z/test_case.yaml>",
+            "<TestExecutableModule .*z/test-settings.yaml>",
             "  <Function test_runner>",
             "  <Function test_logs>",
             "<Module .*z/test_aa.py>",
@@ -57,13 +57,13 @@ def test_collect_order_runner_first(testdir):
     result.stdout.re_match_lines(
         [
             "collected 6 items",
-            "<TestExecutableModule .*b/test_case.yaml>",
+            "<TestExecutableModule .*b/test-settings.yaml>",
             "  <Function test_runner>",
-            "<TestExecutableModule .*z/test_case.yaml>",
+            "<TestExecutableModule .*z/test-settings.yaml>",
             "  <Function test_runner>",
-            "<TestExecutableModule .*b/test_case.yaml>",
+            "<TestExecutableModule .*b/test-settings.yaml>",
             "  <Function test_logs>",
-            "<TestExecutableModule .*z/test_case.yaml>",
+            "<TestExecutableModule .*z/test-settings.yaml>",
             "  <Function test_logs>",
             "<Module .*z/test_aa.py>",
             "  <Function test_dummy>",
@@ -74,7 +74,7 @@ def test_collect_order_runner_first(testdir):
 
 
 def test_marks_from_yaml(testdir):
-    """Test marks from test_case.yaml."""
+    """Test marks from test-settings.yaml."""
     directory = testdir.copy_example("tests/data/test_marks_from_yaml")
 
     # check tests detection
@@ -82,7 +82,7 @@ def test_marks_from_yaml(testdir):
     result.stdout.fnmatch_lines(
         [
             "collected 3 items",
-            "<TestExecutableModule *test_case.yaml>",
+            "<TestExecutableModule *test-settings.yaml>",
             "  <Function test_runner>",
             "  <Function test_logs>",
             "<Module *test_dummy.py>",

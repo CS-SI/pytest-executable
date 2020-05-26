@@ -37,10 +37,10 @@ from .settings import Settings
 LOGGER = logging.getLogger(__name__)
 
 # files to be ignored when creating the output directories symlinks
-OUTPUT_IGNORED_FILES = ("__pycache__", "conftest.py", "test_case.yaml")
+OUTPUT_IGNORED_FILES = ("__pycache__", "conftest.py", "test-settings.yaml")
 
 # file with the test default settings
-SETTINGS_PATH = Path(__file__).parent / "test_case.yaml"
+SETTINGS_PATH = Path(__file__).parent / "test-settings.yaml"
 TEST_MODULE_PATH = Path(__file__).parent / "test_executable.py"
 
 # caches the test case directory path to marks to propagate them to all the
@@ -202,7 +202,7 @@ def output_path(request):
 
 
 def _get_settings(config: _pytest.config.Config, path: Path) -> Settings:
-    """Return the settings from global and local test_case.yaml.
+    """Return the settings from global and local test-settings.yaml.
 
     Args:
         config: Config from pytest.
@@ -344,7 +344,7 @@ class TestExecutableModule(pytest.Module):
         # restore the backuped up attribute
         self.fspath = fspath
 
-        # set the test case marks from test_case.yaml
+        # set the test case marks from test-settings.yaml
         settings = _get_settings(self.config, fspath)
 
         # store the marks for applying them later
@@ -399,8 +399,8 @@ def _sort_runner_fixture_first(
     item_1: _pytest.nodes.Item, item_2: _pytest.nodes.Item
 ) -> int:
     """Sort item with runner fixture first."""
-    has_runner_1 = 'runner' in item_1.fixturenames
-    has_runner_2 = 'runner' in item_2.fixturenames
+    has_runner_1 = "runner" in item_1.fixturenames
+    has_runner_2 = "runner" in item_2.fixturenames
     if has_runner_1 and not has_runner_2:
         return -1
     return 1
