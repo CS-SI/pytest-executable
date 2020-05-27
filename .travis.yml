@@ -28,7 +28,11 @@ jobs:
         - TRAVIS_PYTHON_VERSION=3.7
   allow_failures:
     - python: 3.9-dev
+
 install:
   - python3 -m pip install -U pip
-  - python3 -m pip install tox-travis
+  - python3 -m pip install tox-travis codecov
+
 script: tox
+
+after_success: codecov
