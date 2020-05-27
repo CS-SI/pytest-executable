@@ -22,6 +22,10 @@ Pytest-executable
 .. image:: https://img.shields.io/travis/CS-SI/pytest-executable
     :target: https://travis-ci.org/CS-SI/pytest-executable
     :alt: Travis-CI Build Status
+
+.. image:: https://img.shields.io/codecov/c/gh/CS-SI/pytest-executable/develop
+    :target: https://codecov.io/gh/CS-SI/pytest-executable
+    :alt: Codecov coverage report
  
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/psf/black
