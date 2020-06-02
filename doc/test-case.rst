@@ -91,6 +91,29 @@ then this line in the actual |runner| used to run the test case will be:
 
    mpirun -np 10 executable
 
+The runner section may also contain the *timeout* key to set the maximum
+duration of the |runner| execution. When this duration is reached and if the
+execution is not finished then the execution is failed and likely the other
+tests that rely on the outcome of the |exe|. If *timeout* is not set then there
+is no duration limit. The duration can be expressed with one or more numbers
+followed by its unit and separated by a space, for instance:
+
+.. code-block:: yaml
+
+   runner:
+      timeout: 1h 2m 3s
+
+The available units are:
+
+- y, year, years
+- m, month, months
+- w, week, weeks
+- d, day, days
+- h, hour, hours
+- min, minute, minutes
+- s, second, seconds
+- ms, millis, millisecond, milliseconds
+
 .. _yaml-ref:
 
 Reference section

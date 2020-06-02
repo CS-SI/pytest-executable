@@ -37,6 +37,9 @@ type: object
 properties:
     runner:
         type: object
+        properties:
+            timeout:
+                type: string
     marks:
         $ref: "#/definitions/stringArray"
     references:

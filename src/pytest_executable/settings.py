@@ -72,7 +72,7 @@ class Settings:
 
     @classmethod
     def from_local_file(cls, path_global: Path, path_local: Path) -> "Settings":
-        """Create a :class:Settings object from 2 yaml files.
+        """Create a :class:`Settings` object from 2 yaml files.
 
         The contents of the local file overrides or extends the contents of the
         global one. The items that have no corresponding attributes in the

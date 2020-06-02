@@ -23,6 +23,7 @@ import subprocess
 from pathlib import Path
 from typing import Dict
 
+import delta
 import jinja2
 
 LOG = logging.getLogger(__name__)
@@ -119,9 +120,20 @@ class ScriptRunner:
         LOG.debug("executing the shell script %s", script_path)
         cmd = self.SHELL.split() + [filename]
 
+        timeout = self.settings.get("timeout")
+
+        if timeout is not None:
+            # convert to seconds
+            timeout = delta.parse(timeout).seconds
+
         try:
             process = subprocess.run(
-                cmd, cwd=self.workdir, stdout=stdout, stderr=stderr, check=True
+                cmd,
+                cwd=self.workdir,
+                stdout=stdout,
+                stderr=stderr,
+                check=True,
+                timeout=timeout,  # type: ignore
             )
         except subprocess.CalledProcessError:
             # inform about the log files
