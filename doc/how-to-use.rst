@@ -15,11 +15,11 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 
-How to use
-==========
-
 Overview
---------
+========
+
+Directory trees
+---------------
 
 The |ptx| plugin deals with multiple directory trees:
 
@@ -27,25 +27,46 @@ The |ptx| plugin deals with multiple directory trees:
 - the outputs
 - the regression references
 
-There can be more than one regression references trees for storing different
-sets of references, for instance for comparing the results against more than
-one version of |exe|. All the directory trees have the same hierarchy,
-this convention allows |ptx| to work out what to test and what to check.
-Except for the inputs tree, you do not have to manually create the directory
-hierarchies, as they are automatically created by |ptx|.
+The inputs tree contains the files required to run an |exe| and to check its
+outcomes for different settings. It is composed of test cases as directories at
+the leaves of the tree. To create a test case, see :ref:`add-test-case-label`.
 
-To create a test case, see :ref:`add-test-case-label`.
+All the directory trees have the same hierarchy, this convention allows |ptx|
+to work out what to test and what to check. The outputs tree is automatically
+created by |ptx|, inside it, a test case directory typically contains:
 
-In the outputs tree created by |ptx|, a test case directory typically contains:
-
-- symbolic links to the |exe| input files from the inputs tree
-- a shell script to execute |exe|
+- symbolic links to the |exe| input files for the corresponding test case in
+  the inputs tree
+- a |runner| to execute |exe|
 - the files produced by the execution of |exe|
-- eventually, the files produced by the additional post-processing
+- eventually, the files produced by the additional test modules
 
-In a regression references tree, a test case directory shall contain all the
-result files required for performing the checks.
+At the begining, a regression reference tree is generally created from an
+existing outputs tree. In a regression references tree, a test case directory
+shall contain all the result files required for performing the comparisons for
+the regression testing. There can be more than one regression references trees
+for storing different sets of references, for instance for comparing the
+results against more than one version of |exe|.
 
+Execution order
+---------------
+
+The |ptx| plugin will reorder the execution such that the |pytest| tests are
+executed in the following order:
+
+1. in a test case, the tests defined in the default test module (see
+   :option:`--exe-test-module`),
+2. any other tests defined in a test case directory, with |pytest| natural
+   order,
+3. any other tests defined in the parent directories of a test case.
+
+The purposes of this order is to make sure that the |runner| and the other
+default tests are executed first before the tests in other modules can be
+performed on the outcome of the |exe|. It also allows to create test modules in
+the parent directory of several test cases to gather their outcomes.
+
+How to use
+==========
 
 Run the |exe| only
 ------------------

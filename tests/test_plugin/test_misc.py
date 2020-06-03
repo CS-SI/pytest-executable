@@ -30,10 +30,12 @@ def test_collect_order(testdir):
     result = testdir.runpytest(directory, "--collect-only")
     result.stdout.re_match_lines(
         [
-            "collected 6 items",
+            "collected 7 items",
             "<TestExecutableModule .*b/test-settings.yaml>",
             "  <Function test_runner>",
             "  <Function test_logs>",
+            "<Module .*b/a/test_aaa.py>",
+            "  <Function test_dummy>",
             "<TestExecutableModule .*z/test-settings.yaml>",
             "  <Function test_runner>",
             "  <Function test_logs>",

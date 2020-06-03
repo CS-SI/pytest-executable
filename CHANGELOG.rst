@@ -28,6 +28,11 @@ Added
 - :option:`--exe-test-module` cli option for setting the default test module
 - Add timeout setting for the runner execution.
 
+Fixed
+~~~~~
+- Tests execution order when a test module is in sub-directory of the yaml
+  settings.
+
 0.4.0 - 2020-05-03
 ------------------
 

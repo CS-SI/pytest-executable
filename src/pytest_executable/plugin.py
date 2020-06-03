@@ -382,27 +382,30 @@ def pytest_collection_modifyitems(
     - in a test case directory, the yaml defined tests are executed before the
       others (to handle the output directory creation).
     """
-    items.sort(key=cmp_to_key(_sort_yaml_first))
     items.sort(key=cmp_to_key(_sort_parent_last))
+    items.sort(key=cmp_to_key(_sort_yaml_first))
     _set_marks(items)
 
 
 def _sort_yaml_first(item_1: _pytest.nodes.Item, item_2: _pytest.nodes.Item) -> int:
-    """Sort yaml item first if in the same directory."""
+    """Sort yaml item first vs module at or below yaml parent directory."""
     path_1 = Path(item_1.fspath)
     path_2 = Path(item_2.fspath)
-    if path_1.parent == path_2.parent and (path_1.suffix, path_2.suffix) == (
-        ".yaml",
-        ".py",
-    ):
+    if path_1 == path_2 or path_1.suffix == path_2.suffix:
+        return 0
+    if path_2.suffix == ".yaml" and (path_2.parent in path_1.parents):
+        return 1
+    if path_1.suffix == ".yaml" and (path_1.parent in path_2.parents):
         return -1
-    return 1
+    return 0
 
 
 def _sort_parent_last(item_1: _pytest.nodes.Item, item_2: _pytest.nodes.Item) -> int:
     """Sort item in parent directory last."""
     dir_1 = Path(item_1.fspath).parent
     dir_2 = Path(item_2.fspath).parent
+    if dir_1 == dir_2:
+        return 0
     if dir_2 in dir_1.parents:
         return -1
     return 1

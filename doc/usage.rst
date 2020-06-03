@@ -39,8 +39,8 @@ Install using `conda`_:
 Command line interface
 ======================
 
-The |pytest| command line shall be executed from the directory that contains the inputs
-root directory.
+The |pytest| command line shall be executed from the directory that contains
+the inputs root directory.
 
 
 Plugin options
@@ -123,7 +123,8 @@ provide the path to one or more of its sub-directories, for instance:
 
 :command:`pytest --exe-runner <path/to/runner> <path/to/tests/inputs/sub-directory1> <path/to/tests/inputs/sub/sub/sub-directory2>`
 
-You may also use shell patterns (with `*` and `?` characters) in the paths like:
+You may also use shell patterns (with `*` and `?` characters) in the paths
+like:
 
 :command:`pytest --exe-runner <path/to/runner> <path/to/tests/inputs/*/sub-directory?>`
 
@@ -144,16 +145,15 @@ Use substring expression
 
 Like the marks, any part (substring) of the name of a test case or of a test
 function can be used to filter what will be executed. For instance to only
-execute the tests that have the string `transition` anywhere in their name,
-use :option:`-k "transition"`. Or, to execute only the functions that have
-`runner` in their names, use :option:`-k "runner"`. Logical expressions
-could be used to combine more susbtrings as well.
+execute the tests that have the string `transition` anywhere in their name, use
+:option:`-k "transition"`. Or, to execute only the functions that have `runner`
+in their names, use :option:`-k "runner"`. Logical expressions could be used to
+combine more susbtrings as well.
 
 Process last failed tests only
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To only execute the tests that previously failed, use
-:option:`--last-failed`.
+To only execute the tests that previously failed, use :option:`--last-failed`.
 
 Show the markers
 ~~~~~~~~~~~~~~~~
@@ -165,5 +165,5 @@ Show the tests to be executed
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Use :option:`--collect-only` to show the test cases and the test events
-(functions) selected without executing them. You may combine this option
-with other options, like the one above to filter the test cases.
+(functions) selected without executing them. You may combine this option with
+other options, like the one above to filter the test cases.
