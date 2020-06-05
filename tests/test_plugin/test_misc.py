@@ -55,10 +55,13 @@ def test_marks_from_yaml(testdir):
     result = testdir.runpytest(directory, "--collect-only")
     result.stdout.fnmatch_lines(
         [
-            "collected 3 items",
+            "collected 4 items",
             "<TestExecutableModule *test-settings.yaml>",
             "  <Function test_runner>",
             "  <Function test_logs>",
+            "<Package */a>",
+            "  <Module test_dummy.py>",
+            "    <Function test_marks>",
             "<Module *test_dummy.py>",
             "  <Function test_marks>",
         ]
@@ -66,7 +69,7 @@ def test_marks_from_yaml(testdir):
 
     # select tests not with mark1
     result = testdir.runpytest(directory, "--collect-only", "-m not mark1")
-    assert result.parseoutcomes()["deselected"] == 3
+    assert result.parseoutcomes()["deselected"] == 4
 
 
 def test_logs(testdir):

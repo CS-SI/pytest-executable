@@ -177,8 +177,9 @@ instance the **slow** and **big** marks:
       - slow
       - big
 
-Such a declared mark will be set to all the test functions under a test case,
-either from the default test module or from an additional |pytest| module.
+Such a declared mark will be set to all the test functions in the directory of
+a test case, either from the default test module or from an additional |pytest|
+module.
 
 You can also use the marks that already existing. In particular, the `skip` and
 `xfail` marks provided by |pytest| can be used. The `skip` mark tells pytest to

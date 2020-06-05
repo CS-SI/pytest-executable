@@ -415,10 +415,9 @@ def _set_marks(items: List[_pytest.nodes.Item]) -> None:
     """Set the marks to all the test functions of a test case."""
     for dirname, marks in _marks_cache.items():
         for item in items:
-            if item.fspath.dirname != dirname:
-                continue
-            for mark in marks:
-                item.add_marker(mark)
+            if Path(dirname) in Path(item.fspath).parents:
+                for mark in marks:
+                    item.add_marker(mark)
 
 
 def pytest_terminal_summary(
