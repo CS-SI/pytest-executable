@@ -24,7 +24,7 @@ A test case is composed of an input directory with:
 
 - the input files required by the |runner|,
 - a |yaml| file with the |ptx| settings,
-- any optionnal |pytest| python modules for performing additionnal tests.
+- any optional |pytest| python modules for performing additional tests.
 
 .. warning::
 
@@ -123,7 +123,7 @@ The reference files are used to check for regressions on the files created by
 the |exe|. Those checks can be done by comparing the files with a tolerance
 , see :ref:`yaml-tol`. The *references* section shall contain a list of paths
 to the files to be compared. A path shall be defined relatively to the test
-case outpput directory, it may use any shell pattern like :file:`**`,
+case output directory, it may use any shell pattern like :file:`**`,
 :file:`*`, :file:`?`, for instance:
 
 .. code-block:: yaml

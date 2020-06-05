@@ -4,6 +4,7 @@ Pytest-executable
 .. inclusion-marker-do-not-remove
 
 .. image:: https://img.shields.io/pypi/l/pytest-executable.svg
+    :target: `quick summary`_
 
 .. image:: https://img.shields.io/pypi/v/pytest-executable.svg
     :target: https://pypi.org/project/pytest-executable
@@ -86,5 +87,5 @@ Apache License 2.0. See the `LICENSE.txt`_ file for more information, or the
 .. _Antoine Dechaume: https://github.com/AntoineD
 .. _CS GROUP: http://www.csgroup.eu
 .. _`LICENSE.txt`: LICENSE.txt
-.. _quick summary: https://tldrlegal.com/license/apache-license-2.0-(apache-2.1)
+.. _quick summary: https://tldrlegal.com/license/apache-license-2.0-(apache-2.0)
 .. _tl;drLegal: https://tldrlegal.com

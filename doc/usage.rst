@@ -16,7 +16,7 @@
 .. limitations under the License.
 
 .. _conda: https://docs.conda.io
-.. _pip: https://pip-installer.org
+.. _pip: https://pip.pypa.io/en/stable/installing
 .. _report-conf: https://github.com/CS-SI/pytest-executable/tree/master/report-conf
 
 
@@ -55,7 +55,7 @@ Plugin options
     with replaced placeholders, is written in the output directory of a test
     case (*{{output_path}}* is set to this path). This final script is then
     executed before any other test functions of a test case. See
-    :ref:`fixture-runner` for further informations.
+    :ref:`fixture-runner` for further information.
 
     If this option is not defined then the |runner| will not be executed, but
     all the other test functions will.
@@ -101,7 +101,7 @@ Plugin options
 
    .. note::
 
-      The report generator script may require to install additionnal
+      The report generator script may require to install additional
       dependencies, such as sphinx, which are not install by the |ptx| plugin.
 
 
@@ -140,15 +140,15 @@ combines marks and yields a truth value. For example, to run only the tests
 that have the mark1 mark but not the mark2 mark, use :option:`-m "mark1 and not
 mark2"`. The logical operator `or` could be used as well.
 
-Use substring expression
-~~~~~~~~~~~~~~~~~~~~~~~~
+Use sub-string expression
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Like the marks, any part (substring) of the name of a test case or of a test
+Like the marks, any part (sub-string) of the name of a test case or of a test
 function can be used to filter what will be executed. For instance to only
 execute the tests that have the string `transition` anywhere in their name, use
 :option:`-k "transition"`. Or, to execute only the functions that have `runner`
 in their names, use :option:`-k "runner"`. Logical expressions could be used to
-combine more susbtrings as well.
+combine more sub-strings as well.
 
 Process last failed tests only
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

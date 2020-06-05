@@ -24,7 +24,7 @@ Fixtures
 ========
 
 The purpose of the test fixtures is to ease the writing of test functions by
-providing informations and data automatically. You may find more documentation
+providing information and data automatically. You may find more documentation
 on |pytest| fixture in its `official documentation
 <https://docs.pytest.org/en/latest/fixture.html>`_. We describe here the
 fixtures defined in |ptx|. Some of them are used in the default test module,
@@ -116,7 +116,7 @@ Tolerances fixture
 ------------------
 
 The :py:data:`tolerances` fixture provides the contents of the :ref:`yaml-tol`
-of a |yaml| as a dictionnary that maps names to :py:class:`Tolerances
+of a |yaml| as a dictionary that maps names to :py:class:`Tolerances
 <pytest_executable.settings.Tolerances>` objects.
 
 For instance, if a |yaml| contains:

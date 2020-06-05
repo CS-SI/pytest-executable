@@ -41,7 +41,7 @@ created by |ptx|, inside it, a test case directory typically contains:
 - the files produced by the execution of |exe|
 - eventually, the files produced by the additional test modules
 
-At the begining, a regression reference tree is generally created from an
+At the beginning, a regression reference tree is generally created from an
 existing outputs tree. In a regression references tree, a test case directory
 shall contain all the result files required for performing the comparisons for
 the regression testing. There can be more than one regression references trees
@@ -81,7 +81,7 @@ the cases in that output directory. By default, the root directory of the
 output tree is :file:`tests-output`, this can be changed with the option
 :option:`--exe-output-root`. Finally, the :option:`-k runner` option instructs
 |pytest| to only execute the |runner| and nothing more, see :ref:`filter` for
-more informations on doing only some of the processing.
+more information on doing only some of the processing.
 
 For instance, if the tests input tree contains::
 
@@ -121,7 +121,7 @@ output
    can be any number of output files and directories produced.
 
 input
-    a symbolic link to the file in the test input directory, in pratice
+    a symbolic link to the file in the test input directory, in practice
     there can be any number of input files.
 
 executable.stderr
@@ -136,7 +136,7 @@ runner.sh
     directly from a console shall produce the same results as when it is
     executed by |ptx|. This script is intended to be as much as possible
     independent of the execution context such that it can be executed
-    independently of |ptx| in a reproductible way, i.e. it is self contained
+    independently of |ptx| in a reproducible way, i.e. it is self contained
     and does not depend on the shell context.
 
 runner.sh.stderr
