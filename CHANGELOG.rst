@@ -32,6 +32,7 @@ Fixed
 ~~~~~
 - Tests execution order when a test module is in sub-directory of the yaml
   settings.
+- Marks of a test case not propagated to all test modules.
 
 0.4.0 - 2020-05-03
 ------------------
