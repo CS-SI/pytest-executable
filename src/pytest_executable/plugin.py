@@ -26,8 +26,6 @@ from typing import Dict, List, Optional
 import _pytest
 import py
 import pytest
-from _pytest.config import Config
-from _pytest.terminal import TerminalReporter
 
 from . import report
 from .file_tools import create_output_directory, find_references, get_mirror_path
@@ -298,7 +296,7 @@ def pytest_collect_file(parent, path):
         return TestExecutableModule(path, parent)
 
 
-def pytest_configure(config):
+def pytest_configure(config: _pytest.config.Config) -> None:
     """Register the possible markers and change default error display.
 
     Display only the last error line without the traceback.
@@ -369,18 +367,14 @@ def pytest_exception_interact(node, call, report):
         report.longrepr.reprcrash = f"{report.nodeid}: {excinfo.value}"
 
 
-def pytest_collection_modifyitems(
-    session: _pytest.main.Session,
-    config: _pytest.config.Config,
-    items: List[_pytest.nodes.Item],
-) -> None:
+def pytest_collection_modifyitems(items: List[_pytest.nodes.Item]) -> None:
     """Change the tests execution order.
 
     Such that:
     - the tests in parent directories are executed after the tests in children
       directories
     - in a test case directory, the yaml defined tests are executed before the
-      others (to handle the output directory creation).
+      others
     """
     items.sort(key=cmp_to_key(_sort_parent_last))
     items.sort(key=cmp_to_key(_sort_yaml_first))
@@ -421,7 +415,7 @@ def _set_marks(items: List[_pytest.nodes.Item]) -> None:
 
 
 def pytest_terminal_summary(
-    terminalreporter: TerminalReporter, exitstatus: int, config: Config
+    terminalreporter: _pytest.terminal.TerminalReporter, config: _pytest.config.Config,
 ) -> None:
     """Create the custom report.
 
