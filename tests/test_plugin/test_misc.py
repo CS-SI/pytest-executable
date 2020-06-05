@@ -30,15 +30,13 @@ def test_collect_order(testdir):
     result = testdir.runpytest(directory, "--collect-only")
     result.stdout.re_match_lines(
         [
-            "collected 7 items",
+            "collected 5 items",
             "<TestExecutableModule .*b/test-settings.yaml>",
             "  <Function test_runner>",
-            "  <Function test_logs>",
             "<Module .*b/a/test_aaa.py>",
             "  <Function test_dummy>",
             "<TestExecutableModule .*z/test-settings.yaml>",
             "  <Function test_runner>",
-            "  <Function test_logs>",
             "<Module .*z/test_aa.py>",
             "  <Function test_dummy>",
             "<Module .*test_a.py>",
@@ -55,10 +53,9 @@ def test_marks_from_yaml(testdir):
     result = testdir.runpytest(directory, "--collect-only")
     result.stdout.fnmatch_lines(
         [
-            "collected 4 items",
+            "collected 3 items",
             "<TestExecutableModule *test-settings.yaml>",
             "  <Function test_runner>",
-            "  <Function test_logs>",
             "<Package */a>",
             "  <Module test_dummy.py>",
             "    <Function test_marks>",
@@ -69,27 +66,7 @@ def test_marks_from_yaml(testdir):
 
     # select tests not with mark1
     result = testdir.runpytest(directory, "--collect-only", "-m not mark1")
-    assert result.parseoutcomes()["deselected"] == 4
-
-
-def test_logs(testdir):
-    """Test test_logs."""
-    directory = testdir.copy_example("tests/data/test_logs")
-
-    for output_path in directory.listdir(fil="*output*"):
-        result = testdir.runpytest(
-            directory / "tests-inputs",
-            "--exe-output-root",
-            str(output_path),
-            "--exe-overwrite-output",
-        )
-        if output_path.ext == ".ko":
-            failed = 1
-            passed = 0
-        else:
-            failed = 0
-            passed = 1
-        result.assert_outcomes(skipped=1, failed=failed, passed=passed)
+    assert result.parseoutcomes()["deselected"] == 3
 
 
 def test_output_directory_already_exists(testdir):
@@ -97,8 +74,7 @@ def test_output_directory_already_exists(testdir):
     directory = testdir.copy_example("tests/data/test_output_dir_fixture")
     result = testdir.runpytest(directory / "tests-inputs")
     # error because directory already exists
-    # fail logs because no executable.std*
-    result.assert_outcomes(error=1, failed=1)
+    result.assert_outcomes(error=1)
     result.stdout.fnmatch_lines(
         [
             "E   FileExistsError",

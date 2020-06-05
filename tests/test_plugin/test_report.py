@@ -32,8 +32,7 @@ def test_report_no_report_generator(testdir):
     directory = testdir.copy_example("tests/data/test_report")
     result = testdir.runpytest(directory / "tests-inputs")
     # skip runner because no --exe-runner
-    # fail logs because no executable.std*
-    result.assert_outcomes(skipped=1, failed=1)
+    result.assert_outcomes(skipped=1)
     if OLD_PYTEST:
         assert "report generation" not in result.stdout.str()
     else:
@@ -56,8 +55,7 @@ def test_report_generator_internal_error(testdir):
         directory / "tests-inputs", "--exe-report-generator", generator_path,
     )
     # skip runner because no --exe-runner
-    # fail logs because no executable.std*
-    result.assert_outcomes(skipped=1, failed=1)
+    result.assert_outcomes(skipped=1)
     result.stdout.re_match_lines(
         [
             ".*starting report generation",
@@ -77,8 +75,7 @@ def test_report_generator_ok(testdir):
         directory / "tests-inputs", "--exe-report-generator", generator_path
     )
     # skip runner because no --exe-runner
-    # fail logs because no executable.std*
-    result.assert_outcomes(skipped=1, failed=1)
+    result.assert_outcomes(skipped=1)
     result.stdout.re_match_lines(
         [".*starting report generation", ".*report generation done"]
     )

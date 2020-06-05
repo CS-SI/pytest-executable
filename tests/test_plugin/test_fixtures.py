@@ -23,9 +23,8 @@ def test_tolerances_fixture(testdir):
     directory = testdir.copy_example("tests/data/test_tolerances_fixture")
     result = testdir.runpytest(directory / "tests-inputs")
     # skip runner because no --exe-runner
-    # fail logs because no executable.std*
     # pass fixture
-    result.assert_outcomes(passed=1, skipped=1, failed=1)
+    result.assert_outcomes(passed=1, skipped=1)
 
 
 def test_regression_path_fixture(testdir):
@@ -35,9 +34,8 @@ def test_regression_path_fixture(testdir):
         directory / "tests-inputs", "--exe-regression-root", directory / "references"
     )
     # skip runner because no --exe-runner
-    # fail logs because no executable.std*
     # pass fixture test
-    result.assert_outcomes(skipped=1, failed=1, passed=1)
+    result.assert_outcomes(skipped=1, passed=1)
 
 
 def test_regression_path_fixture_no_regression_root(testdir):
@@ -45,17 +43,14 @@ def test_regression_path_fixture_no_regression_root(testdir):
     directory = testdir.copy_example("tests/data/test_regression_path_fixture")
     result = testdir.runpytest(directory / "tests-inputs")
     # skip runner because no --exe-runner
-    # fail logs because no executable.std*
-    result.assert_outcomes(skipped=2, failed=1)
+    result.assert_outcomes(skipped=2)
 
 
 def test_regression_file_path_fixture_no_regression_root(testdir):
     """Test skipping regression_file_path fixture without --exe-regression-root."""
     directory = testdir.copy_example("tests/data/test_regression_file_path_fixture")
     result = testdir.runpytest(directory / "tests-inputs/case-no-references")
-    # skip runner because no --exe-runner
-    # fail logs because no executable.std*
-    result.assert_outcomes(skipped=1, failed=1)
+    result.assert_outcomes(skipped=1)
 
 
 def test_regression_file_path_fixture_no_references(testdir):
@@ -66,9 +61,7 @@ def test_regression_file_path_fixture_no_references(testdir):
         "--exe-regression-root",
         directory / "references",
     )
-    # skip runner because no --exe-runner
-    # fail logs because no executable.std*
-    result.assert_outcomes(skipped=1, failed=1)
+    result.assert_outcomes(skipped=1)
 
 
 RUNNER_DATA_DIR = "tests/data/test_runner_fixture"
@@ -78,9 +71,7 @@ def test_runner_fixture_no_runner(testdir):
     """Test skipping runner fixture without runner."""
     directory = testdir.copy_example(RUNNER_DATA_DIR)
     result = testdir.runpytest(directory / "tests-inputs/case-local-settings")
-    # skip runner because no --exe-runner
-    # fail logs because no executable.std*
-    result.assert_outcomes(skipped=1, failed=1)
+    result.assert_outcomes(skipped=1)
 
 
 def test_runner_fixture_with_local_settings(testdir):
@@ -91,8 +82,7 @@ def test_runner_fixture_with_local_settings(testdir):
         "--exe-runner",
         directory / "runner.sh",
     )
-    # fail logs because no executable.std*
-    result.assert_outcomes(passed=1, failed=1)
+    result.assert_outcomes(passed=1)
     stdout = (
         (directory / "tests-output/case-local-settings/runner.sh.stdout")
         .open()
@@ -108,9 +98,7 @@ def test_runner_not_script(testdir):
     result = testdir.runpytest(
         directory / "tests-inputs/case-local-settings", "--exe-runner", "/bin/bash",
     )
-    # error for runner because runner is not readable
-    # fail logs because no executable.std*
-    result.assert_outcomes(error=1, failed=1)
+    result.assert_outcomes(error=1)
     result.stdout.fnmatch_lines(["E   TypeError: cannot read the script */bin/bash"])
 
 
@@ -124,8 +112,7 @@ def test_runner_fixture_with_global_settings(testdir):
         "--exe-default-settings",
         directory / "settings.yaml",
     )
-    # fail logs because no executable.std*
-    result.assert_outcomes(passed=1, failed=1)
+    result.assert_outcomes(passed=1)
     stdout = (
         (directory / "tests-output/case-global-settings/runner.sh.stdout")
         .open()
@@ -136,16 +123,14 @@ def test_runner_fixture_with_global_settings(testdir):
 
 
 def test_runner_error_with_undefined_placeholder(testdir):
-    """Test runner fixture when a placeholder is not replaced."""
+    """Test error with runner fixture when a placeholder is not replaced."""
     directory = testdir.copy_example(RUNNER_DATA_DIR)
     result = testdir.runpytest(
         directory / "tests-inputs/case-global-settings",
         "--exe-runner",
         directory / "runner.sh",
     )
-    # error for runner because a placeholder is undefined
-    # fail logs because no executable.std*
-    result.assert_outcomes(error=1, failed=1)
+    result.assert_outcomes(error=1)
     result.stdout.fnmatch_lines(
         ["E   ValueError: in */runner.sh: 'nproc' is undefined"]
     )

@@ -28,6 +28,10 @@ Added
 - :option:`--exe-test-module` cli option for setting the default test module
 - Add timeout setting for the runner execution.
 
+Removed
+~~~~~~~
+- The log files testing in the builtin test module.
+
 Fixed
 ~~~~~
 - Tests execution order when a test module is in sub-directory of the yaml
@@ -83,4 +87,5 @@ Removed
 
 Fixed
 ~~~~~
-- #7043: skip regression tests when reference files are missing, no longer raise error.
+- #7043: skip regression tests when reference files are missing, no longer
+  raise error.

@@ -31,18 +31,3 @@ def test_runner(runner):
     """
     assert runner.run() == 0
 
-
-def test_logs(output_path):
-    """Check the executable log files.
-
-    The error log shall be empty and the output log shall not be empty.
-
-    Args:
-        output_path: Path to the current test output directory.
-    """
-    assert (
-        output_path / "executable.stdout"
-    ).stat().st_size != 0, "stdout file shall be non-empty"
-    assert (
-        output_path / "executable.stderr"
-    ).stat().st_size == 0, "stderr file shall be empty"
