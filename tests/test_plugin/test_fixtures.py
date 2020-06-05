@@ -15,47 +15,42 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for the plugin itself."""
+"""Tests for the plugin fixtures."""
 
 
 def test_tolerances_fixture(testdir):
-    """Test tolerances fixture from test_case.yaml."""
+    """Test tolerances fixture from test-settings.yaml."""
     directory = testdir.copy_example("tests/data/test_tolerances_fixture")
     result = testdir.runpytest(directory / "tests-inputs")
-    # skip runner because no --runner
-    # fail logs because no executable.std*
+    # skip runner because no --exe-runner
     # pass fixture
-    result.assert_outcomes(passed=1, skipped=1, failed=1)
+    result.assert_outcomes(passed=1, skipped=1)
 
 
 def test_regression_path_fixture(testdir):
     """Test regression_path fixture."""
     directory = testdir.copy_example("tests/data/test_regression_path_fixture")
     result = testdir.runpytest(
-        directory / "tests-inputs", "--regression-root", directory / "references"
+        directory / "tests-inputs", "--exe-regression-root", directory / "references"
     )
-    # skip runner because no --runner
-    # fail logs because no executable.std*
+    # skip runner because no --exe-runner
     # pass fixture test
-    result.assert_outcomes(skipped=1, failed=1, passed=1)
+    result.assert_outcomes(skipped=1, passed=1)
 
 
 def test_regression_path_fixture_no_regression_root(testdir):
-    """Test skipping regression_path fixture without --regression-root option."""
+    """Test skipping regression_path fixture without --exe-regression-root option."""
     directory = testdir.copy_example("tests/data/test_regression_path_fixture")
     result = testdir.runpytest(directory / "tests-inputs")
-    # skip runner because no --runner
-    # fail logs because no executable.std*
-    result.assert_outcomes(skipped=2, failed=1)
+    # skip runner because no --exe-runner
+    result.assert_outcomes(skipped=2)
 
 
 def test_regression_file_path_fixture_no_regression_root(testdir):
-    """Test skipping regression_file_path fixture without --regression-root option."""
+    """Test skipping regression_file_path fixture without --exe-regression-root."""
     directory = testdir.copy_example("tests/data/test_regression_file_path_fixture")
     result = testdir.runpytest(directory / "tests-inputs/case-no-references")
-    # skip runner because no --runner
-    # fail logs because no executable.std*
-    result.assert_outcomes(skipped=1, failed=1)
+    result.assert_outcomes(skipped=1)
 
 
 def test_regression_file_path_fixture_no_references(testdir):
@@ -63,64 +58,79 @@ def test_regression_file_path_fixture_no_references(testdir):
     directory = testdir.copy_example("tests/data/test_regression_file_path_fixture")
     result = testdir.runpytest(
         directory / "tests-inputs/case-no-references",
-        "--regression-root",
+        "--exe-regression-root",
         directory / "references",
     )
-    # skip runner because no --runner
-    # fail logs because no executable.std*
-    result.assert_outcomes(skipped=1, failed=1)
+    result.assert_outcomes(skipped=1)
+
+
+RUNNER_DATA_DIR = "tests/data/test_runner_fixture"
 
 
 def test_runner_fixture_no_runner(testdir):
-    """Test runner fixture without runner."""
-    directory = testdir.copy_example("tests/data/test_runner_fixture")
-    result = testdir.runpytest(directory / "tests-inputs/case")
-    # skip runner because no --runner
-    # fail logs because no executable.std*
-    result.assert_outcomes(skipped=1, failed=1)
+    """Test skipping runner fixture without runner."""
+    directory = testdir.copy_example(RUNNER_DATA_DIR)
+    result = testdir.runpytest(directory / "tests-inputs/case-local-settings")
+    result.assert_outcomes(skipped=1)
 
 
-def test_runner_fixture_with_test_case_nproc(testdir):
-    """Test runner fixture with custom nproc from test case settings."""
-    directory = testdir.copy_example("tests/data/test_runner_fixture")
+def test_runner_fixture_with_local_settings(testdir):
+    """Test runner fixture with placeholder from local test settings."""
+    directory = testdir.copy_example(RUNNER_DATA_DIR)
     result = testdir.runpytest(
-        directory / "tests-inputs/case_nproc", "--runner", directory / "runner.sh"
-    )
-    # fail runner because runner is not runnable
-    # fail logs because no executable.std*
-    result.assert_outcomes(failed=2)
-    run_executable_script = (
-        (directory / "tests-output/case_nproc/run_executable.sh").open().read()
-    )
-    assert " -np 100 " in run_executable_script
-
-
-def test_runner_fixture_with_global_nproc(testdir):
-    """Test runner fixture with custom nproc from default settings."""
-    directory = testdir.copy_example("tests/data/test_runner_fixture")
-    result = testdir.runpytest(
-        directory / "tests-inputs/case",
-        "--runner",
+        directory / "tests-inputs/case-local-settings",
+        "--exe-runner",
         directory / "runner.sh",
-        "--default-settings",
-        directory / "settings.yaml",
     )
-    # fail runner because runner is not runnable
-    # fail logs because no executable.std*
-    result.assert_outcomes(failed=2)
-    run_executable_script = (
-        (directory / "tests-output/case/run_executable.sh").open().read()
+    result.assert_outcomes(passed=1)
+    stdout = (
+        (directory / "tests-output/case-local-settings/runner.sh.stdout")
+        .open()
+        .read()
+        .strip()
     )
-    assert " -np 100 " in run_executable_script
+    assert stdout == "100"
 
 
 def test_runner_not_script(testdir):
-    """Test error when the runner is not a script."""
-    directory = testdir.copy_example("tests/data/test_runner_fixture")
+    """Test error when the runner is not a text script."""
+    directory = testdir.copy_example(RUNNER_DATA_DIR)
     result = testdir.runpytest(
-        directory / "tests-inputs/case", "--runner", "/bin/bash",
+        directory / "tests-inputs/case-local-settings", "--exe-runner", "/bin/bash",
     )
-    # fail runner because runner is not runnable
-    # fail logs because no executable.std*
-    result.assert_outcomes(error=1, failed=1)
-    result.stdout.fnmatch_lines(["E   TypeError: can't read the script */bin/bash"])
+    result.assert_outcomes(error=1)
+    result.stdout.fnmatch_lines(["E   TypeError: cannot read the script */bin/bash"])
+
+
+def test_runner_fixture_with_global_settings(testdir):
+    """Test runner fixture with nproc from default settings."""
+    directory = testdir.copy_example(RUNNER_DATA_DIR)
+    result = testdir.runpytest(
+        directory / "tests-inputs/case-global-settings",
+        "--exe-runner",
+        directory / "runner.sh",
+        "--exe-default-settings",
+        directory / "settings.yaml",
+    )
+    result.assert_outcomes(passed=1)
+    stdout = (
+        (directory / "tests-output/case-global-settings/runner.sh.stdout")
+        .open()
+        .read()
+        .strip()
+    )
+    assert stdout == "100"
+
+
+def test_runner_error_with_undefined_placeholder(testdir):
+    """Test error with runner fixture when a placeholder is not replaced."""
+    directory = testdir.copy_example(RUNNER_DATA_DIR)
+    result = testdir.runpytest(
+        directory / "tests-inputs/case-global-settings",
+        "--exe-runner",
+        directory / "runner.sh",
+    )
+    result.assert_outcomes(error=1)
+    result.stdout.fnmatch_lines(
+        ["E   ValueError: in */runner.sh: 'nproc' is undefined"]
+    )

@@ -44,10 +44,10 @@ done by alphabetical order. There are 2 exceptions to this behavior:
      children directories
 
 The |pytest| functions shall take advantages of the fixtures for automatically
-retrieved data from the execution context, such as the informations stored in
+retrieved data from the execution context, such as the information stored in
 the |yaml| or the path to the current output directory.
 
-See :ref:`fixtures` for more informations on fixtures.
+See :ref:`fixtures` for more information on fixtures.
 
 See :ref:`builtin-test-module` for |pytest| function examples.
 
@@ -76,7 +76,7 @@ not available.
                         reason='skip test because external_module cannot be imported')
     from external_module import a_function, a_class
 
-If the external module is installed in an enviroment not compatible with the
+If the external module is installed in an environment not compatible with the
 anaconda environment of |ptx|, then execute the module through a `subprocess
 <https://docs.python.org/3.7/library/subprocess.html#using-the-subprocess-module>`_
 call. For instance:

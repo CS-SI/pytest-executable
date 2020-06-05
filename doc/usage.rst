@@ -15,120 +15,155 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 
-Usage
-=====
-
-The |ptx| tool can be used in a wide variety of ways, the following sections
-explain how.
+.. _conda: https://docs.conda.io
+.. _pip: https://pip.pypa.io/en/stable/installing
+.. _report-conf: https://github.com/CS-SI/pytest-executable/tree/master/report-conf
 
 
-Run |executable| only
----------------------
+Installation
+============
 
-:command:`pytest --runner <path/to/runner> <path/to/tests/inputs> -k runner`
+Install using `pip`_:
 
-This command will execute |executable| for all the test cases that are found in
-the inputs tree under :file:`path/to/tests/inputs`. A test case is identified
-by a directory that contains a |yaml| file. For each of the test cases found,
-|ptx| will create an output directory with the same directory hierarchy and
-run the cases in that output directory. By default, the root directory of the
-output tree :file:`tests-output`, this can be changed with the option
-:option:`--output-root`. Finally, the :option:`-k runner` option instructs
-|pytest| to only execute the |executable| runner and nothing more, see
-:ref:`filter` for more informations on doing only some of the processing.
+.. code-block:: console
 
-For instance, if the test inputs tree contains::
+    pip install pytest-executable
 
-   path/to/tests/inputs
-   ├── dir-1
-   │   ├── case.input
-   │   └── test_case.yaml
-   └── dir-2
-       ├── case.input
-       └── test_case.yaml
+Install using `conda`_:
 
-Then the output tree is::
+.. code-block:: console
 
-   tests-output
-   ├── dir-1
-   │   ├── case.input -> path/to/tests/inputs/dir-1/case.input
-   │   ├── case.output
-   │   ├── executable.stderr
-   │   ├── executable.stdout
-   │   ├── run_executable.sh
-   │   ├── run_executable.stderr
-   │   └── run_executable.stdout
-   ├── dir-2
-       ├── case.input -> path/to/tests/inputs/dir-2/case.input
-       ├── case.output
-       ├── executable.stderr
-       ├── executable.stdout
-       ├── run_executable.sh
-       ├── run_executable.stderr
-       └── run_executable.stdout
-
-For a given test case, for instance :file:`tests-output/dir-1`,
-the output directory contains:
-
-case.output
-   the output file produced by the execution of |executable|, in practice there can be any number of ouput files and directories produced.
-
-case.input
-    a symbolic link to the file in the test case input directory, in pratice there can be any number of input files.
-
-executable.stderr
-    contains the error messages from the |executable| execution
-
-executable.stdout
-    contains the log messages from the |executable| execution
-
-run_executable.sh
-    Executing this script directly from a console shall produce the same results as when it is
-    executed by |ptx|. This script is intended to be as much as possible
-    independent of the execution context such that it can be executed
-    independently of |ptx| in a reproductible way, i.e. it is self contained
-    and does not depend on the shell context. :file:`run_executable.stderr` contains the
-    error messages from the |run_executable| execution
-
-run_executable.stdout
-    contains the log messages from the |run_executable| execution
-
-If you need to manually run |executable| for a test case, for debugging purposes
-for instance, just go to its output directory, for instance :command:`cd
-tests-output/dir-1`, and execute |run_executable|.
+    conda install pytest-executable -c conda-forge
 
 
-Do default regression checking without running executable
----------------------------------------------------------
+Command line interface
+======================
 
-:command:`pytest --regression-root <path/to/tests/references> <path/to/tests/inputs> --overwrite-output`
-
-We assume that |executable| results have already been produced for the test cases
-considered. This is not enough though because the output directory already
-exists and |ptx| will by default prevent the user from silently modifying
-any existing test output directories. In that case, the option
-:option:`--overwrite-output` shall be used. The above command line will compare
-the results in the default output tree with the references, if the existing
-|executable| results are in a different directory then you need to add the path
-to it with :command:`--output-root`.
-
-The option :option:`--regression-root` points to the root directory with the
-regression references tree . This tree shall have the same hierarchy as the
-output tree but it only contains the results files that are used for doing the
-regression checks.
+The |pytest| command line shall be executed from the directory that contains
+the inputs root directory.
 
 
-Run |executable| and do default regression checks
--------------------------------------------------
+Plugin options
+--------------
 
-:command:`pytest --runner <path/to/runner> --regression-root <path/to/tests/references> <path/to/tests/inputs>`
+.. option:: --exe-runner PATH
 
-.. note::
+    use the shell script at PATH to run the |exe|.
 
-   Currently this can only be used when |executable| execution is done on the same
-   machine as the one that execute the regression checks, i.e. this will not
-   work when |executable| is submitted through a job scheduler.
+    This shell script may contain placeholders, such as *{{output_path}}* or
+    others defined in the :ref:`yaml-runner` of a |yaml|. A final |runner|,
+    with replaced placeholders, is written in the output directory of a test
+    case (*{{output_path}}* is set to this path). This final script is then
+    executed before any other test functions of a test case. See
+    :ref:`fixture-runner` for further information.
 
-Finally, checks are done on the |executable| log files to verify that the file
-:file:`executable.stdout` exists and is not empty, and that the file
-:file:`executable.stderr` exists and is empty.
+    If this option is not defined then the |runner| will not be executed, but
+    all the other test functions will.
+
+    A typical |runner| for running the |exe| with MPI could be:
+
+    .. literalinclude:: ../mpi_runner.sh
+      :language: bash
+
+.. option:: --exe-output-root PATH
+
+   use PATH as the root for the output directory tree, default: tests-output
+
+.. option:: --exe-overwrite-output
+
+   overwrite existing files in the output directories
+
+.. option:: --exe-clean-output
+
+   clean the output directories before executing the tests
+
+.. option:: --exe-regression-root PATH
+
+   use PATH as the root directory with the references for the regression
+   testing, if omitted then the tests using the regression_path fixture will be
+   skipped
+
+.. option:: --exe-default-settings PATH
+
+   use PATH as the yaml file with the default test settings instead of the
+   built-in ones
+
+.. option:: --exe-test-module PATH
+
+   use PATH as the default test module instead of the built-in one
+
+.. option:: --exe-report-generator PATH
+
+   use PATH as the script to generate the test report
+
+   See :file:`generate_report.py` in the `report-conf`_ directory for an
+   example of such a script.
+
+   .. note::
+
+      The report generator script may require to install additional
+      dependencies, such as sphinx, which are not install by the |ptx| plugin.
+
+
+.. _filter:
+
+Standard pytest options
+-----------------------
+
+You can get all the standard command line options of |pytest| by executing
+:command:`pytest -h`. In particular, to run only some of the test cases in the
+inputs tree, or to execute only some of the test functions, you may use one of
+the following ways:
+
+Use multiple path patterns
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Instead of providing the path to the root of the inputs tree, you may
+provide the path to one or more of its sub-directories, for instance:
+
+:command:`pytest --exe-runner <path/to/runner> <path/to/tests/inputs/sub-directory1> <path/to/tests/inputs/sub/sub/sub-directory2>`
+
+You may also use shell patterns (with `*` and `?` characters) in the paths
+like:
+
+:command:`pytest --exe-runner <path/to/runner> <path/to/tests/inputs/*/sub-directory?>`
+
+.. _mark_usage:
+
+Use marks
+~~~~~~~~~
+
+A test case could be assigned one or more marks in the |yaml| file, see
+:ref:`yaml-marks`. Use the :option:`-m` to execute only the test cases that
+match a given mark expression. A mark expression is a logical expression that
+combines marks and yields a truth value. For example, to run only the tests
+that have the mark1 mark but not the mark2 mark, use :option:`-m "mark1 and not
+mark2"`. The logical operator `or` could be used as well.
+
+Use sub-string expression
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Like the marks, any part (sub-string) of the name of a test case or of a test
+function can be used to filter what will be executed. For instance to only
+execute the tests that have the string `transition` anywhere in their name, use
+:option:`-k "transition"`. Or, to execute only the functions that have `runner`
+in their names, use :option:`-k "runner"`. Logical expressions could be used to
+combine more sub-strings as well.
+
+Process last failed tests only
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To only execute the tests that previously failed, use :option:`--last-failed`.
+
+Show the markers
+~~~~~~~~~~~~~~~~
+
+Use :option:`--markers` to show the available markers without executing the
+tests.
+
+Show the tests to be executed
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Use :option:`--collect-only` to show the test cases and the test events
+(functions) selected without executing them. You may combine this option with
+other options, like the one above to filter the test cases.

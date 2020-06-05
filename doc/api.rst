@@ -15,29 +15,12 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 
-Welcome to |ptx| documentation!
-===============================
+API documentation
+=================
 
-.. include:: ../README.rst
-   :start-after: inclusion-marker-do-not-remove
+Below are some of the classes API used by |ptx|.
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+.. autoclass:: pytest_executable.script_runner.ScriptRunner
+   :members:
 
-   usage
-   how-to-use
-   test-case
-   post-processing
-   fixtures
-   test_executable
-   api
-   changelog
-
-
-Indices and tables
-------------------
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. autoclass:: pytest_executable.settings.Tolerances

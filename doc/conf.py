@@ -17,9 +17,9 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'pytest-executable'
-copyright = '2019, C-S'
-author = 'C-S'
+project = "pytest-executable"
+copyright = "2019, C-S"
+author = "C-S"
 
 
 # -- General configuration ---------------------------------------------------
@@ -28,15 +28,12 @@ author = 'C-S'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.mathjax',
-    'sphinx.ext.napoleon',
-    'sphinx.ext.autodoc',
-    'sphinx_autodoc_typehints',
-    'sphinxcontrib.spelling',
+    "sphinx.ext.napoleon",
+    "sphinxcontrib.spelling",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -49,23 +46,44 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+html_theme = "sphinx_rtd_theme"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]
 
 
 # -- Extension configuration -------------------------------------------------
-mathjax_path = 'mathjax-v3.0.0_tex-svg-full.js'
-
-autodoc_docstring_signature = False
-
 rst_prolog = """
+.. _pytest: https://docs.pytest.org
 .. |ptx| replace:: *pytest-executable*
-.. |executable| replace:: :program:`executable`
-.. |pytest| replace:: :program:`pytest`
-.. |yaml| replace:: :file:`test_case.yaml`
-.. |run_executable| replace:: :file:`run_executable.sh`
+.. |exe| replace:: :program:`executable`
+.. |pytest| replace:: `pytest`_
+.. |yaml| replace:: :file:`test-settings.yaml`
+.. |runner| replace:: *runner shell script*
 """
+
+
+from sphinx.ext import autodoc
+
+# class DocsonlyMethodDocumenter(autodoc.MethodDocumenter):
+#   def format_args(self):
+#     return None
+#
+# autodoc.add_documenter(DocsonlyMethodDocumenter)
+
+
+class SimpleDocumenter(autodoc.MethodDocumenter):
+    objtype = "simple"
+
+    # do not indent the content
+    content_indent = ""
+
+    # do not add a header to the docstring
+    def add_directive_header(self, sig):
+        pass
+
+
+def setup(app):
+    app.add_autodocumenter(SimpleDocumenter)

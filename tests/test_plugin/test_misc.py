@@ -21,18 +21,22 @@ import pytest
 
 
 def test_collect_order(testdir):
-    """Check tests collection order."""
+    """Check the tests order.
+
+    The default test module functions shall be first. Then the additional test
+    modules, and finally the test modules from the parent directories.
+    """
     directory = testdir.copy_example("tests/data/collect_order")
     result = testdir.runpytest(directory, "--collect-only")
     result.stdout.re_match_lines(
         [
-            "collected 6 items",
-            "<TestCaseYamlModule .*b/test_case.yaml>",
+            "collected 5 items",
+            "<TestExecutableModule .*b/test-settings.yaml>",
             "  <Function test_runner>",
-            "  <Function test_logs>",
-            "<TestCaseYamlModule .*z/test_case.yaml>",
+            "<Module .*b/a/test_aaa.py>",
+            "  <Function test_dummy>",
+            "<TestExecutableModule .*z/test-settings.yaml>",
             "  <Function test_runner>",
-            "  <Function test_logs>",
             "<Module .*z/test_aa.py>",
             "  <Function test_dummy>",
             "<Module .*test_a.py>",
@@ -42,7 +46,7 @@ def test_collect_order(testdir):
 
 
 def test_marks_from_yaml(testdir):
-    """Test marks from test_case.yaml."""
+    """Test marks from test-settings.yaml."""
     directory = testdir.copy_example("tests/data/test_marks_from_yaml")
 
     # check tests detection
@@ -50,9 +54,11 @@ def test_marks_from_yaml(testdir):
     result.stdout.fnmatch_lines(
         [
             "collected 3 items",
-            "<TestCaseYamlModule *test_case.yaml>",
+            "<TestExecutableModule *test-settings.yaml>",
             "  <Function test_runner>",
-            "  <Function test_logs>",
+            "<Package */a>",
+            "  <Module test_dummy.py>",
+            "    <Function test_marks>",
             "<Module *test_dummy.py>",
             "  <Function test_marks>",
         ]
@@ -63,41 +69,20 @@ def test_marks_from_yaml(testdir):
     assert result.parseoutcomes()["deselected"] == 3
 
 
-def test_logs(testdir):
-    """Test test_logs."""
-    directory = testdir.copy_example("tests/data/test_logs")
-
-    for output_path in directory.listdir(fil="*output*"):
-        result = testdir.runpytest(
-            directory / "tests-inputs",
-            "--output-root",
-            str(output_path),
-            "--overwrite-output",
-        )
-        if output_path.ext == ".ko":
-            failed = 1
-            passed = 0
-        else:
-            failed = 0
-            passed = 1
-        result.assert_outcomes(skipped=1, failed=failed, passed=passed)
-
-
 def test_output_directory_already_exists(testdir):
     """Test create_output_dir fixture for existing directory error."""
     directory = testdir.copy_example("tests/data/test_output_dir_fixture")
     result = testdir.runpytest(directory / "tests-inputs")
     # error because directory already exists
-    # fail logs because no executable.std*
-    result.assert_outcomes(error=1, failed=1)
+    result.assert_outcomes(error=1)
     result.stdout.fnmatch_lines(
         [
             "E   FileExistsError",
             "",
             "During handling of the above exception, another exception occurred:",
             'E   FileExistsError: the output directory "*" already exists: '
-            "either remove it manually or use the --clean-output option to "
-            "remove it or use the --overwrite-output to overwrite it",
+            "either remove it manually or use the --exe-clean-output option to "
+            "remove it or use the --exe-overwrite-output to overwrite it",
         ]
     )
 
@@ -117,22 +102,31 @@ def test___init__(testdir):
 
 
 def test_cli_check_clash(testdir):
-    """Test cli arguments clash."""
+    """Test CLI arguments clash."""
     directory = testdir.copy_example("tests/data/test_cli_check")
     result = testdir.runpytest_subprocess(
-        directory, "--clean-output", "--overwrite-output"
+        directory, "--exe-clean-output", "--exe-overwrite-output"
     )
     result.stderr.fnmatch_lines(
-        ["ERROR: options --clean-output and --overwrite-output are not compatible"]
+        [
+            "ERROR: options --exe-clean-output and --exe-overwrite-output "
+            "are not compatible"
+        ]
     )
 
 
 @pytest.mark.parametrize(
     "option_name",
-    ("--runner", "--default-settings", "--regression-root", "--report-generator"),
+    (
+        "--exe-runner",
+        "--exe-default-settings",
+        "--exe-regression-root",
+        "--exe-report-generator",
+        "--exe-test-module",
+    ),
 )
 def test_cli_check(testdir, option_name):
-    """Test cli arguments paths."""
+    """Test CLI arguments paths."""
     result = testdir.runpytest_subprocess(option_name, "dummy")
     result.stderr.fnmatch_lines(
         [f"ERROR: argument {option_name}: no such file or directory: dummy"]

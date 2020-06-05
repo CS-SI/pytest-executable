@@ -27,7 +27,7 @@ from pytest_executable.settings import Settings, Tolerances
 @pytest.fixture
 def default_settings():
     """Fixture that returns a hand made default Settings object."""
-    return Settings(nproc=1, marks=set(), references=set(), tolerances={})
+    return Settings(runner={}, marks=set(), references=set(), tolerances={})
 
 
 def _test_merge(tmp_path, yaml_str, ref_settings):
@@ -103,30 +103,29 @@ references:
     - x
     - x
         """,
-        # alien key
+        # runner shall be an object
         """
-X: x
+runner: 0
         """,
-        # nproc shall be strictly positive
         """
-nproc: 0
+runner: []
         """,
         # tolerances shall be rel or abs
         """
 tolerances:
-    Velocity:
+    quantity:
         X: 1.
         """,
         # rel shall be number
         """
 tolerances:
-    Velocity:
+    quantity:
         rel: x
         """,
         # rel shall be positive
         """
 tolerances:
-    Velocity:
+    quantity:
         rel: -1.
         """,
     ),
@@ -137,3 +136,12 @@ def test_yaml_validation(tmp_path, yaml_str):
     settings_file.write_text(yaml_str)
     with pytest.raises(ValidationError):
         Settings.from_local_file(DEFAULT_SETTINGS_FILE, settings_file)
+
+
+def test_alien_item(tmp_path, default_settings):
+    """Test that an alien item in the yaml is ignored."""
+    yaml_str = "dummy: ''"
+    settings_file = tmp_path / "settings.yaml"
+    settings_file.write_text(yaml_str)
+    settings = Settings.from_local_file(DEFAULT_SETTINGS_FILE, settings_file)
+    assert settings == default_settings

@@ -26,23 +26,20 @@ from typing import Dict, List, Optional
 import _pytest
 import py
 import pytest
-from _pytest.config import Config
-from _pytest.terminal import TerminalReporter
 
-from . import report, test_case_yaml
+from . import report
 from .file_tools import create_output_directory, find_references, get_mirror_path
-from .script_runner import ScriptRunner, get_final_script
+from .script_runner import ScriptRunner
 from .settings import Settings
 
 LOGGER = logging.getLogger(__name__)
 
 # files to be ignored when creating the output directories symlinks
-OUTPUT_IGNORED_FILES = ("__pycache__", "conftest.py", "test_case.yaml")
-
-EXE_RUNNER_NAME = "run_executable"
+OUTPUT_IGNORED_FILES = ("__pycache__", "conftest.py", "test-settings.yaml")
 
 # file with the test default settings
-SETTINGS_PATH = Path(__file__).parent / "test_case.yaml"
+SETTINGS_PATH = Path(__file__).parent / "test-settings.yaml"
+TEST_MODULE_PATH = Path(__file__).parent / "test_executable.py"
 
 # caches the test case directory path to marks to propagate them to all the
 # test modules of a test case
@@ -52,44 +49,56 @@ _marks_cache: Dict[str, List[str]] = {}
 def pytest_addoption(parser):
     """CLI options for the plugin."""
     group = parser.getgroup("executable", "executable testing")
+
     group.addoption(
-        "--runner",
+        "--exe-runner",
         metavar="PATH",
-        help="use the shell script at PATH to run an executable, if omitted then "
-        "the executable is not run but the other test processing will be",
+        help="use the shell script at PATH to run an executable",
     )
+
     group.addoption(
-        "--output-root",
+        "--exe-output-root",
         default="tests-output",
         metavar="PATH",
         help="use PATH as the root directory of the tests output, default: %(default)s",
     )
+
     group.addoption(
-        "--overwrite-output",
+        "--exe-overwrite-output",
         action="store_true",
         help="overwrite existing files in the tests output directories",
     )
+
     group.addoption(
-        "--clean-output",
+        "--exe-clean-output",
         action="store_true",
         help="clean the tests output directories before executing the tests",
     )
+
     group.addoption(
-        "--regression-root",
+        "--exe-regression-root",
         metavar="PATH",
         help="use PATH as the root directory with the references for the "
-        "regression testing, if omitted then the tests using the regression_path "
-        "fixture will be skipped",
+        "regression testing",
     )
+
     group.addoption(
-        "--default-settings",
+        "--exe-default-settings",
         default=SETTINGS_PATH,
         metavar="PATH",
         help="use PATH as the yaml file with the global default test settings instead "
         "of the built-in ones",
     )
+
     group.addoption(
-        "--report-generator",
+        "--exe-test-module",
+        default=TEST_MODULE_PATH,
+        metavar="PATH",
+        help="use PATH as the default test module",
+    )
+
+    group.addoption(
+        "--exe-report-generator",
         metavar="PATH",
         help="use PATH as the script to generate the test report",
     )
@@ -104,24 +113,25 @@ def pytest_addoption(parser):
 
 
 def pytest_sessionstart(session):
-    """Check the cli arguments."""
-    getoption = session.config.getoption
+    """Check the CLI arguments and resolve their paths."""
+    option = session.config.option
 
     # check options clash
-    if getoption("clean_output") and getoption("overwrite_output"):
-        msg = "options --clean-output and --overwrite-output are not compatible"
+    if option.exe_clean_output and option.exe_overwrite_output:
+        msg = "options --exe-clean-output and --exe-overwrite-output are not compatible"
         raise pytest.UsageError(msg)
 
     # check paths are valid
     for option_name in (
-        "runner",
-        "default_settings",
-        "regression_root",
-        "report_generator",
+        "exe_runner",
+        "exe_test_module",
+        "exe_default_settings",
+        "exe_regression_root",
+        "exe_report_generator",
     ):
-        path = getoption(option_name)
+        path = getattr(option, option_name)
         try:
-            Path(path).resolve(True)
+            path = Path(path).resolve(True)
         except FileNotFoundError:
             msg = (
                 f"argument --{option_name.replace('_', '-')}: "
@@ -131,6 +141,12 @@ def pytest_sessionstart(session):
         except TypeError:
             # path is None, i.e. no option is defined
             pass
+        else:
+            # overwrite the option with the resolved path
+            setattr(option, option_name, path)
+
+    # convert remaining option with pat
+    option.exe_output_root = Path(option.exe_output_root).resolve()
 
 
 def _get_parent_path(fspath: py.path.local) -> Path:
@@ -148,24 +164,23 @@ def _get_parent_path(fspath: py.path.local) -> Path:
 @pytest.fixture(scope="module")
 def create_output_tree(request):
     """Fixture to create and return the path to the output directory tree."""
-    getoption = request.config.getoption
-    output_root = Path(getoption("output_root"))
+    option = request.config.option
     parent_path = _get_parent_path(request.node.fspath)
-    output_path = get_mirror_path(parent_path, output_root.resolve())
+    output_path = get_mirror_path(parent_path, option.exe_output_root)
 
     try:
         create_output_directory(
             parent_path,
             output_path,
-            not getoption("overwrite_output"),
-            getoption("clean_output"),
+            not option.exe_overwrite_output,
+            option.exe_clean_output,
             OUTPUT_IGNORED_FILES,
         )
     except FileExistsError:
         msg = (
             f'the output directory "{output_path}" already exists: either '
-            "remove it manually or use the --clean-output option to remove "
-            "it or use the --overwrite-output to overwrite it"
+            "remove it manually or use the --exe-clean-output option to remove "
+            "it or use the --exe-overwrite-output to overwrite it"
         )
         raise FileExistsError(msg)
 
@@ -173,12 +188,13 @@ def create_output_tree(request):
 @pytest.fixture(scope="module")
 def output_path(request):
     """Fixture to return the path to the output directory."""
-    output_root = Path(request.config.getoption("output_root")).resolve(True)
-    return get_mirror_path(_get_parent_path(request.node.fspath), output_root)
+    return get_mirror_path(
+        _get_parent_path(request.node.fspath), request.config.option.exe_output_root
+    )
 
 
 def _get_settings(config: _pytest.config.Config, path: Path) -> Settings:
-    """Return the settings from global and local test_case.yaml.
+    """Return the settings from global and local test-settings.yaml.
 
     Args:
         config: Config from pytest.
@@ -188,43 +204,28 @@ def _get_settings(config: _pytest.config.Config, path: Path) -> Settings:
         The settings from the test case yaml.
     """
     return Settings.from_local_file(
-        Path(config.getoption("default_settings")),
+        Path(config.option.exe_default_settings),
         _get_parent_path(path) / SETTINGS_PATH.name,
     )
 
 
 @pytest.fixture(scope="module")
 def tolerances(request):
-    """Fixture that provides the settings from global and local test_case.yaml."""
+    """Fixture that provides the tolerances from the settings."""
     return _get_settings(request.config, request.node.fspath).tolerances
 
 
 @pytest.fixture(scope="module")
 def runner(request, create_output_tree, output_path):
-    """Fixture to run the executable with a runner script.
-
-    This fixture will create a :file:`run_executable.sh` script in the test case
-    output directory from the script passed to the pytest command line with the
-    option :option:`--runner`. The placeholders {nproc} and {output_path} are
-    replaced with their actual values in the written script. The runner object
-    created by the fixture can be executed with the :py:meth:`run` method
-    which will return the return code of the script execution.
-
-    Returns:
-        ScriptRunner object.
-    """
-    runner_path = request.config.getoption("runner")
+    """Fixture to execute the runner script."""
+    runner_path = request.config.option.exe_runner
     if runner_path is None:
-        pytest.skip("no runner provided to --runner")
+        pytest.skip("no runner provided with --exe-runner")
 
-    # check path
-    runner_path = Path(runner_path).resolve(True)
+    settings = _get_settings(request.config, request.node.fspath).runner
+    settings["output_path"] = output_path
 
-    nproc = _get_settings(request.config, request.node.fspath).nproc
-
-    variables = dict(output_path=output_path, nproc=nproc)
-    script = get_final_script(runner_path, variables)
-    return ScriptRunner(EXE_RUNNER_NAME, script, output_path)
+    return ScriptRunner(runner_path, settings, output_path)
 
 
 def _get_regression_path(
@@ -232,7 +233,7 @@ def _get_regression_path(
 ) -> Optional[Path]:
     """Return the path to the reference directory of a test case.
 
-    None is returned if --regression-root is not passed to the CLI.
+    None is returned if --exe-regression-root is not passed to the CLI.
 
     Args:
         config: Config from pytest.
@@ -241,12 +242,10 @@ def _get_regression_path(
     Returns:
         The path to the reference directory of the test case or None.
     """
-    regression_path = config.getoption("regression_root")
+    regression_path = config.option.exe_regression_root
     if regression_path is None:
         return None
-    return get_mirror_path(
-        _get_parent_path(fspath), Path(regression_path).resolve(True)
-    )
+    return get_mirror_path(_get_parent_path(fspath), regression_path)
 
 
 @pytest.fixture(scope="module")
@@ -254,7 +253,9 @@ def regression_path(request):
     """Fixture to return the path of a test case under the references tree."""
     regression_path = _get_regression_path(request.config, request.node.fspath)
     if regression_path is None:
-        pytest.skip("no tests references root directory provided to --regression-root")
+        pytest.skip(
+            "no tests references root directory provided to --exe-regression-root"
+        )
     return regression_path
 
 
@@ -263,7 +264,7 @@ def pytest_generate_tests(metafunc):
 
     Used for accessing the references files.
 
-    If --regression-root is not set then no reference files will be provided.
+    If --exe-regression-root is not set then no reference files will be provided.
     """
     if "regression_file_path" not in metafunc.fixturenames:
         return
@@ -292,10 +293,10 @@ def pytest_generate_tests(metafunc):
 def pytest_collect_file(parent, path):
     """Collect test cases defined with a yaml file."""
     if path.basename == SETTINGS_PATH.name:
-        return TestCaseYamlModule(path, parent)
+        return TestExecutableModule(path, parent)
 
 
-def pytest_configure(config):
+def pytest_configure(config: _pytest.config.Config) -> None:
     """Register the possible markers and change default error display.
 
     Display only the last error line without the traceback.
@@ -306,32 +307,42 @@ def pytest_configure(config):
 
     # show only the last line with the error message when displaying a
     # traceback
-    if config.getoption("tbstyle") == "auto":
+    if config.option.tbstyle == "auto":
         config.option.tbstyle = "line"
 
 
-class TestCaseYamlModule(pytest.Module):
+class TestExecutableModule(pytest.Module):
     """Collector for tests defined with a yaml file."""
 
     def _getobj(self):
         """Override the base class method.
 
-        To swap the yaml file with the test_case_yaml.py module.
+        To swap the yaml file with the test module.
         """
+        test_module_path = Path(self.config.option.exe_test_module)
+
         # prevent python from using the module cache, otherwise the module
         # object will be the same for all the tests
-        del sys.modules[test_case_yaml.__name__]
-        # backup the attribute before temporary override of it
+        try:
+            del sys.modules[test_module_path.stem]
+        except KeyError:
+            pass
+
+        # backup the attribute before a temporary override of it
         fspath = self.fspath
-        self.fspath = py.path.local(test_case_yaml.__file__)
+        self.fspath = py.path.local(test_module_path)
         module = self._importtestmodule()
+
         # restore the backuped up attribute
         self.fspath = fspath
-        # set the test case marks from settings.yaml
+
+        # set the test case marks from test-settings.yaml
         settings = _get_settings(self.config, fspath)
-        # store the marks for settings them later
+
+        # store the marks for applying them later
         if settings.marks:
             _marks_cache[fspath.dirname] = settings.marks
+
         return module
 
 
@@ -356,57 +367,55 @@ def pytest_exception_interact(node, call, report):
         report.longrepr.reprcrash = f"{report.nodeid}: {excinfo.value}"
 
 
-def pytest_collection_modifyitems(
-    session: _pytest.main.Session,
-    config: _pytest.config.Config,
-    items: List[_pytest.nodes.Item],
-) -> None:
+def pytest_collection_modifyitems(items: List[_pytest.nodes.Item]) -> None:
     """Change the tests execution order.
 
     Such that:
     - the tests in parent directories are executed after the tests in children
       directories
     - in a test case directory, the yaml defined tests are executed before the
-      others (to handle the output directory creation).
+      others
     """
-    items.sort(key=cmp_to_key(_sort_yaml_first))
     items.sort(key=cmp_to_key(_sort_parent_last))
+    items.sort(key=cmp_to_key(_sort_yaml_first))
     _set_marks(items)
 
 
 def _sort_yaml_first(item_1: _pytest.nodes.Item, item_2: _pytest.nodes.Item) -> int:
-    """Sort yaml item first if in the same directory."""
+    """Sort yaml item first vs module at or below yaml parent directory."""
     path_1 = Path(item_1.fspath)
     path_2 = Path(item_2.fspath)
-    if path_1.parent == path_2.parent and (path_1.suffix, path_2.suffix) == (
-        ".yaml",
-        ".py",
-    ):
+    if path_1 == path_2 or path_1.suffix == path_2.suffix:
+        return 0
+    if path_2.suffix == ".yaml" and (path_2.parent in path_1.parents):
+        return 1
+    if path_1.suffix == ".yaml" and (path_1.parent in path_2.parents):
         return -1
-    return 1
+    return 0
 
 
 def _sort_parent_last(item_1: _pytest.nodes.Item, item_2: _pytest.nodes.Item) -> int:
     """Sort item in parent directory last."""
     dir_1 = Path(item_1.fspath).parent
     dir_2 = Path(item_2.fspath).parent
+    if dir_1 == dir_2:
+        return 0
     if dir_2 in dir_1.parents:
         return -1
     return 1
 
 
 def _set_marks(items: List[_pytest.nodes.Item]) -> None:
-    """Set the marks to the test functions under a test case."""
+    """Set the marks to all the test functions of a test case."""
     for dirname, marks in _marks_cache.items():
         for item in items:
-            if item.fspath.dirname != dirname:
-                continue
-            for mark in marks:
-                item.add_marker(mark)
+            if Path(dirname) in Path(item.fspath).parents:
+                for mark in marks:
+                    item.add_marker(mark)
 
 
 def pytest_terminal_summary(
-    terminalreporter: TerminalReporter, exitstatus: int, config: Config
+    terminalreporter: _pytest.terminal.TerminalReporter, config: _pytest.config.Config,
 ) -> None:
     """Create the custom report.
 
@@ -414,7 +423,7 @@ def pytest_terminal_summary(
     created and the report generator is called.
     """
     # path to the report generator
-    reporter_path = config.getoption("report_generator")
+    reporter_path = config.option.exe_report_generator
     if reporter_path is None:
         return
 
@@ -422,12 +431,10 @@ def pytest_terminal_summary(
         # no test have been run thus no report to create or update
         return
 
-    output_root = Path(config.getoption("output_root"))
-
     terminalreporter.write_sep("=", "starting report generation")
 
     try:
-        report.generate(reporter_path, output_root, terminalreporter)
+        report.generate(reporter_path, config.option.exe_output_root, terminalreporter)
     except Exception as e:
         terminalreporter.write_line(str(e), red=True)
         terminalreporter.write_sep("=", "report generation failed", red=True)

@@ -15,29 +15,12 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 
-Welcome to |ptx| documentation!
-===============================
+.. _builtin-test-module:
 
-.. include:: ../README.rst
-   :start-after: inclusion-marker-do-not-remove
+Default test module
+===================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+This is the default python module executed when the testing tool finds a
+|yaml|, this module can be used as an example for writing new test modules.
 
-   usage
-   how-to-use
-   test-case
-   post-processing
-   fixtures
-   test_executable
-   api
-   changelog
-
-
-Indices and tables
-------------------
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. literalinclude:: ../src/pytest_executable/test_executable.py

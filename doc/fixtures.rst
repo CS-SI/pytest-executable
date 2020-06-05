@@ -23,57 +23,118 @@
 Fixtures
 ========
 
-The purpose of test fixtures is to ease the writing of test functions by
-providing informations and data automatically. You may find more documentation
+The purpose of the test fixtures is to ease the writing of test functions by
+providing information and data automatically. You may find more documentation
 on |pytest| fixture in its `official documentation
 <https://docs.pytest.org/en/latest/fixture.html>`_. We describe here the
-fixtures defined in |ptx|. They are used in the default test module, give a
-look at it for usage examples, see :ref:`builtin-test-module`.
+fixtures defined in |ptx|. Some of them are used in the default test module,
+see :ref:`builtin-test-module`.
 
+.. _fixture-runner:
 
 Runner fixture
 --------------
 
-This fixture is used to run |executable|, it will do the following:
+The :py:data:`runner` fixture is used to execute the |runner| passed with
+:option:`--exe-runner`. This fixture is an :py:class:`object
+<pytest_executable.script_runner.ScriptRunner>` which can execute the script
+with the :py:meth:`run` method. This method returns the exit status of the
+script execution. The value of the exit status shall be **0** when the
+execution is successful.
 
-- get the runner script passed to the |pytest| command line option
-  :option:`--runner`,
-- process it to replace the placeholders `{{nproc}}` and `{{output_path}}` with their
-  actual values,
-- write it to the |run_executable| shell script in the test case output
-  directory.
+When :option:`--exe-runner` is not set, a function that uses this fixture will
+be skipped.
 
-The :py:data:`runner` object provided by the fixture can be executed with the
-:py:meth:`run` method which will return the exit status of the script
-execution. The value **0** of the exit status means a successful execution.
-
+.. _fixture-output_path:
 
 Output path fixture
 -------------------
 
-This fixture is used to get the absolute path to the output directory of a test
-case. It provides the :py:data:`output_path` variable that holds a `Path`_
-object.
+The :py:data:`output_path` fixture provides the absolute path to the output
+directory of a test case as a `Path`_ object.
 
-
-Tolerances fixture
-------------------
-
-This fixture is used to get the values of the tolerances defined in the |yaml|.
-It provides the :py:data:`tolerances` dictionary that binds the name of a
-quantity to an object that has 2 attributes:
-
-- :py:attr:`rel`: the relative tolerance,
-- :py:attr:`abs`: the absolute tolerance.
-
+.. _regression-path-fixtures:
 
 Regression path fixture
 -----------------------
 
-This fixture is used to get the absolute path to the directory that contains
-the regression reference of a test case when the command line option
-:option:`--regression-root` is used. It provides the :py:data:`regression_path`
-variable that holds a `Path`_ object.
+The :py:data:`regression_file_path` fixture provides the paths to the reference
+data of a test case. A test function that use this fixture is called once per
+reference item (file or directory) declared in the :ref:`yaml-ref` of a |yaml|
+(thanks to the `parametrize
+<https://docs.pytest.org/en/latest/parametrize.html>`_ feature). The
+:py:data:`regression_file_path` object has the attributes:
 
-You may use this fixture with the :py:data:`output_path` fixture to get the
-path to the file that shall be compared to a reference file.
+- :py:attr:`relative`: a `Path`_ object that contains the path to a reference
+  item relatively to the output directory of the test case.
+- :py:attr:`absolute`: a `Path`_ object that contains the absolute path to a
+  reference item.
+
+If :option:`--exe-regression-root` is not set then a test function that uses
+the fixture is skipped.
+
+You may use this fixture with the :ref:`fixture-output_path` to get the path to
+an output file that shall be compared to a reference file.
+
+For instance, if a |yaml| under :file:`inputs/case` contains:
+
+.. code-block:: yaml
+
+   references:
+      - output/file
+      - '**/*.txt'
+
+and if :option:`--exe-regression-root` is set to a directory :file:`references`
+that contains:
+
+.. code-block:: text
+
+   references
+   └── case
+       ├── 0.txt
+       └── output
+           ├── a.txt
+           └── file
+
+then a test function that uses the fixture will be called once per item of the
+following list:
+
+.. code-block:: py
+
+   [
+     "references/case/output/file",
+     "references/case/0.txt",
+     "references/case/output/a.txt",
+   ]
+
+and for each these items, the :py:data:`regression_file_path` is set as
+described above with the relative and absolute paths.
+
+.. _tolerances-fixtures:
+
+Tolerances fixture
+------------------
+
+The :py:data:`tolerances` fixture provides the contents of the :ref:`yaml-tol`
+of a |yaml| as a dictionary that maps names to :py:class:`Tolerances
+<pytest_executable.settings.Tolerances>` objects.
+
+For instance, if a |yaml| contains:
+
+.. code-block:: yaml
+
+   tolerances:
+       data-name1:
+           abs: 1.
+       data-name2:
+           rel: 0.
+           abs: 0.
+
+then the fixture object is such that:
+
+.. code-block:: py
+
+   tolerances["data-name1"].abs = 1.
+   tolerances["data-name1"].rel = 0.
+   tolerances["data-name2"].abs = 0.
+   tolerances["data-name2"].rel = 0.
