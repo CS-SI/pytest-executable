@@ -102,7 +102,7 @@ def test___init__(testdir):
 
 
 def test_cli_check_clash(testdir):
-    """Test cli arguments clash."""
+    """Test CLI arguments clash."""
     directory = testdir.copy_example("tests/data/test_cli_check")
     result = testdir.runpytest_subprocess(
         directory, "--exe-clean-output", "--exe-overwrite-output"
@@ -126,7 +126,7 @@ def test_cli_check_clash(testdir):
     ),
 )
 def test_cli_check(testdir, option_name):
-    """Test cli arguments paths."""
+    """Test CLI arguments paths."""
     result = testdir.runpytest_subprocess(option_name, "dummy")
     result.stderr.fnmatch_lines(
         [f"ERROR: argument {option_name}: no such file or directory: dummy"]

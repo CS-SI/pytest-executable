@@ -113,7 +113,7 @@ def pytest_addoption(parser):
 
 
 def pytest_sessionstart(session):
-    """Check the cli arguments and resolve their paths."""
+    """Check the CLI arguments and resolve their paths."""
     option = session.config.option
 
     # check options clash

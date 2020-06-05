@@ -25,7 +25,7 @@ Changed
 Added
 ~~~~~
 - Testing on MacOS.
-- :option:`--exe-test-module` cli option for setting the default test module
+- :option:`--exe-test-module` CLI option for setting the default test module
 - Add timeout setting for the runner execution.
 
 Removed
