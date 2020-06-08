@@ -20,7 +20,7 @@ Pytest-executable
     :target: https://pytest-executable.readthedocs.io/en/stable/?badge=stable
     :alt: Read The Docs Status
 
-.. image:: https://img.shields.io/travis/CS-SI/pytest-executable
+.. image:: https://img.shields.io/travis/CS-SI/pytest-executable/master
     :target: https://travis-ci.org/CS-SI/pytest-executable
     :alt: Travis-CI Build Status
 
