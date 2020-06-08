@@ -30,4 +30,3 @@ def test_runner(runner):
         runner: Runner object to be run.
     """
     assert runner.run() == 0
-
