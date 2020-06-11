@@ -293,7 +293,12 @@ def pytest_generate_tests(metafunc):
 def pytest_collect_file(parent, path):
     """Collect test cases defined with a yaml file."""
     if path.basename == SETTINGS_PATH.name:
-        return TestExecutableModule.from_parent(parent, fspath=path)
+        try:
+            # handle depreciation warning since pytest 5.4
+            # see https://docs.pytest.org/en/latest/deprecations.html
+            return TestExecutableModule.from_parent(parent, fspath=path)
+        except AttributeError:
+            return TestExecutableModule(path, parent)
 
 
 def pytest_configure(config: _pytest.config.Config) -> None:
