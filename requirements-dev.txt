@@ -7,7 +7,7 @@ flake8-docstrings
 flake8==3.8.3
 ipython
 isort
-mypy==0.780
+mypy==0.781
 pudb
 pydocstyle
 pylint
