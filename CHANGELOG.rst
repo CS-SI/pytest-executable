@@ -9,6 +9,13 @@ The format is based on `Keep a Changelog
 <https://keepachangelog.com/en/1.0.0/>`_, and this project adheres to `Semantic
 Versioning <https://semver.org/spec/v2.0.0.html>`_.
 
+0.5.1 - 2020-06-08
+------------------
+
+Fixed
+~~~~~
+- Bad version constraint on a dependency.
+
 0.5.0 - 2020-06-05
 ------------------
 
