@@ -21,7 +21,7 @@ import logging
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List
+from typing import Iterable, List
 
 LOG = logging.getLogger(__name__)
 
@@ -90,7 +90,7 @@ def get_mirror_path(path_from: Path, path_to: Path) -> Path:
     return path_to.joinpath(*relative_from.parts[offset:])
 
 
-def find_references(ref_dir: Path, ref_files: List[str]) -> List[FilePath]:
+def find_references(ref_dir: Path, ref_files: Iterable[str]) -> List[FilePath]:
     """Return the paths to the references files.
 
     Args:
@@ -121,7 +121,7 @@ def create_output_directory(
     dst_dir: Path,
     check_dst: bool,
     clean_dst: bool,
-    ignored_files: List[str],
+    ignored_files: Iterable[str],
 ) -> None:
     """Create a directory copy with symbolic links.
 
@@ -153,7 +153,9 @@ def create_output_directory(
     _shallow_dir_copy(src_dir, dst_dir, ignored_files)
 
 
-def _shallow_dir_copy(src_dir: Path, dst_dir: Path, ignored_files: List[str]) -> None:
+def _shallow_dir_copy(
+    src_dir: Path, dst_dir: Path, ignored_files: Iterable[str]
+) -> None:
     """Shallow copy a directory tree.
 
     Directories are duplicated, files are symlinked. The destination directory

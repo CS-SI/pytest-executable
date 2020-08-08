@@ -193,7 +193,7 @@ def output_path(request):
     )
 
 
-def _get_settings(config: _pytest.config.Config, path: Path) -> Settings:
+def _get_settings(config: _pytest.config.Config, path: py.path.local) -> Settings:
     """Return the settings from global and local test-settings.yaml.
 
     Args:
