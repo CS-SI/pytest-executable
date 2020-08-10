@@ -21,7 +21,7 @@ import logging
 import sys
 from functools import cmp_to_key
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Set
 
 import _pytest
 import py
@@ -43,7 +43,7 @@ TEST_MODULE_PATH = Path(__file__).parent / "test_executable.py"
 
 # caches the test case directory path to marks to propagate them to all the
 # test modules of a test case
-_marks_cache: Dict[str, List[str]] = {}
+_marks_cache: Dict[str, Set[str]] = {}
 
 
 def pytest_addoption(parser):
@@ -193,7 +193,7 @@ def output_path(request):
     )
 
 
-def _get_settings(config: _pytest.config.Config, path: Path) -> Settings:
+def _get_settings(config: _pytest.config.Config, path: py.path.local) -> Settings:
     """Return the settings from global and local test-settings.yaml.
 
     Args:
@@ -292,7 +292,11 @@ def pytest_generate_tests(metafunc):
 
 def pytest_collect_file(parent, path):
     """Collect test cases defined with a yaml file."""
-    if path.basename == SETTINGS_PATH.name:
+    if path.basename != SETTINGS_PATH.name:
+        return
+    if hasattr(TestExecutableModule, "from_parent"):
+        return TestExecutableModule.from_parent(parent, fspath=path)
+    else:
         return TestExecutableModule(path, parent)
 
 

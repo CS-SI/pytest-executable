@@ -47,7 +47,7 @@ def test_error_with_unreadable_script(tmp_path):
 def test_execution_with_setting(tmp_path):
     """Test script execution with placeholder replaced."""
     script_path = DATA_DIR / "nproc.sh"
-    runner = ScriptRunner(script_path, {"nproc": 100}, tmp_path)
+    runner = ScriptRunner(script_path, {"nproc": "100"}, tmp_path)
     runner.run()
     _assertions(tmp_path / script_path.name, "echo 100", "100", "")
 

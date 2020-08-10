@@ -16,3 +16,13 @@
 # limitations under the License.
 
 """Test for the plugin itself."""
+
+import inspect
+
+
+def assert_outcomes(result, **kwargs):
+    """Wrap result.assert_outcomes different API vs pytest versions."""
+    signature_params = inspect.signature(result.assert_outcomes).parameters
+    if "errors" not in signature_params and "errors" in kwargs:
+        kwargs["error"] = kwargs.pop("errors")
+    result.assert_outcomes(**kwargs)
