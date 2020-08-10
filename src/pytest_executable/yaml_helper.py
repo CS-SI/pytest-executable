@@ -77,7 +77,7 @@ class YamlHelper:
             new: Path to the file to be merged into ref.
 
         Return:
-            The merged dictonary.
+            The merged dictionary.
         """
         return self.__recursive_update(self.load(ref), self.load(new))
 

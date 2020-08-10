@@ -21,7 +21,7 @@ import logging
 import sys
 from functools import cmp_to_key
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Set
 
 import _pytest
 import py
@@ -43,7 +43,7 @@ TEST_MODULE_PATH = Path(__file__).parent / "test_executable.py"
 
 # caches the test case directory path to marks to propagate them to all the
 # test modules of a test case
-_marks_cache: Dict[str, List[str]] = {}
+_marks_cache: Dict[str, Set[str]] = {}
 
 
 def pytest_addoption(parser):
