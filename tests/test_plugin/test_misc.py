@@ -19,6 +19,8 @@
 
 import pytest
 
+from . import assert_outcomes
+
 
 def test_collect_order(testdir):
     """Check the tests order.
@@ -50,22 +52,13 @@ def test_marks_from_yaml(testdir):
     directory = testdir.copy_example("tests/data/test_marks_from_yaml")
 
     # check tests detection
-    result = testdir.runpytest(directory, "--collect-only")
-    result.stdout.fnmatch_lines(
-        [
-            "collected 3 items",
-            "<TestExecutableModule *test-settings.yaml>",
-            "  <Function test_runner>",
-            "<Package */a>",
-            "  <Module test_dummy.py>",
-            "    <Function test_marks>",
-            "<Module *test_dummy.py>",
-            "  <Function test_marks>",
-        ]
-    )
+    result = testdir.runpytest(directory / "tests-inputs")
+    assert_outcomes(result, passed=2, skipped=1)
 
     # select tests not with mark1
-    result = testdir.runpytest(directory, "--collect-only", "-m not mark1")
+    result = testdir.runpytest(
+        directory / "tests-inputs", "--collect-only", "-m not mark1"
+    )
     assert result.parseoutcomes()["deselected"] == 3
 
 
@@ -74,7 +67,7 @@ def test_output_directory_already_exists(testdir):
     directory = testdir.copy_example("tests/data/test_output_dir_fixture")
     result = testdir.runpytest(directory / "tests-inputs")
     # error because directory already exists
-    result.assert_outcomes(error=1)
+    assert_outcomes(result, errors=1)
     result.stdout.fnmatch_lines(
         [
             "E   FileExistsError",
@@ -91,7 +84,7 @@ def test___init__(testdir):
     """Test error handling when missing __init__.py."""
     testdir.copy_example("tests/data/test___init__")
     result = testdir.runpytest_subprocess()
-    result.assert_outcomes(error=1)
+    assert_outcomes(result, errors=1)
     result.stdout.fnmatch_lines(
         [
             "*/tests-inputs/case2",

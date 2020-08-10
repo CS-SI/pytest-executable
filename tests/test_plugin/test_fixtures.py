@@ -17,6 +17,8 @@
 
 """Tests for the plugin fixtures."""
 
+from . import assert_outcomes
+
 
 def test_tolerances_fixture(testdir):
     """Test tolerances fixture from test-settings.yaml."""
@@ -24,7 +26,7 @@ def test_tolerances_fixture(testdir):
     result = testdir.runpytest(directory / "tests-inputs")
     # skip runner because no --exe-runner
     # pass fixture
-    result.assert_outcomes(passed=1, skipped=1)
+    assert_outcomes(result, passed=1, skipped=1)
 
 
 def test_regression_path_fixture(testdir):
@@ -35,7 +37,7 @@ def test_regression_path_fixture(testdir):
     )
     # skip runner because no --exe-runner
     # pass fixture test
-    result.assert_outcomes(skipped=1, passed=1)
+    assert_outcomes(result, skipped=1, passed=1)
 
 
 def test_regression_path_fixture_no_regression_root(testdir):
@@ -43,14 +45,14 @@ def test_regression_path_fixture_no_regression_root(testdir):
     directory = testdir.copy_example("tests/data/test_regression_path_fixture")
     result = testdir.runpytest(directory / "tests-inputs")
     # skip runner because no --exe-runner
-    result.assert_outcomes(skipped=2)
+    assert_outcomes(result, skipped=2)
 
 
 def test_regression_file_path_fixture_no_regression_root(testdir):
     """Test skipping regression_file_path fixture without --exe-regression-root."""
     directory = testdir.copy_example("tests/data/test_regression_file_path_fixture")
     result = testdir.runpytest(directory / "tests-inputs/case-no-references")
-    result.assert_outcomes(skipped=1)
+    assert_outcomes(result, skipped=1)
 
 
 def test_regression_file_path_fixture_no_references(testdir):
@@ -61,7 +63,7 @@ def test_regression_file_path_fixture_no_references(testdir):
         "--exe-regression-root",
         directory / "references",
     )
-    result.assert_outcomes(skipped=1)
+    assert_outcomes(result, skipped=1)
 
 
 RUNNER_DATA_DIR = "tests/data/test_runner_fixture"
@@ -71,7 +73,7 @@ def test_runner_fixture_no_runner(testdir):
     """Test skipping runner fixture without runner."""
     directory = testdir.copy_example(RUNNER_DATA_DIR)
     result = testdir.runpytest(directory / "tests-inputs/case-local-settings")
-    result.assert_outcomes(skipped=1)
+    assert_outcomes(result, skipped=1)
 
 
 def test_runner_fixture_with_local_settings(testdir):
@@ -82,7 +84,7 @@ def test_runner_fixture_with_local_settings(testdir):
         "--exe-runner",
         directory / "runner.sh",
     )
-    result.assert_outcomes(passed=1)
+    assert_outcomes(result, passed=1)
     stdout = (
         (directory / "tests-output/case-local-settings/runner.sh.stdout")
         .open()
@@ -98,7 +100,7 @@ def test_runner_not_script(testdir):
     result = testdir.runpytest(
         directory / "tests-inputs/case-local-settings", "--exe-runner", "/bin/bash",
     )
-    result.assert_outcomes(error=1)
+    assert_outcomes(result, errors=1)
     result.stdout.fnmatch_lines(["E   TypeError: cannot read the script */bin/bash"])
 
 
@@ -112,7 +114,7 @@ def test_runner_fixture_with_global_settings(testdir):
         "--exe-default-settings",
         directory / "settings.yaml",
     )
-    result.assert_outcomes(passed=1)
+    assert_outcomes(result, passed=1)
     stdout = (
         (directory / "tests-output/case-global-settings/runner.sh.stdout")
         .open()
@@ -130,7 +132,7 @@ def test_runner_error_with_undefined_placeholder(testdir):
         "--exe-runner",
         directory / "runner.sh",
     )
-    result.assert_outcomes(error=1)
+    assert_outcomes(result, errors=1)
     result.stdout.fnmatch_lines(
         ["E   ValueError: in */runner.sh: 'nproc' is undefined"]
     )
