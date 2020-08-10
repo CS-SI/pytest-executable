@@ -18,8 +18,8 @@
 """Tests for the settings container."""
 
 import pytest
-
 from jsonschema import ValidationError
+
 from pytest_executable.plugin import SETTINGS_PATH as DEFAULT_SETTINGS_FILE
 from pytest_executable.settings import Settings, Tolerances
 

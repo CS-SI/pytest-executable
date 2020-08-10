@@ -22,8 +22,8 @@ from collections import defaultdict
 from typing import Dict, List
 
 import pytest
-
 import yaml
+
 from pytest_executable.report import create, dump, merge
 
 from . import ROOT_DATA_DIR

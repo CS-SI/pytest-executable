@@ -292,7 +292,11 @@ def pytest_generate_tests(metafunc):
 
 def pytest_collect_file(parent, path):
     """Collect test cases defined with a yaml file."""
-    if path.basename == SETTINGS_PATH.name:
+    if path.basename != SETTINGS_PATH.name:
+        return
+    if hasattr(TestExecutableModule, "from_parent"):
+        return TestExecutableModule.from_parent(parent, fspath=path)
+    else:
         return TestExecutableModule(path, parent)
 
 
