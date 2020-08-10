@@ -15,6 +15,7 @@ Versioning <https://semver.org/spec/v2.0.0.html>`_.
 Fixed
 ~~~~~
 - Typing issues.
+- #6: pytest 6 support.
 
 0.5.1 - 2020-06-08
 ------------------
