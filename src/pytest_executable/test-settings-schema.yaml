@@ -17,7 +17,7 @@
 
 # This is the schema for validating the settings from a yaml file.
 #
-# For more informations on schema and validation, see
+# For more information on schema and validation, see
 # https://json-schema.org/understanding-json-schema/index.html
 # json-schema.org/latest/json-schema-validation.html
 
