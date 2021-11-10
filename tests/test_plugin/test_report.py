@@ -1,4 +1,4 @@
-# Copyright 2020 CS Systemes d'Information, http://www.c-s.fr
+# Copyright 2020, CS Systemes d'Information, http://www.c-s.fr
 #
 # This file is part of pytest-executable
 #     https://www.github.com/CS-SI/pytest-executable
@@ -14,9 +14,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """Test the report feature."""
-
 import stat
 from pathlib import Path
 
@@ -52,7 +50,9 @@ def test_report_generator_internal_error(testdir):
     generator_path = directory / "report/generator-ko.sh"
     fix_execute_permission(generator_path)
     result = testdir.runpytest(
-        directory / "tests-inputs", "--exe-report-generator", generator_path,
+        directory / "tests-inputs",
+        "--exe-report-generator",
+        generator_path,
     )
     # skip runner because no --exe-runner
     result.assert_outcomes(skipped=1)

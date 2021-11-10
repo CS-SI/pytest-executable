@@ -14,16 +14,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """Provides the container for the settings of a test case.
 
 We use a dataclass because a dictionary does not offer easy checking and code
 completion.
 """
-
-from dataclasses import dataclass, fields
+from dataclasses import dataclass
+from dataclasses import fields
 from pathlib import Path
-from typing import Dict, Set
+from typing import Dict
+from typing import Set
 
 from .yaml_helper import YamlHelper
 

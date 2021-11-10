@@ -27,14 +27,14 @@ Pytest-executable
 .. image:: https://img.shields.io/codecov/c/gh/CS-SI/pytest-executable/develop
     :target: https://codecov.io/gh/CS-SI/pytest-executable
     :alt: Codecov coverage report
- 
+
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/psf/black
 
 *pytest-executable* is a `pytest`_ plugin for simplifying the black-box
 testing of an executable, be it written in python or not. It helps to avoid
 writing the boilerplate test code to:
-    
+
 - define the settings of a test case in a yaml file,
 - spawn a subprocess for running an executable,
 - reorder the tests properly either for a single test case or across several test cases,

@@ -1,6 +1,5 @@
 #! /usr/bin/env python
-
-# Copyright 2020 CS Systemes d'Information, http://www.c-s.fr
+# Copyright 2020, CS Systemes d'Information, http://www.c-s.fr
 #
 # This file is part of pytest-executable
 #     https://www.github.com/CS-SI/pytest-executable
@@ -16,7 +15,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """This module generates the test report.
 
 It shall be called from the test output root directory where the tests report
@@ -36,12 +34,12 @@ the output root directory.
 This module requires the packages tabulate and sphinx, these could be installed
 with the command: conda install tabluate sphinx
 """
-
 import shutil
 import subprocess
 import textwrap
 from pathlib import Path
-from typing import List, Tuple
+from typing import List
+from typing import Tuple
 
 import yaml
 from tabulate import tabulate

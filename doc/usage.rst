@@ -123,7 +123,7 @@ provide the path to one or more of its sub-directories, for instance:
 
 :command:`pytest --exe-runner <path/to/runner> <path/to/tests/inputs/sub-directory1> <path/to/tests/inputs/sub/sub/sub-directory2>`
 
-You may also use shell patterns (with `*` and `?` characters) in the paths
+You may also use shell patterns (with ``*`` and ``?`` characters) in the paths
 like:
 
 :command:`pytest --exe-runner <path/to/runner> <path/to/tests/inputs/*/sub-directory?>`
@@ -138,15 +138,15 @@ A test case could be assigned one or more marks in the |yaml| file, see
 match a given mark expression. A mark expression is a logical expression that
 combines marks and yields a truth value. For example, to run only the tests
 that have the mark1 mark but not the mark2 mark, use :option:`-m "mark1 and not
-mark2"`. The logical operator `or` could be used as well.
+mark2"`. The logical operator ``or`` could be used as well.
 
 Use sub-string expression
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Like the marks, any part (sub-string) of the name of a test case or of a test
 function can be used to filter what will be executed. For instance to only
-execute the tests that have the string `transition` anywhere in their name, use
-:option:`-k "transition"`. Or, to execute only the functions that have `runner`
+execute the tests that have the string ``transition`` anywhere in their name, use
+:option:`-k "transition"`. Or, to execute only the functions that have ``runner``
 in their names, use :option:`-k "runner"`. Logical expressions could be used to
 combine more sub-strings as well.
 

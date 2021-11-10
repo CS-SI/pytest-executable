@@ -36,7 +36,7 @@ A test case is composed of an input directory with:
 
 The |yaml| file is used by |ptx| for several things. When this file is
 found, |ptx| will:
-   
+
 1. create the output directory of the test case and, if needed, its parents,
 2. execute the tests defined in the default test module,
 3. execute the tests defined in the additional test modules.
@@ -181,9 +181,9 @@ Such a declared mark will be set to all the test functions in the directory of
 a test case, either from the default test module or from an additional |pytest|
 module.
 
-You can also use the marks that already existing. In particular, the `skip` and
-`xfail` marks provided by |pytest| can be used. The `skip` mark tells pytest to
-record but not execute the built-in test events of a test case. The `xfail`
+You can also use the marks that already existing. In particular, the ``skip`` and
+``xfail`` marks provided by |pytest| can be used. The ``skip`` mark tells pytest to
+record but not execute the built-in test events of a test case. The ``xfail``
 mark tells pytest to expect that at least one of the built-in test events will
 fail.
 

@@ -1,4 +1,4 @@
-# Copyright 2020 CS Systemes d'Information, http://www.c-s.fr
+# Copyright 2020, CS Systemes d'Information, http://www.c-s.fr
 #
 # This file is part of pytest-executable
 #     https://www.github.com/CS-SI/pytest-executable
@@ -14,14 +14,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """Tests for the settings container."""
-
 import pytest
 from jsonschema import ValidationError
-
 from pytest_executable.plugin import SETTINGS_PATH as DEFAULT_SETTINGS_FILE
-from pytest_executable.settings import Settings, Tolerances
+from pytest_executable.settings import Settings
+from pytest_executable.settings import Tolerances
 
 
 @pytest.fixture

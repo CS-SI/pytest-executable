@@ -1,4 +1,4 @@
-# Copyright 2020 CS Systemes d'Information, http://www.c-s.fr
+# Copyright 2020, CS Systemes d'Information, http://www.c-s.fr
 #
 # This file is part of pytest-executable
 #     https://www.github.com/CS-SI/pytest-executable
@@ -14,15 +14,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """Entry point into pytest_executable tools.
 
-This module contains function that do not depend on pytest to allow easier
-testing.
+This module contains function that do not depend on pytest to allow easier testing.
 """
-
-from ._version import get_versions
-from .settings import Tolerances  # noqa: F401
-
-__version__ = get_versions()["version"]  # type: ignore
-del get_versions
