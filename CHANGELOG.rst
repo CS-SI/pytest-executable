@@ -9,6 +9,14 @@ The format is based on `Keep a Changelog
 <https://keepachangelog.com/en/1.0.0/>`_, and this project adheres to `Semantic
 Versioning <https://semver.org/spec/v2.0.0.html>`_.
 
+0.5.3 - 2021-11-10
+------------------
+
+Added
+~~~~~
+
+- Support Python 3.10.
+
 0.5.2 - 2020-08-09
 ------------------
 
