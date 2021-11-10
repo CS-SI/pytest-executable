@@ -14,21 +14,24 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """Entry point into the pytest executable plugin."""
-
 import logging
 import sys
 from functools import cmp_to_key
 from pathlib import Path
-from typing import Dict, List, Optional, Set
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Set
 
 import _pytest
 import py
 import pytest
 
 from . import report
-from .file_tools import create_output_directory, find_references, get_mirror_path
+from .file_tools import create_output_directory
+from .file_tools import find_references
+from .file_tools import get_mirror_path
 from .script_runner import ScriptRunner
 from .settings import Settings
 
@@ -419,12 +422,13 @@ def _set_marks(items: List[_pytest.nodes.Item]) -> None:
 
 
 def pytest_terminal_summary(
-    terminalreporter: _pytest.terminal.TerminalReporter, config: _pytest.config.Config,
+    terminalreporter: _pytest.terminal.TerminalReporter,
+    config: _pytest.config.Config,
 ) -> None:
     """Create the custom report.
 
-    In the directory that contains the report generator, the report database is
-    created and the report generator is called.
+    In the directory that contains the report generator, the report database is created
+    and the report generator is called.
     """
     # path to the report generator
     reporter_path = config.option.exe_report_generator

@@ -1,4 +1,4 @@
-# Copyright 2020 CS Systemes d'Information, http://www.c-s.fr
+# Copyright 2020, CS Systemes d'Information, http://www.c-s.fr
 #
 # This file is part of pytest-executable
 #     https://www.github.com/CS-SI/pytest-executable
@@ -14,14 +14,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """Output directory tree creation functions."""
-
 import logging
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, List
+from typing import Iterable
+from typing import List
 
 LOG = logging.getLogger(__name__)
 

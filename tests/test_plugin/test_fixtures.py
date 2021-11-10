@@ -1,4 +1,4 @@
-# Copyright 2020 CS Systemes d'Information, http://www.c-s.fr
+# Copyright 2020, CS Systemes d'Information, http://www.c-s.fr
 #
 # This file is part of pytest-executable
 #     https://www.github.com/CS-SI/pytest-executable
@@ -14,9 +14,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """Tests for the plugin fixtures."""
-
 from . import assert_outcomes
 
 
@@ -98,7 +96,9 @@ def test_runner_not_script(testdir):
     """Test error when the runner is not a text script."""
     directory = testdir.copy_example(RUNNER_DATA_DIR)
     result = testdir.runpytest(
-        directory / "tests-inputs/case-local-settings", "--exe-runner", "/bin/bash",
+        directory / "tests-inputs/case-local-settings",
+        "--exe-runner",
+        "/bin/bash",
     )
     assert_outcomes(result, errors=1)
     result.stdout.fnmatch_lines(["E   TypeError: cannot read the script */bin/bash"])

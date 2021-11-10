@@ -1,0 +1,37 @@
+name: Tests
+
+on:
+  push:
+    paths-ignore:
+      - "*.rst"
+      - "LICENSE**"
+      - ".gitignore"
+  pull_request:
+    paths-ignore:
+      - "*.rst"
+      - "LICENSE**"
+      - ".gitignore"
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10"]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install tox
+        run: pip install tox
+      - name: Run tox
+        # Run tox using the version of Python in `PATH`.
+        run: tox -e py-coverage
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          files: ./coverage.xml
+          verbose: true

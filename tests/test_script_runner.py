@@ -1,4 +1,4 @@
-# Copyright 2020 CS Systemes d'Information, http://www.c-s.fr
+# Copyright 2020, CS Systemes d'Information, http://www.c-s.fr
 #
 # This file is part of pytest-executable
 #     https://www.github.com/CS-SI/pytest-executable
@@ -14,16 +14,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """Tests for ScriptRunner."""
-
 import re
 import subprocess
 from pathlib import Path
 
 import pytest
-
-from pytest_executable.script_runner import ScriptExecutionError, ScriptRunner
+from pytest_executable.script_runner import ScriptExecutionError
+from pytest_executable.script_runner import ScriptRunner
 
 from . import ROOT_DATA_DIR
 

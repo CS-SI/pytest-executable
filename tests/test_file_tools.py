@@ -1,4 +1,4 @@
-# Copyright 2020 CS Systemes d'Information, http://www.c-s.fr
+# Copyright 2020, CS Systemes d'Information, http://www.c-s.fr
 #
 # This file is part of pytest-executable
 #     https://www.github.com/CS-SI/pytest-executable
@@ -14,19 +14,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """Tests for the file tools."""
-
 import os
 from pathlib import Path
 
 import pytest
-
-from pytest_executable.file_tools import (
-    create_output_directory,
-    find_references,
-    get_mirror_path,
-)
+from pytest_executable.file_tools import create_output_directory
+from pytest_executable.file_tools import find_references
+from pytest_executable.file_tools import get_mirror_path
 
 from . import ROOT_DATA_DIR
 

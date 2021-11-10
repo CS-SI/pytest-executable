@@ -1,5 +1,3 @@
-dist
-.ci
-.eggs
-*.egg-info
-.tox
+/dist
+/src/*.egg-info
+/.tox

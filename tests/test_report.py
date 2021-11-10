@@ -1,4 +1,4 @@
-# Copyright 2020 CS Systemes d'Information, http://www.c-s.fr
+# Copyright 2020, CS Systemes d'Information, http://www.c-s.fr
 #
 # This file is part of pytest-executable
 #     https://www.github.com/CS-SI/pytest-executable
@@ -14,17 +14,17 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """Tests for the report feature."""
-
 import shutil
 from collections import defaultdict
-from typing import Dict, List
+from typing import Dict
+from typing import List
 
 import pytest
 import yaml
-
-from pytest_executable.report import create, dump, merge
+from pytest_executable.report import create
+from pytest_executable.report import dump
+from pytest_executable.report import merge
 
 from . import ROOT_DATA_DIR
 
