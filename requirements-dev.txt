@@ -2,7 +2,7 @@ black
 docutils
 flake8-bugbear
 flake8-colors
-flake8-commas
+flake8-commas==2.1.0
 flake8-docstrings
 flake8==3.*
 ipython
