@@ -1,4 +1,4 @@
-black
+black==21.11b0
 docutils
 flake8-bugbear
 flake8-colors
