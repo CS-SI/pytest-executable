@@ -1,7 +1,7 @@
 black
 docutils
 flake8-bugbear
-flake8-colors
+flake8-colors==0.1.9
 flake8-commas
 flake8-docstrings
 flake8==3.*
