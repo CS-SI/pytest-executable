@@ -1,5 +1,5 @@
 black
-docutils
+docutils==0.18
 flake8-bugbear
 flake8-colors
 flake8-commas
