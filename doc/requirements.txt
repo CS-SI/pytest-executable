@@ -2,4 +2,4 @@ sphinx>=2
 sphinx-autodoc-typehints
 sphinx_rtd_theme
 sphinxcontrib.spelling
-delta
+delta==0.4.2
