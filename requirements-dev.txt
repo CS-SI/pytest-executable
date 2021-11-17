@@ -3,7 +3,7 @@ docutils
 flake8-bugbear
 flake8-colors
 flake8-commas
-flake8-docstrings
+flake8-docstrings==1.6.0
 flake8==3.*
 ipython
 isort
