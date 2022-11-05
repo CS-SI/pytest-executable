@@ -19,6 +19,8 @@
 See https://python-packaging-user-guide.readthedocs.io for more details. See setup.cfg
 for other settings.
 """
+from __future__ import annotations
+
 import setuptools
 
 setuptools.setup()

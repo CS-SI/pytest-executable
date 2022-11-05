@@ -15,6 +15,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Entry point to pytest_executable tests."""
+from __future__ import annotations
+
 from pathlib import Path
 
 # path to the data directory

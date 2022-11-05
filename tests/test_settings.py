@@ -15,6 +15,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for the settings container."""
+from __future__ import annotations
+
 import pytest
 from jsonschema import ValidationError
 from pytest_executable.plugin import SETTINGS_PATH as DEFAULT_SETTINGS_FILE

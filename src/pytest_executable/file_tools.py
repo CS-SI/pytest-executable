@@ -15,12 +15,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Output directory tree creation functions."""
+from __future__ import annotations
+
 import logging
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
-from typing import List
 
 LOG = logging.getLogger(__name__)
 
@@ -89,7 +90,7 @@ def get_mirror_path(path_from: Path, path_to: Path) -> Path:
     return path_to.joinpath(*relative_from.parts[offset:])
 
 
-def find_references(ref_dir: Path, ref_files: Iterable[str]) -> List[FilePath]:
+def find_references(ref_dir: Path, ref_files: Iterable[str]) -> list[FilePath]:
     """Return the paths to the references files.
 
     Args:
@@ -100,14 +101,14 @@ def find_references(ref_dir: Path, ref_files: Iterable[str]) -> List[FilePath]:
         Absolute and relative paths from a reference case directory to the
         reference files.
     """
-    abs_paths: List[Path] = []
+    abs_paths: list[Path] = []
     for ref in ref_files:
         abs_paths += ref_dir.glob(ref)
 
     if not abs_paths:
         return []
 
-    file_paths: List[FilePath] = []
+    file_paths: list[FilePath] = []
     for abs_path in abs_paths:
         rel_path = abs_path.relative_to(ref_dir)
         file_paths += [FilePath(abs_path, rel_path)]

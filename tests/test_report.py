@@ -15,10 +15,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for the report feature."""
+from __future__ import annotations
+
 import shutil
 from collections import defaultdict
-from typing import Dict
-from typing import List
 
 import pytest
 import yaml
@@ -40,8 +40,8 @@ class _TestReport:
 class TerminalReporter:
     """Mock of pytest TerminalReporter class."""
 
-    def __init__(self, report_data: List[List[str]]) -> None:
-        self.stats: Dict[str, List[_TestReport]] = defaultdict(list)
+    def __init__(self, report_data: list[list[str]]) -> None:
+        self.stats: dict[str, list[_TestReport]] = defaultdict(list)
         for status, dir_path, message in report_data:
             self.stats[status] += [_TestReport(dir_path, message)]
 

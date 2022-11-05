@@ -15,6 +15,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for the plugin fixtures."""
+from __future__ import annotations
+
 from . import assert_outcomes
 
 

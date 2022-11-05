@@ -19,11 +19,11 @@
 We use a dataclass because a dictionary does not offer easy checking and code
 completion.
 """
+from __future__ import annotations
+
 from dataclasses import dataclass
 from dataclasses import fields
 from pathlib import Path
-from typing import Dict
-from typing import Set
 
 from .yaml_helper import YamlHelper
 
@@ -58,10 +58,10 @@ class Settings:
         tolerances: The comparison tolerances.
     """
 
-    runner: Dict[str, str]
-    marks: Set[str]
-    references: Set[str]
-    tolerances: Dict[str, Tolerances]
+    runner: dict[str, str]
+    marks: set[str]
+    references: set[str]
+    tolerances: dict[str, Tolerances]
 
     def __post_init__(self):
         """Coerce the attributes types."""
@@ -71,7 +71,7 @@ class Settings:
             self.tolerances[key] = Tolerances(**value)
 
     @classmethod
-    def from_local_file(cls, path_global: Path, path_local: Path) -> "Settings":
+    def from_local_file(cls, path_global: Path, path_local: Path) -> Settings:
         """Create a :class:`Settings` object from 2 yaml files.
 
         The contents of the local file overrides or extends the contents of the

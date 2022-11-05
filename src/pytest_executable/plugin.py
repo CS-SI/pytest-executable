@@ -15,14 +15,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Entry point into the pytest executable plugin."""
+from __future__ import annotations
+
 import logging
 import sys
 from functools import cmp_to_key
 from pathlib import Path
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Set
 
 import _pytest
 import py
@@ -46,7 +44,7 @@ TEST_MODULE_PATH = Path(__file__).parent / "test_executable.py"
 
 # caches the test case directory path to marks to propagate them to all the
 # test modules of a test case
-_marks_cache: Dict[str, Set[str]] = {}
+_marks_cache: dict[str, set[str]] = {}
 
 
 def pytest_addoption(parser):
@@ -233,7 +231,7 @@ def runner(request, create_output_tree, output_path):
 
 def _get_regression_path(
     config: _pytest.config.Config, fspath: py.path.local
-) -> Optional[Path]:
+) -> Path | None:
     """Return the path to the reference directory of a test case.
 
     None is returned if --exe-regression-root is not passed to the CLI.
@@ -374,7 +372,7 @@ def pytest_exception_interact(node, call, report):
         report.longrepr.reprcrash = f"{report.nodeid}: {excinfo.value}"
 
 
-def pytest_collection_modifyitems(items: List[_pytest.nodes.Item]) -> None:
+def pytest_collection_modifyitems(items: list[_pytest.nodes.Item]) -> None:
     """Change the tests execution order.
 
     Such that:
@@ -412,7 +410,7 @@ def _sort_parent_last(item_1: _pytest.nodes.Item, item_2: _pytest.nodes.Item) ->
     return 1
 
 
-def _set_marks(items: List[_pytest.nodes.Item]) -> None:
+def _set_marks(items: list[_pytest.nodes.Item]) -> None:
     """Set the marks to all the test functions of a test case."""
     for dirname, marks in _marks_cache.items():
         for item in items:
