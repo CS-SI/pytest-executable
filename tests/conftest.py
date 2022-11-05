@@ -15,6 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Configuration for testing the plugin."""
+from __future__ import annotations
 
 
 pytest_plugins = "pytester"

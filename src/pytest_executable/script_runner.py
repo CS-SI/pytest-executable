@@ -15,11 +15,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Provides the shell script creation and execution routines."""
+from __future__ import annotations
+
 import logging
 import stat
 import subprocess
 from pathlib import Path
-from typing import Dict
 
 import delta
 import jinja2
@@ -52,7 +53,7 @@ class ScriptRunner:
     STDERR_EXT = "stderr"
     SHELL = "/usr/bin/env bash"
 
-    def __init__(self, path: Path, settings: Dict[str, str], workdir: Path):
+    def __init__(self, path: Path, settings: dict[str, str], workdir: Path):
         """Docstring just to prevent the arguments to appear in the autodoc.
 
         Args:

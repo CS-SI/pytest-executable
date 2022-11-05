@@ -18,6 +18,7 @@
 
 This module is automatically executed when a test-settings.yaml file is found.
 """
+from __future__ import annotations
 
 
 def test_runner(runner):

@@ -17,13 +17,13 @@ The following components are provided under the MIT License
 https://pyyaml.org
 https://pytest.org
 https://python-jsonschema.readthedocs.io
-
+https://github.com/rlgomes/delta
 
 ================================================================
-The CC0 License
+The BSD License
 ================================================================
 
-The following components are provided under the CC0 License
-(https://creativecommons.org/publicdomain/zero/1.0)
+The following components are provided under the BSD License
+(https://opensource.org/licenses/bsd-license.php)
 
-https://github.com/warner/python-versioneer
+https://palletsprojects.com/p/jinja

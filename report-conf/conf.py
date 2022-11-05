@@ -28,6 +28,9 @@
 # import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
+from __future__ import annotations
+
+
 def setup(app):
     app.add_css_file("html_width.css")
 
@@ -43,7 +46,6 @@ version = ""
 # The full version, including alpha/beta/rc tags
 release = "V1.0"
 
-
 # -- General configuration ---------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -57,7 +59,10 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.mathjax",
 ]
-mathjax_path = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS_CHTML-full"
+mathjax_path = (
+    "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js"
+    "?config=TeX-AMS_CHTML-full"
+)
 
 # extensions = ['sphinxcontrib.katex']
 
@@ -88,7 +93,6 @@ exclude_patterns = []
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = None
-
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -141,7 +145,6 @@ numfig = True
 # Output file base name for HTML help builder.
 htmlhelp_basename = "Validation Case"
 
-
 # -- Options for LaTeX output ------------------------------------------------
 
 latex_elements = {
@@ -166,13 +169,11 @@ latex_documents = [
     (master_doc, "Validation_case.tex", "Validation case", " ", "manual"),
 ]
 
-
 # -- Options for manual page output ------------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [(master_doc, "validation_case", "Validation case", [author], 1)]
-
 
 # -- Options for Texinfo output ----------------------------------------------
 
@@ -191,7 +192,6 @@ texinfo_documents = [
     ),
 ]
 
-
 # -- Options for Epub output -------------------------------------------------
 
 # Bibliographic Dublin Core info.
@@ -208,6 +208,5 @@ epub_title = project
 
 # A list of files that should not be packed into the epub file.
 epub_exclude_files = ["search.html"]
-
 
 # -- Extension configuration -------------------------------------------------

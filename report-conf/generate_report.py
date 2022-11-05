@@ -34,12 +34,12 @@ the output root directory.
 This module requires the packages tabulate and sphinx, these could be installed
 with the command: conda install tabluate sphinx
 """
+from __future__ import annotations
+
 import shutil
 import subprocess
 import textwrap
 from pathlib import Path
-from typing import List
-from typing import Tuple
 
 import yaml
 from tabulate import tabulate
@@ -75,7 +75,7 @@ def create_summary_table(output_root: Path) -> str:
     with (output_root / REPORT_DB_FILENAME).open() as stream:
         report_db = yaml.safe_load(stream)
 
-    report_data: List[Tuple[str]] = []
+    report_data: list[tuple[str]] = []
     for case, data in report_db.items():
         messages = "\n".join(data.get("messages", []))
         report_data += [(case, data["status"], messages)]
@@ -95,7 +95,7 @@ def create_index_rst(output_root: Path) -> None:
     output_root = Path(output_root).resolve(True)
 
     # find the paths to the description rst files relatively to the output_root
-    description_paths: List[Path] = []
+    description_paths: list[Path] = []
     for path in output_root.glob(f"**/{DESCRIPTION_FILENAME}"):
         description_paths += [path.relative_to(output_root)]
 

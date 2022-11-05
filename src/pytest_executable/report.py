@@ -15,12 +15,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Provide the report database dumper and report generation."""
+from __future__ import annotations
+
 import subprocess
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
 from typing import Dict
-from typing import Set
 
 from _pytest.terminal import TerminalReporter
 
@@ -50,7 +51,7 @@ def create(terminalreporter: TerminalReporter) -> ReportDBType:
         The report database.
     """
     report_db: ReportDBType = defaultdict(dict)
-    seen_dirs: Set[str] = set()
+    seen_dirs: set[str] = set()
 
     for status in ("error", "failed", "passed", "skipped"):
         stats = terminalreporter.stats.get(status, [])

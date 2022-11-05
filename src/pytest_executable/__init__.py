@@ -18,3 +18,4 @@
 
 This module contains function that do not depend on pytest to allow easier testing.
 """
+from __future__ import annotations
