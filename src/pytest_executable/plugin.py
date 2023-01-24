@@ -21,10 +21,15 @@ import logging
 import sys
 from functools import cmp_to_key
 from pathlib import Path
+from types import ModuleType
+from typing import Any
+from typing import Callable
+from typing import TYPE_CHECKING
 
 import _pytest
 import py
 import pytest
+from _pytest._code.code import ExceptionChainRepr
 
 from . import report
 from .file_tools import create_output_directory
@@ -32,6 +37,19 @@ from .file_tools import find_references
 from .file_tools import get_mirror_path
 from .script_runner import ScriptRunner
 from .settings import Settings
+from .settings import Tolerances
+
+if TYPE_CHECKING:
+    from _pytest.compat import LEGACY_PATH
+    from _pytest.config.argparsing import Parser
+    from _pytest.fixtures import SubRequest
+    from _pytest.main import Session
+    from _pytest.nodes import Collector
+    from _pytest.nodes import Item
+    from _pytest.python import Metafunc
+    from _pytest.reports import CollectReport
+    from _pytest.reports import TestReport
+    from _pytest.runner import CallInfo
 
 LOGGER = logging.getLogger(__name__)
 
@@ -47,7 +65,7 @@ TEST_MODULE_PATH = Path(__file__).parent / "test_executable.py"
 _marks_cache: dict[str, set[str]] = {}
 
 
-def pytest_addoption(parser):
+def pytest_addoption(parser: Parser) -> None:
     """CLI options for the plugin."""
     group = parser.getgroup("executable", "executable testing")
 
@@ -113,7 +131,7 @@ def pytest_addoption(parser):
     tb_option.default = "line"
 
 
-def pytest_sessionstart(session):
+def pytest_sessionstart(session: Session) -> None:
     """Check the CLI arguments and resolve their paths."""
     option = session.config.option
 
@@ -163,7 +181,7 @@ def _get_parent_path(fspath: py.path.local) -> Path:
 
 
 @pytest.fixture(scope="module")
-def create_output_tree(request):
+def create_output_tree(request: SubRequest) -> None:
     """Fixture to create and return the path to the output directory tree."""
     option = request.config.option
     parent_path = _get_parent_path(request.node.fspath)
@@ -187,7 +205,7 @@ def create_output_tree(request):
 
 
 @pytest.fixture(scope="module")
-def output_path(request):
+def output_path(request: SubRequest) -> Path:
     """Fixture to return the path to the output directory."""
     return get_mirror_path(
         _get_parent_path(request.node.fspath), request.config.option.exe_output_root
@@ -211,20 +229,24 @@ def _get_settings(config: _pytest.config.Config, path: py.path.local) -> Setting
 
 
 @pytest.fixture(scope="module")
-def tolerances(request):
+def tolerances(request: SubRequest) -> dict[str, Tolerances]:
     """Fixture that provides the tolerances from the settings."""
     return _get_settings(request.config, request.node.fspath).tolerances
 
 
 @pytest.fixture(scope="module")
-def runner(request, create_output_tree, output_path):
+def runner(
+    request: SubRequest,
+    create_output_tree: Callable[[ScriptRunner], None],
+    output_path: Path,
+) -> ScriptRunner:
     """Fixture to execute the runner script."""
     runner_path = request.config.option.exe_runner
     if runner_path is None:
         pytest.skip("no runner provided with --exe-runner")
 
     settings = _get_settings(request.config, request.node.fspath).runner
-    settings["output_path"] = output_path
+    settings["output_path"] = str(output_path)
 
     return ScriptRunner(runner_path, settings, output_path)
 
@@ -250,7 +272,7 @@ def _get_regression_path(
 
 
 @pytest.fixture(scope="module")
-def regression_path(request):
+def regression_path(request: SubRequest) -> Path | None:
     """Fixture to return the path of a test case under the references tree."""
     regression_path = _get_regression_path(request.config, request.node.fspath)
     if regression_path is None:
@@ -260,7 +282,7 @@ def regression_path(request):
     return regression_path
 
 
-def pytest_generate_tests(metafunc):
+def pytest_generate_tests(metafunc: Metafunc) -> None:
     """Create the regression_file_path parametrized fixture.
 
     Used for accessing the references files.
@@ -291,12 +313,15 @@ def pytest_generate_tests(metafunc):
     )
 
 
-def pytest_collect_file(parent, path):
+def pytest_collect_file(
+    parent: Collector,
+    path: LEGACY_PATH,
+) -> Collector | None:
     """Collect test cases defined with a yaml file."""
     if path.basename != SETTINGS_PATH.name:
-        return
+        return None
     if hasattr(TestExecutableModule, "from_parent"):
-        return TestExecutableModule.from_parent(parent, fspath=path)
+        return TestExecutableModule.from_parent(parent, fspath=path)  # type:ignore
     else:
         return TestExecutableModule(path, parent)
 
@@ -319,7 +344,7 @@ def pytest_configure(config: _pytest.config.Config) -> None:
 class TestExecutableModule(pytest.Module):
     """Collector for tests defined with a yaml file."""
 
-    def _getobj(self):
+    def _getobj(self) -> ModuleType:
         """Override the base class method.
 
         To swap the yaml file with the test module.
@@ -334,11 +359,11 @@ class TestExecutableModule(pytest.Module):
             pass
 
         # backup the attribute before a temporary override of it
-        fspath = self.fspath
+        fspath: py.path.local = self.fspath
         self.fspath = py.path.local(test_module_path)
-        module = self._importtestmodule()
+        module: ModuleType = self._importtestmodule()  # type: ignore
 
-        # restore the backuped up attribute
+        # restore the backed up attribute
         self.fspath = fspath
 
         # set the test case marks from test-settings.yaml
@@ -351,25 +376,31 @@ class TestExecutableModule(pytest.Module):
         return module
 
 
-def pytest_exception_interact(node, call, report):
+def pytest_exception_interact(
+    node: Item | Collector,
+    call: CallInfo[Any],
+    report: CollectReport | TestReport,
+) -> None:
     """Change exception display to only show the test path and error message.
 
     Avoid displaying the test file path and the Exception type.
     """
     excinfo = call.excinfo
+    if excinfo is None:
+        return
     if excinfo.typename == "CollectError" and str(excinfo.value).startswith(
         "import file mismatch:\n"
     ):
         # handle when a custom test script is used in more than one test case with
         # the same name
-        dirname = node.fspath.dirname
-        filename = node.fspath.basename
+        dirname = node.fspath.dirname  # type: ignore
+        filename = node.fspath.basename  # type: ignore
         report.longrepr = (
             f"{dirname}\nshall have a __init__.py because {filename} "
             "exists in other directories"
         )
-    else:
-        report.longrepr.reprcrash = f"{report.nodeid}: {excinfo.value}"
+    if isinstance(report.longrepr, ExceptionChainRepr):
+        report.longrepr.reprcrash = f"{report.nodeid}: {excinfo.value}"  # type:ignore
 
 
 def pytest_collection_modifyitems(items: list[_pytest.nodes.Item]) -> None:

@@ -16,8 +16,7 @@
 # limitations under the License.
 """Provides the container for the settings of a test case.
 
-We use a dataclass because a dictionary does not offer easy checking and code
-completion.
+We use a dataclass because a dictionary does not offer easy checking and code completion.
 """
 from __future__ import annotations
 
@@ -63,12 +62,12 @@ class Settings:
     references: set[str]
     tolerances: dict[str, Tolerances]
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Coerce the attributes types."""
         self.marks = set(self.marks)
         self.references = set(self.references)
         for key, value in self.tolerances.copy().items():
-            self.tolerances[key] = Tolerances(**value)
+            self.tolerances[key] = Tolerances(**value)  # type:ignore
 
     @classmethod
     def from_local_file(cls, path_global: Path, path_local: Path) -> Settings:

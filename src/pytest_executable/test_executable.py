@@ -20,8 +20,10 @@ This module is automatically executed when a test-settings.yaml file is found.
 """
 from __future__ import annotations
 
+from pytest_executable.script_runner import ScriptRunner
 
-def test_runner(runner):
+
+def test_runner(runner: ScriptRunner) -> None:
     """Check the runner execution.
 
     An OK process execution shall return the code 0.

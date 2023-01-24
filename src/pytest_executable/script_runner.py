@@ -21,6 +21,7 @@ import logging
 import stat
 import subprocess
 from pathlib import Path
+from typing import cast
 
 import delta
 import jinja2
@@ -83,7 +84,7 @@ class ScriptRunner:
         except UnicodeDecodeError:
             raise TypeError(f"cannot read the script {self.path}") from None
         try:
-            return template.render(**self.settings)
+            return cast(str, template.render(**self.settings))
         except jinja2.exceptions.UndefinedError as error:
             raise ValueError(f"in {self.path}: {error}") from None
 

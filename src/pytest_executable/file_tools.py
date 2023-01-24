@@ -159,11 +159,12 @@ def _shallow_dir_copy(
     """Shallow copy a directory tree.
 
     Directories are duplicated, files are symlinked. The destination directory
-    shall not exists and will be created.
+    shall not exist and will be created.
 
     Args:
         src_dir: Path to the source directory.
         dst_dir: Path to the destination directory.
+        ignored_files: Files to be ignored.
     """
     dst_dir.mkdir(parents=True, exist_ok=True)
     for src_entry in src_dir.iterdir():
@@ -171,7 +172,7 @@ def _shallow_dir_copy(
         if src_entry.name in ignored_files:
             pass
         elif src_entry.is_dir():
-            # directories are not symlinked but created so we can not modify a
+            # directories are not symlinked but created such that we can not modify a
             # child file by accident
             _shallow_dir_copy(src_entry, dst_entry, ignored_files)
         else:

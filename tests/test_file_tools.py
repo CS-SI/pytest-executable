@@ -37,7 +37,7 @@ def shared_tmp_path(tmp_path_factory):
 
 
 def test_non_existing_destination(shared_tmp_path):
-    """Test shallow directory copy with non existing destination."""
+    """Test shallow directory copy with non-existing destination."""
     _helper(shared_tmp_path, True, False)
 
 
@@ -75,7 +75,7 @@ def _helper(shared_tmp_path, check, overwrite):
 
 def _compare_directory_trees(exp_dir, dst_dir):
     for exp_entries, dst_entries in zip(os.walk(exp_dir), os.walk(dst_dir)):
-        # check the names of the sub-directories and the files
+        # check the names of the subdirectories and the files
         assert dst_entries[1:] == exp_entries[1:]
 
         # check the directories type

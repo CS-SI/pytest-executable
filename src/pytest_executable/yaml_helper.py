@@ -51,6 +51,7 @@ class YamlHelper:
         Returns:
             The validated data.
         """
+        data: DataType
         with path.open() as file_:
             data = yaml.safe_load(file_)
 
