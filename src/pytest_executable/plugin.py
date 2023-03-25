@@ -62,7 +62,16 @@ TEST_MODULE_PATH = Path(__file__).parent / "test_executable.py"
 
 # caches the test case directory path to marks to propagate them to all the
 # test modules of a test case
-_marks_cache: dict[str, set[str]] = {}
+_marks_cache: dict[Path, set[str]] = {}
+
+PYTEST_USE_FSPATH = pytest.__version__ < "7.0.0"
+
+
+def _get_path(obj: Any) -> Path | LEGACY_PATH:
+    if PYTEST_USE_FSPATH:
+        return obj.fspath
+    else:
+        return obj.path
 
 
 def pytest_addoption(parser: Parser) -> None:
@@ -168,23 +177,23 @@ def pytest_sessionstart(session: Session) -> None:
     option.exe_output_root = Path(option.exe_output_root).resolve()
 
 
-def _get_parent_path(fspath: py.path.local) -> Path:
+def _get_parent_path(path: Path) -> Path:
     """Return the resolved path to a parent directory.
 
     Args:
-        fspath: Path object from pytest.
+        path: Path object from pytest.
 
     Returns:
         Resolved path to the parent directory of the given pat.
     """
-    return Path(fspath).parent.resolve(True)
+    return Path(path).parent.resolve(True)
 
 
 @pytest.fixture(scope="module")
 def create_output_tree(request: SubRequest) -> None:
     """Fixture to create and return the path to the output directory tree."""
     option = request.config.option
-    parent_path = _get_parent_path(request.node.fspath)
+    parent_path = _get_parent_path(_get_path(request.node))
     output_path = get_mirror_path(parent_path, option.exe_output_root)
 
     try:
@@ -208,11 +217,12 @@ def create_output_tree(request: SubRequest) -> None:
 def output_path(request: SubRequest) -> Path:
     """Fixture to return the path to the output directory."""
     return get_mirror_path(
-        _get_parent_path(request.node.fspath), request.config.option.exe_output_root
+        _get_parent_path(_get_path(request.node)),
+        request.config.option.exe_output_root,
     )
 
 
-def _get_settings(config: _pytest.config.Config, path: py.path.local) -> Settings:
+def _get_settings(config: _pytest.config.Config, path: Path) -> Settings:
     """Return the settings from global and local test-settings.yaml.
 
     Args:
@@ -231,7 +241,7 @@ def _get_settings(config: _pytest.config.Config, path: py.path.local) -> Setting
 @pytest.fixture(scope="module")
 def tolerances(request: SubRequest) -> dict[str, Tolerances]:
     """Fixture that provides the tolerances from the settings."""
-    return _get_settings(request.config, request.node.fspath).tolerances
+    return _get_settings(request.config, _get_path(request.node)).tolerances
 
 
 @pytest.fixture(scope="module")
@@ -245,22 +255,20 @@ def runner(
     if runner_path is None:
         pytest.skip("no runner provided with --exe-runner")
 
-    settings = _get_settings(request.config, request.node.fspath).runner
+    settings = _get_settings(request.config, _get_path(request.node)).runner
     settings["output_path"] = str(output_path)
 
     return ScriptRunner(runner_path, settings, output_path)
 
 
-def _get_regression_path(
-    config: _pytest.config.Config, fspath: py.path.local
-) -> Path | None:
+def _get_regression_path(config: _pytest.config.Config, path: Path) -> Path | None:
     """Return the path to the reference directory of a test case.
 
     None is returned if --exe-regression-root is not passed to the CLI.
 
     Args:
         config: Config from pytest.
-        fspath: Path to a test case directory.
+        path: Path to a test case directory.
 
     Returns:
         The path to the reference directory of the test case or None.
@@ -268,13 +276,13 @@ def _get_regression_path(
     regression_path = config.option.exe_regression_root
     if regression_path is None:
         return None
-    return get_mirror_path(_get_parent_path(fspath), regression_path)
+    return get_mirror_path(_get_parent_path(path), regression_path)
 
 
 @pytest.fixture(scope="module")
 def regression_path(request: SubRequest) -> Path | None:
     """Fixture to return the path of a test case under the references tree."""
-    regression_path = _get_regression_path(request.config, request.node.fspath)
+    regression_path = _get_regression_path(request.config, _get_path(request.node))
     if regression_path is None:
         pytest.skip(
             "no tests references root directory provided to --exe-regression-root"
@@ -296,10 +304,12 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
     # empty means skip the test function that use the fixture
     file_paths = []
 
-    regression_path = _get_regression_path(metafunc.config, metafunc.definition.fspath)
+    regression_path = _get_regression_path(
+        metafunc.config, _get_path(metafunc.definition)
+    )
 
     if regression_path is not None:
-        settings_path = metafunc.definition.fspath
+        settings_path = _get_path(metafunc.definition)
         settings = _get_settings(metafunc.config, settings_path)
 
         if settings.references:
@@ -313,17 +323,35 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
     )
 
 
-def pytest_collect_file(
-    parent: Collector,
-    path: LEGACY_PATH,
-) -> Collector | None:
-    """Collect test cases defined with a yaml file."""
-    if path.basename != SETTINGS_PATH.name:
-        return None
-    if hasattr(TestExecutableModule, "from_parent"):
-        return TestExecutableModule.from_parent(parent, fspath=path)  # type:ignore
-    else:
-        return TestExecutableModule(path, parent)
+if PYTEST_USE_FSPATH:
+
+    def pytest_collect_file(
+        parent: Collector,
+        path: LEGACY_PATH,
+    ) -> Collector | None:
+        """Collect test cases defined with a yaml file."""
+        if path.basename != SETTINGS_PATH.name:
+            return None
+        if hasattr(TestExecutableModule, "from_parent"):
+            return TestExecutableModule.from_parent(parent, fspath=path)  # type:ignore
+        else:
+            return TestExecutableModule(path, parent)
+
+else:
+
+    def pytest_collect_file(  # type:ignore
+        parent: Collector,
+        file_path: Path,
+    ) -> Collector | None:
+        """Collect test cases defined with a yaml file."""
+        if file_path.name != SETTINGS_PATH.name:
+            return None
+        if hasattr(TestExecutableModule, "from_parent"):
+            return TestExecutableModule.from_parent(  # type:ignore
+                parent, path=file_path
+            )
+        else:
+            return TestExecutableModule(file_path, parent)
 
 
 def pytest_configure(config: _pytest.config.Config) -> None:
@@ -359,19 +387,25 @@ class TestExecutableModule(pytest.Module):
             pass
 
         # backup the attribute before a temporary override of it
-        fspath: py.path.local = self.fspath
-        self.fspath = py.path.local(test_module_path)
+        path = _get_path(self)
+        if PYTEST_USE_FSPATH:
+            self.fspath = py.path.local(test_module_path)
+        else:
+            self.path = test_module_path
         module: ModuleType = self._importtestmodule()  # type: ignore
 
         # restore the backed up attribute
-        self.fspath = fspath
+        if PYTEST_USE_FSPATH:
+            self.fspath = path
+        else:
+            self.path = path
 
         # set the test case marks from test-settings.yaml
-        settings = _get_settings(self.config, fspath)
+        settings = _get_settings(self.config, path)
 
         # store the marks for applying them later
         if settings.marks:
-            _marks_cache[fspath.dirname] = settings.marks
+            _marks_cache[Path(path).parent] = settings.marks
 
         return module
 
@@ -393,8 +427,9 @@ def pytest_exception_interact(
     ):
         # handle when a custom test script is used in more than one test case with
         # the same name
-        dirname = node.fspath.dirname  # type: ignore
-        filename = node.fspath.basename  # type: ignore
+        path = Path(_get_path(node))
+        dirname = path.parent
+        filename = path.name
         report.longrepr = (
             f"{dirname}\nshall have a __init__.py because {filename} "
             "exists in other directories"
@@ -419,8 +454,8 @@ def pytest_collection_modifyitems(items: list[_pytest.nodes.Item]) -> None:
 
 def _sort_yaml_first(item_1: _pytest.nodes.Item, item_2: _pytest.nodes.Item) -> int:
     """Sort yaml item first vs module at or below yaml parent directory."""
-    path_1 = Path(item_1.fspath)
-    path_2 = Path(item_2.fspath)
+    path_1 = Path(_get_path(item_1))
+    path_2 = Path(_get_path(item_2))
     if path_1 == path_2 or path_1.suffix == path_2.suffix:
         return 0
     if path_2.suffix == ".yaml" and (path_2.parent in path_1.parents):
@@ -432,8 +467,8 @@ def _sort_yaml_first(item_1: _pytest.nodes.Item, item_2: _pytest.nodes.Item) -> 
 
 def _sort_parent_last(item_1: _pytest.nodes.Item, item_2: _pytest.nodes.Item) -> int:
     """Sort item in parent directory last."""
-    dir_1 = Path(item_1.fspath).parent
-    dir_2 = Path(item_2.fspath).parent
+    dir_1 = Path(_get_path(item_1)).parent
+    dir_2 = Path(_get_path(item_2)).parent
     if dir_1 == dir_2:
         return 0
     if dir_2 in dir_1.parents:
@@ -443,9 +478,9 @@ def _sort_parent_last(item_1: _pytest.nodes.Item, item_2: _pytest.nodes.Item) ->
 
 def _set_marks(items: list[_pytest.nodes.Item]) -> None:
     """Set the marks to all the test functions of a test case."""
-    for dirname, marks in _marks_cache.items():
+    for dir_path, marks in _marks_cache.items():
         for item in items:
-            if Path(dirname) in Path(item.fspath).parents:
+            if dir_path in Path(_get_path(item)).parents:
                 for mark in marks:
                     item.add_marker(mark)
 

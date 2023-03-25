@@ -56,7 +56,11 @@ def create(terminalreporter: TerminalReporter) -> ReportDBType:
     for status in ("error", "failed", "passed", "skipped"):
         stats = terminalreporter.stats.get(status, [])
         for test_report in stats:
-            path_from_root = Path(*Path(test_report.fspath).parts[1:])
+            try:
+                path = test_report.path
+            except AttributeError:
+                path = test_report.fspath
+            path_from_root = Path(*Path(path).parts[1:])
             dir_path = str(path_from_root.parent)
             db_entry = report_db[dir_path]
             messages = db_entry.setdefault("messages", [])

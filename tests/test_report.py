@@ -33,7 +33,7 @@ DATA_DIR = ROOT_DATA_DIR / "report"
 
 class _TestReport:
     def __init__(self, dir_path: str, message: str) -> None:
-        self.fspath = dir_path
+        self.path = dir_path
         self.longreprtext = message
 
 
