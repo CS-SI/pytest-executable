@@ -1,0 +1,7 @@
+[run]
+plugins = covdefaults
+source = pytest_executable
+
+[report]
+# Override covdefaults.
+fail_under = 90

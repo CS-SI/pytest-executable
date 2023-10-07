@@ -68,7 +68,7 @@ PYTEST_USE_FSPATH = pytest.__version__ < "7.0.0"
 
 
 def _get_path(obj: Any) -> Path | LEGACY_PATH:
-    if PYTEST_USE_FSPATH:
+    if PYTEST_USE_FSPATH:  # pragma: no cover
         return obj.fspath
     else:
         return obj.path
@@ -323,7 +323,7 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
     )
 
 
-if PYTEST_USE_FSPATH:
+if PYTEST_USE_FSPATH:  # pragma: no cover
 
     def pytest_collect_file(
         parent: Collector,
@@ -388,14 +388,14 @@ class TestExecutableModule(pytest.Module):
 
         # backup the attribute before a temporary override of it
         path = _get_path(self)
-        if PYTEST_USE_FSPATH:
+        if PYTEST_USE_FSPATH:  # pragma: no cover
             self.fspath = py.path.local(test_module_path)
         else:
             self.path = test_module_path
         module: ModuleType = self._importtestmodule()  # type: ignore
 
         # restore the backed up attribute
-        if PYTEST_USE_FSPATH:
+        if PYTEST_USE_FSPATH:  # pragma: no cover
             self.fspath = path
         else:
             self.path = path

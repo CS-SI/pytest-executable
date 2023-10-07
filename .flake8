@@ -1,0 +1,18 @@
+[flake8]
+# See http://www.pydocstyle.org/en/latest/error_codes.html for more details.
+ignore =
+# D105 Missing docstring in magic method
+       D105,
+# D107 Missing docstring in __init__: because we use google style docstring in class.
+       D107,
+# D413 Missing blank line after last section: see above.
+       D413,
+# E501 line too long, use bugbear warning instead, see https://github.com/psf/black#line-length
+       E501,
+exclude = tests/data
+max-line-length = 88
+select = B,C,D,E,F,G,N,T,W,B950
+docstring-convention = google
+per-file-ignores =
+    conf.py:D
+    tests/**/*.py:D

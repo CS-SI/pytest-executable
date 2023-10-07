@@ -2,11 +2,64 @@
 requires = [
     "setuptools>=45",
     "setuptools_scm[toml]>=6.2",
-    "wheel",
 ]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "pytest-executable"
+description = "pytest plugin for testing executables"
+readme = "README.rst"
+authors = [
+    {name = "Antoine Dechaume"},
+]
+classifiers = [
+    "Environment :: Console",
+    "Framework :: Pytest",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Utilities",
+]
+dynamic = ["version"]
+requires-python = ">=3.8,<3.13"
+dependencies = [
+    "delta >=0.4,<0.5",
+    "jinja2 >=2.7,<3.2",
+    "jsonschema >=2,<5",
+    "pytest >=5,<8",
+    "pyyaml >=3,<6.1",
+]
+license = {text = "Apache Software License 2.0"}
+
+[project.urls]
+Homepage = "https://www.github.com/CS-SI/pytest-executable"
+
+[project.optional-dependencies]
+test = [
+    "covdefaults",
+    "pytest-cov",
+]
+
+[project.entry-points.pytest11]
+pytest_executable = "pytest_executable.plugin"
+
 [tool.setuptools_scm]
 
+[tool.setuptools]
+license-files = [
+    "LICENSE.txt",
+    "CREDITS.md",
+]
+
 [tool.black]
-target-version = ['py37']
+target-version = ['py38']

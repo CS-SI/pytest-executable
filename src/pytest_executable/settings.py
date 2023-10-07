@@ -16,7 +16,8 @@
 # limitations under the License.
 """Provides the container for the settings of a test case.
 
-We use a dataclass because a dictionary does not offer easy checking and code completion.
+We use a dataclass because a dictionary does not offer easy checking and code
+completion.
 """
 from __future__ import annotations
 
